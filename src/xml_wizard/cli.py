@@ -12,6 +12,7 @@ from . import __version__
 from .agent_bundle import write_bundle
 from .analysis import analyse
 from .codebook import build_codebook
+from . import privacy
 from .readers import InputError, load_project
 from .viewer import write_viewer
 
@@ -34,6 +35,20 @@ def main(argv: Optional[List[str]] = None) -> int:
                     help="only print problems found in the branching logic (exit code 1 if any errors)")
     ap.add_argument("--no-data-audit", action="store_true",
                     help="ignore data embedded in the XML file")
+    priv = ap.add_argument_group(
+        "privacy", "Before writing anything for the AI agent, xml-wizard flags variables that may hold "
+        "identifying data (REDCap Identifier flag, names, contact details, dates of birth, free text) and asks "
+        "whether to mask, drop or keep each one. Answers are saved in redaction_decisions.csv in the output "
+        "folder and reused next time.")
+    priv.add_argument("--redact", choices=("ask", "suggested", "none"), default="ask",
+                      help="ask (default; falls back to 'suggested' when not run in a terminal), "
+                           "suggested = accept every suggestion without asking, none = redact nothing")
+    priv.add_argument("--mask", metavar="FIELDS", default="",
+                      help="comma-separated variables to mask, in addition to the review")
+    priv.add_argument("--drop", metavar="FIELDS", default="", help="comma-separated variables to drop")
+    priv.add_argument("--keep", metavar="FIELDS", default="", help="comma-separated variables to keep unredacted")
+    priv.add_argument("--no-data-copy", action="store_true",
+                      help="do not write a redacted copy of the data into the agent bundle")
     ap.add_argument("--open", action="store_true", help="open the tree viewer in a web browser when done")
     ap.add_argument("--version", action="version", version=f"xml-wizard {__version__}")
     args = ap.parse_args(argv)
@@ -69,13 +84,43 @@ def main(argv: Optional[List[str]] = None) -> int:
     stem = os.path.splitext(os.path.basename(args.input))[0]
     out_dir = args.out or os.path.join(os.path.dirname(os.path.abspath(args.input)), stem + "_xml_wizard")
     os.makedirs(out_dir, exist_ok=True)
-    codebook = build_codebook(analysis)
+
+    extra = {}
+    for opt, act in ((args.mask, "mask"), (args.drop, "drop"), (args.keep, "keep")):
+        for name in (n.strip() for n in opt.split(",")):
+            if name:
+                if name not in project.fields:
+                    print(f"xml-wizard: --{act}: no variable called '{name}'", file=sys.stderr)
+                    return 2
+                extra[name] = act
+    mode = args.redact
+    if mode == "ask" and not sys.stdin.isatty():
+        mode = "suggested"
+    decisions_path = os.path.join(out_dir, privacy.DECISIONS_FILE)
+    plan = privacy.review(project, mode, decisions_path, extra)
+    privacy.save_decisions(decisions_path, plan)
+    if args.redact == "ask" and mode == "suggested" and plan.flags:
+        print("\nPrivacy check: not running in a terminal, so the suggested redactions were applied.")
+    else:
+        print("\nRedaction:")
+    for line in privacy.summary_lines(project, plan):
+        print("  " + line)
+    print(f"  Change these in {decisions_path} and run again (or use --mask / --drop / --keep).")
+
+    codebook = build_codebook(analysis, plan)
     viewer_name = "survey_tree.html"
     viewer_path = write_viewer(codebook, os.path.join(out_dir, viewer_name))
     bundle_dir = os.path.join(out_dir, "agent_bundle")
-    write_bundle(analysis, codebook, bundle_dir, viewer_name)
+    data_name = ""
+    if project.data_rows and not args.no_data_copy:
+        data_stem = os.path.splitext(os.path.basename(args.data))[0] if args.data else stem
+        data_name = f"data/{data_stem}_redacted.csv"
+    write_bundle(analysis, codebook, bundle_dir, viewer_name, plan, data_name)
     print(f"\nTree viewer:  {viewer_path}")
     print(f"Agent bundle: {bundle_dir}{os.sep}  (start with AGENTS.md)")
+    if data_name:
+        print(f"Redacted data for the agent: {os.path.join(bundle_dir, data_name)}")
+    print("Give the agent the agent_bundle folder, not your original export: the original still holds every value.")
     if args.open:
         webbrowser.open("file://" + os.path.abspath(viewer_path))
     return 0

@@ -16,8 +16,11 @@ produces
 | `survey_tree.html` | People | A zoomable, pannable tree of every instrument and item. Each item that has branching logic is nested under the item that controls it, with a tag saying when it appears ("if Yes"). Click any item for its full logic in plain English, answer codes, and problems. One file that works offline in any browser. |
 | `agent_bundle/` | Coding agents | `AGENTS.md` (+ `CLAUDE.md`) primer, `codebook.json`, `skip_logic.csv`, `implied_values.csv`, and ready-to-run Python and R scripts that separate legitimate skips from real missing data. |
 
-Everything runs on your computer. Nothing is uploaded, and the bundle contains
-metadata and aggregate counts only, never participant-level values.
+Everything runs on your computer. Nothing is uploaded. Before anything is written
+for the agent, a privacy check flags variables that may identify participants
+and asks whether to mask, drop or keep each one (see [Privacy](#privacy)). The
+bundle holds metadata and aggregate counts, plus, only when you supply data, a
+copy of that data with your chosen redactions applied.
 
 ## Install
 
@@ -45,7 +48,8 @@ pip install git+https://github.com/dpletta/xml-wizard
    against the logic. If your XML export already includes data, this happens automatically.
 3. Open `my_project_xml_wizard/survey_tree.html` (or let `--open` do it).
 
-Other options: `-o FOLDER` to choose where outputs go, `--check` to only print problems (exits
+Other options: `--redact suggested` to accept the privacy suggestions without being asked,
+`-o FOLDER` to choose where outputs go, `--check` to only print problems (exits
 with code 1 when there are errors, handy in a pipeline), `--no-data-audit` to ignore data in the XML.
 
 Try it on the included synthetic example:
@@ -72,6 +76,58 @@ Branching logic problems REDCap does not warn you about:
 With data supplied, it also counts, per item: answers recorded although the item should have
 been hidden, blanks in items that were shown (true non-response), blanks that are skips by
 design, and values that are not valid answer codes.
+
+## Privacy
+
+Anything a coding agent reads is sent to the company that runs its model, so names, phone numbers
+and other identifiers should not reach it. Before writing the agent bundle, `xml-wizard` lists the
+variables that may hold them and asks what to do with each:
+
+```text
+[6/17] loc_fname (text) "First name"  high risk: marked as an Identifier in REDCap; person's name
+      M/d/k/a/? >
+```
+
+- **m**ask (the default suggestion): the column stays, but every answer becomes `[REDACTED]`. Blanks
+  stay blank, so skip logic and missing-data checks still work on the redacted data.
+- **d**rop: the column is removed.
+- **k**eep: left as it is.
+- Enter accepts the suggestion, `a` accepts all remaining suggestions, `?` shows why it was flagged.
+
+Lower-risk variables (visit dates and short "other, please specify" answers) are asked about as a group,
+and are kept unless you say otherwise.
+
+How variables are flagged, all locally and without extra software:
+
+| Signal | Examples |
+|---|---|
+| REDCap's own **Identifier** flag | any field marked *Identifier?* in the Online Designer |
+| Validation type | `email`, `phone`, `zipcode`, `ssn`, `mrn_*`, dates |
+| Variable name and label, matched against the HIPAA Safe Harbor identifiers | `fname`, "Last name", `dob`, "Date of birth", `address`, `cell`, "Medical record number", "Staff initials" |
+| Field type | file uploads and signatures (suggested drop), long free text (`notes`) |
+| The shape of the values, when data is supplied (counts only, values are never printed) | free-text answers that look like e-mail addresses, phone numbers, SSNs, or people's names |
+
+Coded answers (radio, checkbox, dropdown, calculated) are only flagged when REDCap marks them as
+identifiers. The record ID is kept so rows can be linked; make sure it is an arbitrary study ID.
+
+What the choices change:
+
+- `agent_bundle/data/<export>_redacted.csv` (only when you supply data, by `--data` or in the XML): your
+  data with the redactions applied. Point the agent at this file. Use `--no-data-copy` to leave it out.
+- `codebook.json`, `AGENTS.md` and the tree viewer say which items are masked or dropped and why, and
+  `AGENTS.md` tells the agent never to try to recover them or open the original export.
+- `cleaning/apply_skip_logic.py` and `.R` apply the same redactions to every file they write, even when
+  run on the original export.
+- Your answers are saved in `redaction_decisions.csv` in the output folder (outside the bundle). A rerun
+  only asks about variables that are new; edit the file to change a decision.
+
+Non-interactive use: `--redact suggested` accepts every suggestion, `--redact none` redacts nothing, and
+`--mask a,b`, `--drop c` and `--keep d` decide individual variables. When not run in a terminal (for
+example from a script), the suggestions are applied automatically.
+
+This is a safety net, not a de-identification guarantee: free text can still mention people, and dates
+and rare combinations of answers can identify someone. Give the agent the `agent_bundle` folder only,
+keep the original export elsewhere, and follow your IRB's data-handling rules.
 
 ## The agent bundle
 

@@ -47,9 +47,20 @@ plain files rather than a new file type:
 `confirmed = FALSE`. Scripts apply only confirmed rules and log each filled value. Answers recorded for
 hidden items are reported, never silently deleted.
 
-**Privacy.** The bundle contains metadata and aggregate counts only. Row-level outputs
-(`skip_logic_problems.csv`, cleaned data) are written next to the user's data by the scripts they run
-locally.
+**Privacy.** Whatever an agent reads goes to its model provider, so redaction happens before the
+bundle is written. A rule-based detector (`privacy.py`) flags likely identifiers from REDCap's
+Identifier flag, validation types, field types, variable names and labels (HIPAA Safe Harbor list), and,
+when data is supplied, the shape of free-text values (counts only). The researcher chooses mask, drop or
+keep for each; choices are saved and reused. The bundle then holds metadata, aggregate counts and, only
+if data was supplied, a redacted copy of it. The generated scripts carry the same redaction list, so their
+row-level outputs are redacted too.
+
+Why rules and not a model: the decision is per variable, and REDCap metadata already says most of what
+matters (Identifier flag, `email`/`phone`/`date` validation, labels like "First name"). Rules are
+transparent ("flagged because: date of birth"), deterministic, instant, and keep the tool dependency-free.
+A local NER model (for example spaCy or Presidio) would add hundreds of megabytes and an install step
+for little gain at the column level; it would matter for scrubbing names *inside* free-text answers,
+which is a possible later, optional extra. Masking long free text by default covers that case for now.
 
 ## Possible next steps
 

@@ -8,6 +8,8 @@ Layout::
       codebook.json             full machine-readable codebook (+ parsed logic)
       skip_logic.csv            one row per item with branching logic
       implied_values.csv        suggested logical fills; humans set confirmed=TRUE
+      data/<name>_redacted.csv  only when data was supplied: the data with the
+                                variables the researcher chose masked or dropped
       cleaning/apply_skip_logic.py
       cleaning/apply_skip_logic.R
 """
@@ -17,14 +19,18 @@ from __future__ import annotations
 import csv
 import json
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from . import __version__
+from . import privacy
 from .analysis import Analysis
+from .privacy import RedactionPlan
 from .scripts import python_script, r_script
 
 
-def write_bundle(analysis: Analysis, codebook: Dict[str, Any], out_dir: str, viewer_name: str = "") -> List[str]:
+def write_bundle(analysis: Analysis, codebook: Dict[str, Any], out_dir: str, viewer_name: str = "",
+                 plan: Optional[RedactionPlan] = None, data_name: str = "") -> List[str]:
+    plan = plan or RedactionPlan()
     os.makedirs(os.path.join(out_dir, "cleaning"), exist_ok=True)
     written = []
 
@@ -35,10 +41,21 @@ def write_bundle(analysis: Analysis, codebook: Dict[str, Any], out_dir: str, vie
         written.append(path)
 
     w("codebook.json", json.dumps(codebook, indent=2, ensure_ascii=False) + "\n")
-    w("AGENTS.md", agents_md(analysis, codebook, viewer_name))
+    w("AGENTS.md", agents_md(analysis, codebook, viewer_name, plan, data_name))
     w("CLAUDE.md", "@AGENTS.md\n")
-    w(os.path.join("cleaning", "apply_skip_logic.py"), python_script(analysis))
-    w(os.path.join("cleaning", "apply_skip_logic.R"), r_script(analysis))
+    redact = privacy.redacted_columns(analysis.project, plan)
+    w(os.path.join("cleaning", "apply_skip_logic.py"), python_script(analysis, redact))
+    w(os.path.join("cleaning", "apply_skip_logic.R"), r_script(analysis, redact))
+    stale = os.path.join(out_dir, "data")
+    if os.path.isdir(stale):
+        # Never leave an older, differently redacted copy behind.
+        for name in os.listdir(stale):
+            if name.endswith("_redacted.csv"):
+                os.remove(os.path.join(stale, name))
+    if data_name and analysis.project.data_rows:
+        path = os.path.join(out_dir, *data_name.split("/"))
+        privacy.write_redacted_csv(path, analysis.project, plan)
+        written.append(path)
 
     path = os.path.join(out_dir, "skip_logic.csv")
     with open(path, "w", encoding="utf-8", newline="") as fh:
@@ -71,8 +88,11 @@ def _md(s: str) -> str:
     return str(s or "").replace("|", "\\|").replace("\n", " ").strip()
 
 
-def agents_md(analysis: Analysis, codebook: Dict[str, Any], viewer_name: str = "") -> str:
+def agents_md(analysis: Analysis, codebook: Dict[str, Any], viewer_name: str = "",
+              plan: Optional[RedactionPlan] = None, data_name: str = "") -> str:
+    plan = plan or RedactionPlan()
     p = analysis.project
+    red = plan.redacted()
     cb = codebook["project"]
     out: List[str] = []
     a = out.append
@@ -92,6 +112,9 @@ def agents_md(analysis: Analysis, codebook: Dict[str, Any], viewer_name: str = "
       "to approve a rule. |")
     a("| `cleaning/apply_skip_logic.py` / `.R` | Ready-to-run scripts (no dependencies) that add a skip status "
       "for every gated item, apply confirmed fills, and list problems. |")
+    if data_name:
+        a(f"| `{data_name}` | The study data as a raw REDCap export, with the variables listed under "
+          "*Privacy* masked or dropped. Work from this file. |")
     if viewer_name:
         a(f"| `../{viewer_name}` | Interactive tree of the survey for people to review. |")
     a("")
@@ -111,18 +134,49 @@ def agents_md(analysis: Analysis, codebook: Dict[str, Any], viewer_name: str = "
         "Keep participant-level data on this computer. Do not paste rows of data into web services or issue "
         "trackers; share aggregate counts instead.",
     ]
-    if any(f.identifier for f in p.fields.values()):
-        ids = ", ".join(f"`{f.name}`" for f in p.ordered_fields() if f.identifier)
-        rules.append(f"These items are flagged as identifiers (PHI) and must be dropped or masked in any "
-                     f"analysis dataset you share: {ids}.")
+    if red:
+        rules.append(f"Respect the redactions under *Privacy*. Masked values read `{privacy.MASK_TOKEN}`; never try "
+                     "to recover, guess or look up the original values, and do not open the original export "
+                     "or XML file to find them.")
+    kept_ids = [f.name for f in p.ordered_fields() if f.identifier and plan.action(f.name) == "keep"]
+    if kept_ids:
+        rules.append("These items are flagged as identifiers (PHI) but were left unredacted; drop or mask them "
+                     f"in any analysis dataset you create or share: {', '.join(f'`{n}`' for n in kept_ids)}.")
     for i, r in enumerate(rules, 1):
         a(f"{i}. {r}")
     a("")
 
+    a("## Privacy\n")
+    if red:
+        a("Before this bundle was made, the researcher reviewed variables that may identify participants and chose "
+          f"to redact these. In any data prepared for you, masked items hold `{privacy.MASK_TOKEN}` when answered "
+          "and stay blank when not, so skip statuses still work. Dropped items are removed, so their skip status "
+          "cannot be worked out from the redacted data (they read as blank). The cleaning scripts "
+          "apply the same redaction to everything they write.\n")
+        a("| Item | Redaction | Why it was flagged |\n|---|---|---|")
+        for name, act in red.items():
+            fl = plan.flag(name)
+            a(f"| `{name}` | {act} | {_md('; '.join(fl.reasons)) if fl else 'chosen by the researcher'} |")
+        a("")
+        affected = sorted({u for n in red for u in (plan.flag(n).used_in_logic_of if plan.flag(n) else [])})
+        if affected:
+            a("Some branching logic or calculations use a redacted item, so on redacted data their result may be "
+              "wrong or `unknown`: " + ", ".join(f"`{n}`" for n in affected) + ". Exported calculated values "
+              "(for example an age computed from a date of birth) are still correct.\n")
+    else:
+        a("No variables were redacted. If the data you are given holds names, contact details or other identifiers, "
+          "stop and ask the researcher before reading further.\n")
+    kept = [f for f in plan.flags if plan.action(f.field) == "keep" and f.level != "low"]
+    if kept:
+        a("Flagged but kept by the researcher: " + ", ".join(f"`{f.field}`" for f in kept) +
+          ". Avoid quoting their values in your replies.\n")
+    a(f"The record ID (`{p.record_id_field}`) is kept so rows can be linked; it should be an arbitrary study ID.\n")
+
     a("## Quick start\n")
+    data_arg = data_name or "path/to/export.csv"
     a("```bash\n# REDCap: Data Exports > CSV / Microsoft Excel (raw data), variable names as headers\n"
-      "python cleaning/apply_skip_logic.py path/to/export.csv\n"
-      "# or\nRscript cleaning/apply_skip_logic.R path/to/export.csv\n```\n")
+      f"python cleaning/apply_skip_logic.py {data_arg}\n"
+      f"# or\nRscript cleaning/apply_skip_logic.R {data_arg}\n```\n")
     a("This writes `<export>_cleaned.csv` with a `<field>__skip` column after every gated item, "
       "`skip_logic_report.csv` (counts per item), `skip_logic_problems.csv` (rows to review) and "
       "`implied_values_log.csv`. Add `--legit-skip-code -7` (Python) to write a code into skipped items "
