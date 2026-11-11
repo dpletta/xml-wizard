@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "redcap-xml-wizard"
+dynamic = ["version"]
+description = "Visualise REDCap branching logic as a zoomable tree and export agent-ready codebooks for data cleaning."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "David Pletta" }]
+requires-python = ">=3.8"
+dependencies = []
+keywords = ["redcap", "branching logic", "skip logic", "survey", "codebook", "data cleaning", "cdisc odm"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+[project.urls]
+Homepage = "https://github.com/dpletta/xml-wizard"
+
+[project.scripts]
+xml-wizard = "xml_wizard.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "xml_wizard.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+xml_wizard = ["viewer_template.html", "r_runtime.R"]

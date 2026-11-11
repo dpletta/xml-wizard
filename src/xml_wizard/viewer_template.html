@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__XMLW_TITLE__</title>
+<style>
+:root {
+  --bg: #f6f5f1; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6a64; --line: #d9d6cc;
+  --card: #ffffff; --card-line: #cfcbbf; --accent: #2f5d8a; --gate: #b06a00; --gate-bg: #fff3df;
+  --err: #b42318; --err-bg: #fde8e6; --warn: #9a6700; --warn-bg: #fff6d6; --info: #2f5d8a; --info-bg: #e6eef7;
+  --ok: #2e7d4f; --ins: #23395b; --ins-ink: #ffffff; --sel: #2f5d8a; --dim: 0.25;
+  --parent-arc: #2f5d8a; --child-arc: #8a3fa0;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161614; --panel: #1f1f1c; --ink: #ecebe6; --muted: #a3a199; --line: #34332f;
+    --card: #23231f; --card-line: #45443e; --accent: #7fb0e0; --gate: #f0a540; --gate-bg: #3a2c14;
+    --err: #ff8a80; --err-bg: #3d1d1a; --warn: #f2c94c; --warn-bg: #3a3115; --info: #7fb0e0; --info-bg: #1c2a3a;
+    --ok: #6fcf97; --ins: #3a5a85; --ins-ink: #ffffff; --sel: #7fb0e0; --parent-arc: #7fb0e0; --child-arc: #d39ce6;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161614; --panel: #1f1f1c; --ink: #ecebe6; --muted: #a3a199; --line: #34332f;
+  --card: #23231f; --card-line: #45443e; --accent: #7fb0e0; --gate: #f0a540; --gate-bg: #3a2c14;
+  --err: #ff8a80; --err-bg: #3d1d1a; --warn: #f2c94c; --warn-bg: #3a3115; --info: #7fb0e0; --info-bg: #1c2a3a;
+  --ok: #6fcf97; --ins: #3a5a85; --ins-ink: #ffffff; --sel: #7fb0e0; --parent-arc: #7fb0e0; --child-arc: #d39ce6;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--sans); }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 16px;
+  border-bottom: 1px solid var(--line); background: var(--panel); }
+header h1 { font-size: 16px; margin: 0; font-weight: 650; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 40ch; }
+.stats { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill { font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.pill.err { color: var(--err); background: var(--err-bg); border-color: transparent; cursor: pointer; }
+.pill.warn { color: var(--warn); background: var(--warn-bg); border-color: transparent; cursor: pointer; }
+.tools { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+input[type=search] { font: inherit; padding: 5px 10px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg); color: var(--ink); width: 220px; max-width: 60vw; }
+button { font: inherit; font-size: 13px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--panel); color: var(--ink); cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button[aria-pressed="true"] { background: var(--accent); color: var(--panel); border-color: var(--accent); }
+main { display: flex; height: calc(100% - 53px); min-height: 0; }
+#stage { flex: 1; position: relative; overflow: hidden; touch-action: none; cursor: grab; }
+#stage.panning { cursor: grabbing; }
+svg { width: 100%; height: 100%; display: block; user-select: none; }
+#side { width: 400px; max-width: 45vw; border-left: 1px solid var(--line); background: var(--panel); overflow: auto; padding: 14px 16px 40px; }
+#side h2 { font-size: 15px; margin: 0 0 4px; }
+#side h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 18px 0 6px; }
+#side code, #side pre { font-family: var(--mono); font-size: 12px; }
+#side pre { white-space: pre-wrap; word-break: break-word; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin: 4px 0; }
+.kv { display: grid; grid-template-columns: 110px 1fr; gap: 3px 10px; font-size: 13px; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; word-break: break-word; }
+.logic-text { background: var(--gate-bg); color: var(--ink); border-left: 3px solid var(--gate); padding: 6px 10px; border-radius: 4px; }
+.issue { border-radius: 8px; padding: 7px 10px; margin: 6px 0; font-size: 13px; cursor: pointer; }
+.issue.error { background: var(--err-bg); } .issue.warning { background: var(--warn-bg); } .issue.info { background: var(--info-bg); }
+.issue b { font-family: var(--mono); font-weight: 600; }
+.sev { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-right: 6px; }
+.issue.error .sev { color: var(--err); } .issue.warning .sev { color: var(--warn); } .issue.info .sev { color: var(--info); }
+.link { color: var(--accent); cursor: pointer; font-family: var(--mono); font-size: 12.5px; text-decoration: underline; text-underline-offset: 2px; }
+table.choices { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.choices td { border-top: 1px solid var(--line); padding: 3px 6px; vertical-align: top; }
+table.choices td:first-child { font-family: var(--mono); color: var(--muted); width: 56px; }
+.bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--line); margin: 4px 0 2px; }
+.bar span { display: block; height: 100%; }
+.legend { display: grid; grid-template-columns: 22px 1fr; gap: 6px 8px; align-items: center; font-size: 13px; }
+.sw { width: 18px; height: 12px; border-radius: 3px; border: 1px solid var(--card-line); }
+details summary { cursor: pointer; color: var(--muted); font-size: 13px; margin-top: 8px; }
+.hint { color: var(--muted); font-size: 12.5px; }
+.zoombox { position: absolute; right: 12px; bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
+.zoombox button { width: 34px; height: 34px; padding: 0; font-size: 17px; }
+/* SVG */
+.edge { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.edge.gate { stroke: var(--gate); stroke-width: 1.8; }
+.arc { fill: none; stroke-width: 2.2; opacity: .9; }
+.arc.p { stroke: var(--parent-arc); } .arc.c { stroke: var(--child-arc); stroke-dasharray: 6 4; }
+.node rect.card { fill: var(--card); stroke: var(--card-line); stroke-width: 1; }
+.node.gated rect.card { stroke: var(--gate); }
+.node.sel rect.card { stroke: var(--sel); stroke-width: 2.5; }
+.node.hit rect.card { stroke: var(--accent); stroke-width: 2.5; }
+.node.dim { opacity: var(--dim); }
+.node text { fill: var(--ink); font-family: var(--sans); font-size: 12.5px; }
+.node text.name { font-family: var(--mono); font-weight: 650; font-size: 12.5px; }
+.node text.type { fill: var(--muted); font-size: 11px; }
+.node text.chip { fill: var(--gate); font-size: 11px; font-weight: 600; }
+.node rect.chipbg { fill: var(--gate-bg); }
+.node .stripe.error { fill: var(--err); } .node .stripe.warning { fill: var(--warn); } .node .stripe.info { fill: var(--info); }
+.node text.badge { font-size: 11px; font-weight: 700; }
+.node text.badge.error { fill: var(--err); } .node text.badge.warning { fill: var(--warn); }
+.node text.caret { fill: var(--muted); font-size: 12px; cursor: pointer; }
+.node.ins rect.card { fill: var(--ins); stroke: none; }
+.node.ins text { fill: var(--ins-ink); }
+.node.root rect.card { fill: var(--ink); stroke: none; }
+.node.root text { fill: var(--bg); font-weight: 650; }
+.section text { fill: var(--muted); font-size: 11.5px; font-style: italic; }
+.section line { stroke: var(--line); stroke-dasharray: 3 3; }
+@media (max-width: 760px) {
+  main { flex-direction: column; height: auto; }
+  #stage { height: 62vh; flex: none; }
+  #side { width: 100%; max-width: none; border-left: 0; border-top: 1px solid var(--line); }
+  .tools { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title"></h1>
+  <div class="stats" id="stats"></div>
+  <div class="tools">
+    <input type="search" id="q" placeholder="Search items (name or text)…" aria-label="Search items">
+    <button id="onlyGated" aria-pressed="false" title="Show only items involved in branching logic">Branching only</button>
+    <button id="expand">Expand all</button>
+    <button id="collapse">Collapse all</button>
+    <button id="fit">Fit</button>
+    <button id="theme" title="Toggle light/dark">◐</button>
+  </div>
+</header>
+<main>
+  <div id="stage">
+    <svg id="svg" aria-label="Survey tree"><g id="vp"><g id="edges"></g><g id="arcs"></g><g id="nodes"></g></g></svg>
+    <div class="zoombox"><button id="zin" title="Zoom in">+</button><button id="zout" title="Zoom out">−</button></div>
+  </div>
+  <aside id="side"></aside>
+</main>
+<script id="xmlw-data" type="application/json">__XMLW_DATA__</script>
+<script>
+(function () {
+"use strict";
+const DATA = JSON.parse(document.getElementById("xmlw-data").textContent);
+const F = {}; DATA.fields.forEach(f => { F[f.name] = f; });
+const CARD_W = 330, CARD_H = 46, ROW = 58, INDENT = 26, COL_GAP = 70, TOP = 120, SECTION_H = 24;
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const trunc = (s, n) => { s = String(s || ""); return s.length > n ? s.slice(0, n - 1) + "…" : s; };
+const svg = document.getElementById("svg"), vp = document.getElementById("vp");
+const gEdges = document.getElementById("edges"), gArcs = document.getElementById("arcs"), gNodes = document.getElementById("nodes");
+const side = document.getElementById("side");
+let state = { collapsed: new Set(), selected: null, query: "", onlyGated: false, hits: [], hitIdx: -1 };
+let view = { x: 40, y: 20, k: 1 };
+let positions = {};
+
+// ---------- tree model ----------
+const kids = {};
+DATA.fields.forEach(f => {
+  const p = f.display && f.display.tree_parent;
+  if (p) (kids[p] = kids[p] || []).push(f.name);
+});
+const involved = new Set();
+DATA.fields.forEach(f => { if (f.branching_logic) { involved.add(f.name); (f.branching_logic.parents || []).forEach(p => involved.add(p)); } });
+function topLevel(ins) {
+  return ins.fields.filter(n => F[n] && !(F[n].display && F[n].display.tree_parent));
+}
+function sevOf(f) {
+  const s = (f.issues || []).map(i => i.severity);
+  return s.includes("error") ? "error" : s.includes("warning") ? "warning" : s.includes("info") ? "info" : null;
+}
+function visibleField(f) {
+  if (f.form_status) return false;
+  if (state.onlyGated && !involved.has(f.name)) {
+    // keep if any descendant is involved
+    return (kids[f.name] || []).some(k => visibleField(F[k]));
+  }
+  return true;
+}
+
+// ---------- layout ----------
+function layout() {
+  positions = {};
+  const rows = [];
+  let x = 0;
+  DATA.project.instruments.forEach(ins => {
+    const col = { ins, items: [], width: CARD_W };
+    let y = TOP;
+    let maxDepth = 0;
+    const visit = (name, depth) => {
+      const f = F[name];
+      if (!f || !visibleField(f)) return;
+      if (depth === 0 && f.section_header && f.section_header !== "Form Status") {
+        col.items.push({ kind: "section", text: f.section_header, depth, y });
+        y += SECTION_H;
+      }
+      col.items.push({ kind: "field", name, depth, y });
+      maxDepth = Math.max(maxDepth, depth);
+      y += ROW;
+      if (!state.collapsed.has(name)) (kids[name] || []).forEach(k => visit(k, depth + 1));
+    };
+    if (!state.collapsed.has("ins:" + ins.name)) topLevel(ins).forEach(n => visit(n, 0));
+    col.width = CARD_W + maxDepth * INDENT;
+    col.x = x;
+    col.items.forEach(it => { it.x = x + it.depth * INDENT; if (it.kind === "field") positions[it.name] = it; });
+    positions["ins:" + ins.name] = { x, y: TOP - 70, w: col.width };
+    x += col.width + COL_GAP;
+    rows.push(col);
+  });
+  const totalW = Math.max(x - COL_GAP, CARD_W);
+  positions.__root = { x: totalW / 2 - 160, y: -40, w: 320 };
+  return rows;
+}
+
+// ---------- render ----------
+function render() {
+  const cols = layout();
+  let edges = "", nodes = "";
+  const root = positions.__root;
+  nodes += `<g class="node root" transform="translate(${root.x},${root.y})"><rect class="card" width="${root.w}" height="40" rx="10"/>` +
+    `<text x="${root.w / 2}" y="25" text-anchor="middle">${esc(trunc(DATA.project.title, 42))}</text></g>`;
+  const busY = root.y + 60;
+  cols.forEach(col => {
+    const p = positions["ins:" + col.ins.name];
+    const cx = p.x + 18;
+    edges += `<path class="edge" d="M${root.x + root.w / 2},${root.y + 40} V${busY} H${cx} V${p.y}"/>`;
+    const n = col.ins.fields.filter(x => F[x] && !F[x].form_status).length;
+    const gated = col.ins.fields.filter(x => F[x] && F[x].branching_logic).length;
+    const caret = state.collapsed.has("ins:" + col.ins.name) ? "▸" : "▾";
+    nodes += `<g class="node ins" data-ins="${esc(col.ins.name)}" transform="translate(${p.x},${p.y})">` +
+      `<rect class="card" width="${CARD_W}" height="46" rx="10"/>` +
+      `<text class="caret" x="12" y="28" data-toggle="ins:${esc(col.ins.name)}">${caret}</text>` +
+      `<text x="28" y="20" style="font-weight:650">${esc(trunc(col.ins.label, 34))}${col.ins.repeating ? " ↻" : ""}</text>` +
+      `<text x="28" y="37" style="font-size:11.5px;opacity:.85">${esc(col.ins.name)} · ${n} items · ${gated} with logic</text></g>`;
+    let prevField = null;
+    col.items.forEach(it => {
+      if (it.kind === "section") {
+        nodes += `<g class="section"><line x1="${it.x}" x2="${it.x + col.width}" y1="${it.y + 6}" y2="${it.y + 6}"/>` +
+          `<text x="${it.x + 4}" y="${it.y + 1}">${esc(trunc(it.text, 50))}</text></g>`;
+        return;
+      }
+      const f = F[it.name];
+      const parent = f.display && f.display.tree_parent;
+      if (parent && positions[parent]) {
+        const pp = positions[parent];
+        const px = pp.x + 12, py = pp.y + CARD_H;
+        edges += `<path class="edge gate" d="M${px},${py} V${it.y + CARD_H / 2 - 6} Q${px},${it.y + CARD_H / 2} ${px + 6},${it.y + CARD_H / 2} H${it.x}"/>`;
+      } else if (it.depth === 0) {
+        const from = prevField ? positions[prevField] : null;
+        const sx = p.x + 18;
+        const sy = from ? from.y + CARD_H / 2 : p.y + 46;
+        edges += `<path class="edge" d="M${sx},${sy} V${it.y + CARD_H / 2} H${it.x}"/>`;
+      }
+      if (it.depth === 0) prevField = it.name;
+      nodes += fieldNode(f, it);
+    });
+  });
+  gEdges.innerHTML = edges;
+  gNodes.innerHTML = nodes;
+  drawArcs();
+  applyView();
+}
+
+function fieldNode(f, it) {
+  const sev = sevOf(f);
+  const cls = ["node", "field"];
+  if (f.branching_logic) cls.push("gated");
+  if (state.selected === f.name) cls.push("sel");
+  if (state.hits.includes(f.name)) cls.push("hit");
+  if (state.selected && !related(state.selected).has(f.name)) cls.push("dim");
+  const w = CARD_W;
+  const hasKids = (kids[f.name] || []).length > 0;
+  const right = w - (hasKids ? 26 : 10);
+  const caret = hasKids ? `<text class="caret" x="${w - 18}" y="29" data-toggle="${esc(f.name)}">${state.collapsed.has(f.name) ? "▸" + kids[f.name].length : "▾"}</text>` : "";
+  // Row 1: name, condition tag, problem badge
+  const nIss = (f.issues || []).filter(i => i.severity !== "info").length;
+  const issueTxt = nIss ? `${sev === "error" ? "✖" : "▲"} ${nIss}` : "";
+  const row1Right = right - (issueTxt ? issueTxt.length * 7 + 6 : 0);
+  const name = trunc(f.name, 26);
+  const chipX = 12 + name.length * 7.7 + 8;
+  const chipRoom = Math.floor((row1Right - chipX - 12) / 6.2);
+  const chip = f.display && f.display.condition && chipRoom > 4 ? trunc(f.display.condition, chipRoom) : "";
+  const chipW = chip.length * 6.2 + 12;
+  // Row 2: label, then type or data warning on the right
+  const audit = f.data_summary;
+  const hiddenAns = audit && audit.answered_when_hidden;
+  const typeTxt = hiddenAns ? `⚠ ${hiddenAns} answered while hidden` : f.type + (f.required ? " · req" : "") + (f.identifier ? " · PHI" : "");
+  const labelRoom = Math.floor((right - 12 - typeTxt.length * 6.1 - 10) / 6.6);
+  return `<g class="${cls.join(" ")}" data-field="${esc(f.name)}" transform="translate(${it.x},${it.y})">` +
+    `<title>${esc(f.name + ": " + f.label + (f.branching_logic ? "\nShown if: " + f.branching_logic.text : ""))}</title>` +
+    `<rect class="card" width="${w}" height="${CARD_H}" rx="8"/>` +
+    (sev ? `<rect class="stripe ${sev}" x="0" y="6" width="3.5" height="${CARD_H - 12}" rx="1.5"/>` : "") +
+    `<text class="name" x="12" y="18">${esc(name)}</text>` +
+    (chip ? `<rect class="chipbg" x="${chipX}" y="5.5" width="${chipW}" height="17" rx="8.5"/><text class="chip" x="${chipX + 6}" y="18">${esc(chip)}</text>` : "") +
+    (issueTxt ? `<text class="badge ${sev}" x="${right}" y="18" text-anchor="end">${issueTxt}</text>` : "") +
+    `<text x="12" y="37">${esc(trunc(f.label || "(no label)", labelRoom))}</text>` +
+    `<text class="${hiddenAns ? "badge error" : "type"}" x="${right}" y="37" text-anchor="end">${esc(typeTxt)}</text>` +
+    caret + `</g>`;
+}
+
+function related(name) {
+  const s = new Set([name]);
+  const f = F[name];
+  if (!f) return s;
+  ((f.branching_logic && f.branching_logic.parents) || []).forEach(p => s.add(p));
+  (f.dependents || []).forEach(d => s.add(d));
+  let p = f.display && f.display.tree_parent;
+  while (p) { s.add(p); p = F[p] && F[p].display && F[p].display.tree_parent; }
+  return s;
+}
+
+function drawArcs() {
+  let out = "";
+  const sel = state.selected && F[state.selected];
+  if (sel) {
+    const me = positions[sel.name];
+    const link = (a, b, cls) => {
+      if (!a || !b) return;
+      const x1 = a.x + CARD_W, y1 = a.y + CARD_H / 2, x2 = b.x + CARD_W, y2 = b.y + CARD_H / 2;
+      const bend = Math.min(40 + Math.abs(y2 - y1) * 0.25 + Math.abs(x2 - x1) * 0.1, 260);
+      out += `<path class="arc ${cls}" d="M${x1},${y1} C${x1 + bend},${y1} ${x2 + bend},${y2} ${x2},${y2}" marker-end="url(#arrow-${cls})"/>`;
+    };
+    ((sel.branching_logic && sel.branching_logic.parents) || []).forEach(p => link(positions[p], me, "p"));
+    (sel.dependents || []).forEach(d => link(me, positions[d], "c"));
+  }
+  gArcs.innerHTML = `<defs><marker id="arrow-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--parent-arc)"/></marker>` +
+    `<marker id="arrow-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--child-arc)"/></marker></defs>` + out;
+}
+
+// ---------- pan / zoom ----------
+function applyView() { vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.k})`); }
+function zoomAt(factor, cx, cy) {
+  const k = Math.min(3, Math.max(0.05, view.k * factor));
+  view.x = cx - (cx - view.x) * (k / view.k);
+  view.y = cy - (cy - view.y) * (k / view.k);
+  view.k = k; applyView();
+}
+function fit() {
+  const bb = vp.getBBox(), r = svg.getBoundingClientRect();
+  if (!bb.width || !r.width) return;
+  const k = Math.min(r.width / (bb.width + 60), r.height / (bb.height + 60), 1.2);
+  view.k = k; view.x = (r.width - bb.width * k) / 2 - bb.x * k; view.y = 20 - bb.y * k;
+  applyView();
+}
+function centerOn(name) {
+  const p = positions[name]; if (!p) return;
+  const r = svg.getBoundingClientRect();
+  if (view.k < 0.7) view.k = 0.9;
+  view.x = r.width / 2 - (p.x + CARD_W / 2) * view.k;
+  view.y = r.height / 3 - (p.y + CARD_H / 2) * view.k;
+  applyView();
+}
+svg.addEventListener("wheel", e => {
+  e.preventDefault();
+  const r = svg.getBoundingClientRect();
+  if (e.ctrlKey || Math.abs(e.deltaY) > Math.abs(e.deltaX) && !e.shiftKey) {
+    zoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - r.left, e.clientY - r.top);
+  } else { view.x -= e.deltaX; view.y -= e.deltaY; applyView(); }
+}, { passive: false });
+const pointers = new Map(); let drag = null, pinch = null, moved = false;
+svg.addEventListener("pointerdown", e => {
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  svg.setPointerCapture(e.pointerId);
+  moved = false;
+  if (pointers.size === 1) { drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y }; document.getElementById("stage").classList.add("panning"); }
+  if (pointers.size === 2) { const [a, b] = [...pointers.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), k: view.k }; drag = null; }
+});
+svg.addEventListener("pointermove", e => {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pinch && pointers.size === 2) {
+    const [a, b] = [...pointers.values()]; const r = svg.getBoundingClientRect();
+    const d = Math.hypot(a.x - b.x, a.y - b.y);
+    zoomAt((pinch.k * d / pinch.d) / view.k, (a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top); moved = true;
+  } else if (drag) {
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+    view.x = drag.vx + dx; view.y = drag.vy + dy; applyView();
+  }
+});
+const endPointer = e => {
+  pointers.delete(e.pointerId);
+  if (pointers.size < 2) pinch = null;
+  if (pointers.size === 0) { drag = null; document.getElementById("stage").classList.remove("panning"); }
+};
+svg.addEventListener("pointerup", e => {
+  const wasMoved = moved; endPointer(e);
+  if (wasMoved) return;
+  const t = document.elementFromPoint(e.clientX, e.clientY);
+  if (!t) return;
+  const toggle = t.closest("[data-toggle]");
+  if (toggle) { const k = toggle.getAttribute("data-toggle"); state.collapsed.has(k) ? state.collapsed.delete(k) : state.collapsed.add(k); render(); return; }
+  const node = t.closest("[data-field]");
+  if (node) { select(node.getAttribute("data-field"), false); return; }
+  if (t.closest("[data-ins]")) { const k = "ins:" + t.closest("[data-ins]").getAttribute("data-ins"); state.collapsed.has(k) ? state.collapsed.delete(k) : state.collapsed.add(k); render(); return; }
+  select(null);
+});
+svg.addEventListener("pointercancel", endPointer);
+document.getElementById("zin").onclick = () => { const r = svg.getBoundingClientRect(); zoomAt(1.25, r.width / 2, r.height / 2); };
+document.getElementById("zout").onclick = () => { const r = svg.getBoundingClientRect(); zoomAt(0.8, r.width / 2, r.height / 2); };
+document.getElementById("fit").onclick = fit;
+document.getElementById("expand").onclick = () => { state.collapsed.clear(); render(); fit(); };
+document.getElementById("collapse").onclick = () => { Object.keys(kids).forEach(k => state.collapsed.add(k)); render(); fit(); };
+document.getElementById("onlyGated").onclick = e => {
+  state.onlyGated = !state.onlyGated; e.currentTarget.setAttribute("aria-pressed", state.onlyGated); render(); fit();
+};
+document.getElementById("theme").onclick = () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+};
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") return;
+  const r = svg.getBoundingClientRect();
+  if (e.key === "+" || e.key === "=") zoomAt(1.25, r.width / 2, r.height / 2);
+  else if (e.key === "-") zoomAt(0.8, r.width / 2, r.height / 2);
+  else if (e.key === "0" || e.key === "f") fit();
+  else if (e.key === "Escape") select(null);
+});
+
+// ---------- search ----------
+const q = document.getElementById("q");
+q.addEventListener("input", () => {
+  state.query = q.value.trim().toLowerCase();
+  state.hits = !state.query ? [] : DATA.fields.filter(f => !f.form_status &&
+    (f.name.toLowerCase().includes(state.query) || (f.label || "").toLowerCase().includes(state.query))).map(f => f.name);
+  state.hitIdx = -1;
+  state.hits.forEach(reveal);
+  render();
+});
+q.addEventListener("keydown", e => {
+  if (e.key === "Enter" && state.hits.length) {
+    state.hitIdx = (state.hitIdx + 1) % state.hits.length;
+    select(state.hits[state.hitIdx]);
+  }
+});
+function reveal(name) {
+  let p = F[name] && F[name].display && F[name].display.tree_parent;
+  if (F[name]) state.collapsed.delete("ins:" + F[name].instrument);
+  while (p) { state.collapsed.delete(p); p = F[p] && F[p].display && F[p].display.tree_parent; }
+}
+
+// ---------- side panel ----------
+function select(name, center = true) {
+  state.selected = name;
+  if (name) { reveal(name); if (state.onlyGated && !involved.has(name)) { state.onlyGated = false; document.getElementById("onlyGated").setAttribute("aria-pressed", "false"); } }
+  render();
+  if (name && center) centerOn(name);
+  panel();
+}
+function fieldLink(n) { return `<span class="link" data-goto="${esc(n)}">${esc(n)}</span>`; }
+side.addEventListener("click", e => {
+  const g = e.target.closest("[data-goto]");
+  if (g) select(g.getAttribute("data-goto"));
+  const back = e.target.closest("[data-overview]");
+  if (back) select(null);
+});
+function issueHtml(i, withField) {
+  return `<div class="issue ${i.severity}" data-goto="${esc(i.field)}"><span class="sev">${i.severity}</span>` +
+    (withField ? `<b>${esc(i.field)}</b> · ` : "") + esc(i.message) + `</div>`;
+}
+function statBar(s) {
+  if (!s) return "";
+  const parts = [];
+  const tot = s.rows || 1;
+  let html = `<h3>Data check (${s.rows} rows where this instrument was started)</h3>`;
+  if ("shown" in s) {
+    const seg = [[s.shown - s.blank_when_shown, "var(--ok)", "shown & answered"], [s.blank_when_shown, "var(--warn)", "shown but blank"],
+      [s.skipped_by_design, "var(--line)", "skipped by design"], [s.answered_when_hidden, "var(--err)", "answered although hidden"], [s.unknown, "var(--info)", "not evaluable"]];
+    html += `<div class="bar">${seg.map(([v, c]) => v ? `<span style="width:${100 * v / tot}%;background:${c}"></span>` : "").join("")}</div>`;
+    html += `<dl class="kv">` + seg.map(([v, c, l]) => `<dt><span class="sw" style="display:inline-block;background:${c}"></span></dt><dd>${v} ${l}</dd>`).join("") + `</dl>`;
+  } else {
+    html += `<div class="bar"><span style="width:${100 * s.answered / tot}%;background:var(--ok)"></span><span style="width:${100 * s.blank / tot}%;background:var(--warn)"></span></div>`;
+    html += `<dl class="kv"><dt>Answered</dt><dd>${s.answered}</dd><dt>Blank</dt><dd>${s.blank}</dd></dl>`;
+  }
+  if (s.invalid_codes) html += `<div class="issue error"><span class="sev">data</span>${s.invalid_codes} value(s) are not one of this item's answer codes.</div>`;
+  return html + parts.join("");
+}
+function panel() {
+  const name = state.selected;
+  if (!name) return overview();
+  const f = F[name];
+  const bl = f.branching_logic;
+  let h = `<span class="link" data-overview="1" style="font-family:var(--sans)">← Overview</span>`;
+  h += `<h2 style="margin-top:8px"><code>${esc(f.name)}</code></h2><div>${esc(f.label)}</div>`;
+  if (f.field_note) h += `<div class="hint">${esc(f.field_note)}</div>`;
+  h += `<dl class="kv" style="margin-top:10px"><dt>Instrument</dt><dd>${esc((DATA.project.instruments.find(i => i.name === f.instrument) || {}).label || f.instrument)}</dd>` +
+    `<dt>Type</dt><dd>${esc(f.type)}${f.validation && f.validation.type ? " (" + esc(f.validation.type) + ")" : ""}</dd>` +
+    (f.validation && (f.validation.min || f.validation.max) ? `<dt>Range</dt><dd>${esc(f.validation.min || "…")} to ${esc(f.validation.max || "…")}</dd>` : "") +
+    (f.section_header ? `<dt>Section</dt><dd>${esc(f.section_header)}</dd>` : "") +
+    `<dt>Columns</dt><dd><code>${f.columns.map(esc).join(", ") || "none"}</code></dd>` +
+    (f.required ? `<dt>Required</dt><dd>Yes</dd>` : "") + (f.identifier ? `<dt>Identifier</dt><dd>Yes (PHI)</dd>` : "") +
+    (f.annotation ? `<dt>Annotation</dt><dd><code>${esc(f.annotation)}</code></dd>` : "") + `</dl>`;
+  if ((f.issues || []).length) h += `<h3>Problems found</h3>` + f.issues.map(i => issueHtml(i, false)).join("");
+  if (bl) {
+    h += `<h3>Shown only if</h3><div class="logic-text">${esc(bl.text)}</div>`;
+    h += `<pre>${esc(bl.raw)}</pre>`;
+    h += `<div>Depends on: ${(bl.parents || []).map(fieldLink).join(", ") || "—"}</div>`;
+    if (bl.python || bl.r) h += `<details><summary>Python / R translation</summary><pre>${esc(bl.python || "")}</pre><pre>${esc(bl.r || "")}</pre></details>`;
+  } else if (!f.form_status) h += `<h3>Branching logic</h3><div class="hint">Always shown.</div>`;
+  if ((f.dependents || []).length) h += `<h3>Controls ${f.dependents.length} item(s)</h3><div>${f.dependents.map(fieldLink).join(", ")}</div>`;
+  const iv = (DATA.implied_values || []).filter(v => v.field === name || v.when_field === name);
+  if (iv.length) h += `<h3>Suggested logical fills</h3>` + iv.map(v => `<div class="issue info"><span class="sev">suggest</span>${esc(v.rationale)}</div>`).join("");
+  if (f.calculation) h += `<h3>Calculation</h3><pre>${esc(f.calculation.raw)}</pre>`;
+  if (f.choices) h += `<h3>Answers</h3><table class="choices">${f.choices.map(c => `<tr><td>${esc(c.code)}</td><td>${esc(c.label)}</td></tr>`).join("")}</table>`;
+  h += statBar(f.data_summary);
+  side.innerHTML = h;
+  side.scrollTop = 0;
+}
+function overview() {
+  const P = DATA.project, c = P.counts;
+  let h = `<h2>${esc(P.title)}</h2><div class="hint">${esc(P.source_format)} · ${esc(P.source_file)}${P.longitudinal ? " · longitudinal (" + P.events.length + " events)" : ""}</div>`;
+  h += `<dl class="kv" style="margin-top:10px"><dt>Instruments</dt><dd>${c.instruments}</dd><dt>Items</dt><dd>${c.items}</dd><dt>With logic</dt><dd>${c.items_with_branching_logic}</dd><dt>Record ID</dt><dd><code>${esc(P.record_id_field)}</code></dd></dl>`;
+  const order = { error: 0, warning: 1, info: 2 };
+  const iss = DATA.issues.slice().sort((a, b) => order[a.severity] - order[b.severity]);
+  h += `<h3>Branching logic check</h3>`;
+  h += iss.length ? iss.map(i => issueHtml(i, true)).join("") : `<div class="hint">No problems found.</div>`;
+  if (DATA.data_audit) {
+    const t = DATA.data_audit.totals;
+    h += `<h3>Data check (${DATA.data_audit.n_rows} rows)</h3><dl class="kv">` +
+      `<dt style="color:var(--err)">${t.answered_when_hidden}</dt><dd>answers recorded for items that should have been hidden</dd>` +
+      `<dt style="color:var(--warn)">${t.blank_when_shown}</dt><dd>blank answers to items that were shown</dd>` +
+      `<dt>${t.skipped_by_design}</dt><dd>blanks that are skips by design</dd>` +
+      `<dt style="color:var(--err)">${t.invalid_codes}</dt><dd>values that are not valid answer codes</dd></dl>`;
+    const worst = DATA.fields.filter(f => f.data_summary && (f.data_summary.answered_when_hidden || f.data_summary.invalid_codes));
+    if (worst.length) h += `<div style="margin-top:6px">Review: ${worst.map(f => fieldLink(f.name)).join(", ")}</div>`;
+  }
+  if ((DATA.implied_values || []).length) h += `<h3>Suggested logical fills</h3><div class="hint">${DATA.implied_values.length} candidate rules, e.g. ${esc(DATA.implied_values[0].rationale)} See the agent bundle to confirm and apply them.</div>`;
+  h += `<h3>How to read the tree</h3><div class="legend">` +
+    `<span class="sw" style="background:var(--ins)"></span><span>Instrument (click to collapse)</span>` +
+    `<span class="sw" style="border-color:var(--gate)"></span><span>Item with branching logic, nested under the item that controls it; the orange tag says when it appears</span>` +
+    `<span class="sw" style="background:var(--err)"></span><span>Logic problem (red) or warning (amber)</span>` +
+    `<span class="sw" style="background:var(--parent-arc)"></span><span>When an item is selected: arrows from the items it depends on</span>` +
+    `<span class="sw" style="background:var(--child-arc)"></span><span>…and dashed arrows to the items it controls</span></div>` +
+    `<p class="hint">Scroll or pinch to zoom, drag to pan, press F to fit. Click an item for details. Everything runs in this file; nothing is uploaded.</p>`;
+  side.innerHTML = h;
+}
+
+// ---------- header ----------
+document.getElementById("title").textContent = DATA.project.title;
+document.title = DATA.project.title + " · XML Wizard";
+const cnt = DATA.project.counts;
+document.getElementById("stats").innerHTML =
+  `<span class="pill">${cnt.items} items</span><span class="pill">${cnt.items_with_branching_logic} with logic</span>` +
+  (cnt.issues.error ? `<span class="pill err" data-overview="1">${cnt.issues.error} error${cnt.issues.error > 1 ? "s" : ""}</span>` : "") +
+  (cnt.issues.warning ? `<span class="pill warn" data-overview="1">${cnt.issues.warning} warning${cnt.issues.warning > 1 ? "s" : ""}</span>` : "");
+document.getElementById("stats").addEventListener("click", () => select(null));
+
+render(); overview();
+requestAnimationFrame(fit);
+window.addEventListener("resize", () => {});
+})();
+</script>
+</body>
+</html>
