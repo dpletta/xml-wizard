@@ -21,7 +21,7 @@ metadata and aggregate counts only, never participant-level values.
 
 ## Install
 
-Requires Python 3.8 or newer. There are no other dependencies.
+Requires Python 3.10 or newer. There are no other dependencies.
 
 ```bash
 pip install git+https://github.com/dpletta/xml-wizard

@@ -9,7 +9,7 @@ description = "Visualise REDCap branching logic as a zoomable tree and export ag
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "David Pletta" }]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = []
 keywords = ["redcap", "branching logic", "skip logic", "survey", "codebook", "data cleaning", "cdisc odm"]
 classifiers = [
