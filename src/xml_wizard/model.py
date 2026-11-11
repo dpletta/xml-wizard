@@ -70,6 +70,9 @@ class Field:
     def __post_init__(self) -> None:
         if self.field_type == "select":
             self.field_type = "dropdown"
+        elif self.field_type == "textarea":
+            # ODM exports call REDCap "notes" fields "textarea".
+            self.field_type = "notes"
         if not self.choices and self.field_type == "yesno":
             self.choices = [("1", "Yes"), ("0", "No")]
         if not self.choices and self.field_type == "truefalse":

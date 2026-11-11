@@ -21,7 +21,7 @@ metadata and aggregate counts only, never participant-level values.
 
 ## Install
 
-Requires Python 3.8 or newer. There are no other dependencies.
+Requires Python 3.10 or newer. There are no other dependencies.
 
 ```bash
 pip install git+https://github.com/dpletta/xml-wizard
@@ -51,8 +51,11 @@ with code 1 when there are errors, handy in a pipeline), `--no-data-audit` to ig
 Try it on the included synthetic example:
 
 ```bash
-xml-wizard examples/housing_survey_odm.xml --open
+xml-wizard examples/practice_data/housing_survey/housing_survey_odm.xml --open
 ```
+
+A second example, the metadata of a real longitudinal REDCap project template (no record data), is in
+[`examples/practice_data/most_data/`](examples/practice_data/most_data/README.md).
 
 ## What it checks
 
