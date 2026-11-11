@@ -13,7 +13,7 @@ from xml_wizard.codebook import build_codebook
 from xml_wizard.viewer import render_viewer
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EX = os.path.join(ROOT, "examples")
+EX = os.path.join(ROOT, "examples", "practice_data", "housing_survey")
 ODM = os.path.join(EX, "housing_survey_odm.xml")
 DD = os.path.join(EX, "housing_survey_dictionary.csv")
 DATA = os.path.join(EX, "housing_survey_data.csv")
@@ -78,6 +78,12 @@ LONGITUDINAL_ODM = """<?xml version="1.0" encoding="UTF-8" ?>
 
 
 class ReaderTests(unittest.TestCase):
+    def test_textarea_maps_to_notes(self):
+        # ODM exports label REDCap "notes" fields as "textarea".
+        from xml_wizard.model import Field
+        self.assertEqual(Field(name="comments", form="f", field_type="textarea").field_type, "notes")
+        self.assertEqual(Field(name="comments", form="f", field_type="notes").field_type, "notes")
+
     def test_odm_and_dictionary_agree(self):
         a, b = load_project(ODM), load_project(DD)
         self.assertEqual(list(a.fields), list(b.fields))

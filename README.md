@@ -51,7 +51,7 @@ with code 1 when there are errors, handy in a pipeline), `--no-data-audit` to ig
 Try it on the included synthetic example:
 
 ```bash
-xml-wizard examples/housing_survey_odm.xml --open
+xml-wizard examples/practice_data/housing_survey/housing_survey_odm.xml --open
 ```
 
 ## What it checks

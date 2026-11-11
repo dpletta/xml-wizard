@@ -1,4 +1,4 @@
-"""Build the synthetic example project in this folder.
+"""Build the synthetic example project in practice_data/housing_survey/.
 
 Writes three files that describe the same fake survey, the way REDCap
 exports them:
@@ -18,6 +18,7 @@ import random
 from xml.sax.saxutils import escape, quoteattr
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(HERE, "practice_data", "housing_survey")
 
 YN = "1, Yes | 0, No"
 # (name, form, section, type, label, choices/calc, validation, min, max, logic, required, note)
@@ -170,7 +171,7 @@ def columns():
 
 
 def write_csvs(rows):
-    with open(os.path.join(HERE, "housing_survey_dictionary.csv"), "w", newline="", encoding="utf-8") as fh:
+    with open(os.path.join(OUT, "housing_survey_dictionary.csv"), "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["Variable / Field Name", "Form Name", "Section Header", "Field Type", "Field Label",
                     "Choices, Calculations, OR Slider Labels", "Field Note",
@@ -182,7 +183,7 @@ def write_csvs(rows):
             w.writerow([f[0], f[1], f[2], f[3], f[4], f[5], f[11], f[6], f[7], f[8], "", f[9], f[10],
                         "", "", "", "", ""])
     cols = columns()
-    with open(os.path.join(HERE, "housing_survey_data.csv"), "w", newline="", encoding="utf-8") as fh:
+    with open(os.path.join(OUT, "housing_survey_data.csv"), "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(cols)
         for r in rows:
@@ -314,12 +315,13 @@ def write_odm(rows):
         out.append('\t</SubjectData>')
     out.append('</ClinicalData>')
     out.append('</ODM>')
-    with open(os.path.join(HERE, "housing_survey_odm.xml"), "w", encoding="utf-8") as fh:
+    with open(os.path.join(OUT, "housing_survey_odm.xml"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(out) + "\n")
 
 
 if __name__ == "__main__":
+    os.makedirs(OUT, exist_ok=True)
     data = simulate()
     write_csvs(data)
     write_odm(data)
-    print("Wrote housing_survey_odm.xml, housing_survey_dictionary.csv, housing_survey_data.csv")
+    print(f"Wrote housing_survey_odm.xml, housing_survey_dictionary.csv, housing_survey_data.csv to {OUT}")
