@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from . import __version__
 from .analysis import Analysis
@@ -56,7 +56,7 @@ def _structure(analysis: Analysis) -> Dict[str, Any]:
     }
 
 
-def python_script(analysis: Analysis) -> str:
+def python_script(analysis: Analysis, redact: Optional[Dict[str, str]] = None) -> str:
     rules = _rules(analysis)
     lines = []
     for r in rules:
@@ -68,11 +68,11 @@ def python_script(analysis: Analysis) -> str:
     title = analysis.project.title
     return _PY_TEMPLATE.format(
         title=title, version=__version__, runtime=_read("runtime.py"),
-        rules=rules_src, structure=structure,
+        rules=rules_src, structure=structure, redact=json.dumps(redact or {}, indent=1),
     )
 
 
-def r_script(analysis: Analysis) -> str:
+def r_script(analysis: Analysis, redact: Optional[Dict[str, str]] = None) -> str:
     rules = _rules(analysis)
     items = []
     for r in rules:
@@ -88,6 +88,7 @@ def r_script(analysis: Analysis) -> str:
         rules=",\n".join(items), record_id=_rq(st["record_id"]),
         instrument_columns=ins_cols, repeating=", ".join(_rq(x) for x in st["repeating"]),
         event_forms=ev_forms,
+        redact=", ".join(f"{_rq(k)} = {_rq(v)}" for k, v in (redact or {}).items()),
     )
 
 
@@ -112,6 +113,9 @@ variable names as column headers. The input file is never modified. Writes:
   skip_logic_problems.csv     rows to review: answered while hidden, or shown but blank
   implied_values_log.csv      every value filled from a confirmed rule (if any)
 
+Variables listed in REDACT below are masked ([REDACTED]) or dropped in every
+output, so the outputs can be shared with an AI agent.
+
 Skip status values: shown_answered, shown_missing, skipped, skipped_filled,
 skipped_but_answered, unknown, instrument_not_started.
 
@@ -132,6 +136,9 @@ RULES = [
 {rules}
 ]
 STRUCTURE = {structure}
+# Columns the researcher chose to redact before data reaches an AI agent:
+# "mask" = answered values become [REDACTED], "drop" = column removed from every output.
+REDACT = {redact}
 # fmt: on
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -156,6 +163,15 @@ def instrument_applies(form, row):
         return False
     return any(str(row.get(c, "")).strip() not in ("",) and not (c.count("___") and row.get(c) == "0")
                for c in STRUCTURE["instrument_columns"].get(form, []))
+
+
+def redact_value(col, v):
+    act = REDACT.get(col)
+    if act is None or str(v).strip() == "":
+        return v
+    if col.count("___") and str(v).strip() == "0":
+        return v
+    return "[REDACTED]" if act == "mask" else ""
 
 
 def load_implied(path):
@@ -237,8 +253,9 @@ def main(argv=None):
                     problems.append({{rid: row.get(rid, ""), "redcap_event_name": row.get("redcap_event_name", ""),
                                      "redcap_repeat_instance": row.get("redcap_repeat_instance", ""),
                                      "field": field, "status": status,
-                                     "value": " | ".join(f"{{c}}={{row.get(c, '')}}" for c in columns
-                                                         if row.get(c, "") not in ("", "0") or ftype != "checkbox"),
+                                     "value": " | ".join(f"{{c}}={{redact_value(c, row.get(c, ''))}}" for c in columns
+                                                         if REDACT.get(c) != "drop"
+                                                         and (row.get(c, "") not in ("", "0") or ftype != "checkbox")),
                                      "logic": logic}})
             counts[field][status] += 1
             if not args.no_status_columns:
@@ -250,11 +267,13 @@ def main(argv=None):
             present = [c for c in columns if c in out_header]
             pos = (max(out_header.index(c) for c in present) + 1) if present else len(out_header)
             out_header.insert(pos, field + "__skip")
+    out_header = [h for h in out_header if REDACT.get(h) != "drop"]
     cleaned = os.path.join(out_dir, stem + "_cleaned.csv")
     with open(cleaned, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=out_header, extrasaction="ignore")
         w.writeheader()
-        w.writerows(rows)
+        for row in rows:
+            w.writerow({{h: redact_value(h, row.get(h, "")) for h in out_header}})
     with open(os.path.join(out_dir, "skip_logic_report.csv"), "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         keys = list(next(iter(counts.values())).keys()) if counts else []
@@ -298,6 +317,7 @@ _R_TEMPLATE = '''#!/usr/bin/env Rscript
 # outputs as apply_skip_logic.py: <name>_cleaned.csv (with <field>__skip status
 # columns), skip_logic_report.csv, skip_logic_problems.csv, implied_values_log.csv.
 # Rows of ../implied_values.csv with confirmed = TRUE are applied to skipped items.
+# Variables listed in REDACT below are masked ([REDACTED]) or dropped in every output.
 
 {runtime}
 
@@ -313,6 +333,27 @@ REPEATING <- c({repeating})
 EVENT_FORMS <- list(
 {event_forms}
 )
+# Columns the researcher chose to redact before data reaches an AI agent:
+# "mask" = answered values become [REDACTED], "drop" = column removed from every output.
+REDACT <- c({redact})
+
+rc_redact_value <- function(col, v) {{
+  act <- if (col %in% names(REDACT)) REDACT[[col]] else NA
+  if (is.na(act) || is.na(v) || trimws(v) == "") return(v)
+  if (grepl("___", col, fixed = TRUE) && trimws(v) == "0") return(v)
+  if (act == "mask") "[REDACTED]" else ""
+}}
+
+rc_redact_df <- function(df) {{
+  if (!length(REDACT)) return(df)
+  for (col in intersect(names(REDACT)[REDACT == "mask"], names(df))) {{
+    v <- df[[col]]
+    keep <- is.na(v) | trimws(v) == "" | (grepl("___", col, fixed = TRUE) & trimws(v) == "0")
+    v[!keep] <- "[REDACTED]"
+    df[[col]] <- v
+  }}
+  df[, setdiff(names(df), names(REDACT)[REDACT == "drop"]), drop = FALSE]
+}}
 
 xmlw_script_dir <- function() {{
   args <- commandArgs(trailingOnly = FALSE)
@@ -395,8 +436,9 @@ apply_skip_logic <- function(data_path, out_dir = NULL, legit_skip_code = NULL,
           for (c in intersect(rule$columns, names(df))) df[i, c] <- legit_skip_code
         }}
         if (status %in% c("skipped_but_answered", "shown_missing", "unknown")) {{
-          vals <- vapply(rule$columns, function(c) paste0(c, "=", rc_get(r, c)), "")
-          if (rule$type == "checkbox") vals <- vals[vapply(rule$columns, function(c) rc_get(r, c) == "1", TRUE)]
+          shown_cols <- setdiff(rule$columns, names(REDACT)[REDACT == "drop"])
+          if (rule$type == "checkbox") shown_cols <- shown_cols[vapply(shown_cols, function(c) rc_get(r, c) == "1", TRUE)]
+          vals <- vapply(shown_cols, function(c) paste0(c, "=", rc_redact_value(c, rc_get(r, c))), "")
           problems[[length(problems) + 1]] <- data.frame(
             record_id = r[[RECORD_ID]], redcap_event_name = rc_get(r, "redcap_event_name"),
             redcap_repeat_instance = rc_get(r, "redcap_repeat_instance"), field = rule$field,
@@ -420,6 +462,7 @@ apply_skip_logic <- function(data_path, out_dir = NULL, legit_skip_code = NULL,
     }}
   }}
   names(out)[names(out) == "record_id"] <- RECORD_ID
+  out <- rc_redact_df(out)
   utils::write.csv(out, file.path(out_dir, paste0(stem, "_cleaned.csv")), row.names = FALSE, na = "")
   report <- data.frame(field = rownames(counts), logic = vapply(RULES, `[[`, "", "logic"), counts,
                        check.names = FALSE, row.names = NULL)

@@ -7,12 +7,13 @@ and what a coding agent reads always agree.
 from __future__ import annotations
 
 import datetime as _dt
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from . import __version__
 from .analysis import Analysis
+from .privacy import MASK_TOKEN, RedactionPlan
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"
 
 CONVENTIONS = {
     "values": "All values are raw REDCap codes as exported with 'CSV (raw data)', never labels.",
@@ -32,11 +33,15 @@ CONVENTIONS = {
     "implied_values": "Suggested logical fills for skipped items (e.g. never homeless implies not homeless in "
                       "the past 6 months). They are suggestions with confirmed=false and must be confirmed by "
                       "the study team before being applied.",
+    "redaction": f"Variables with redaction 'mask' hold {MASK_TOKEN} instead of the answer in any data prepared "
+                 "for you (blank stays blank, so answered vs skipped is still visible). Variables with "
+                 "redaction 'drop' are removed. Do not try to recover redacted values.",
 }
 
 
-def build_codebook(analysis: Analysis) -> Dict[str, Any]:
+def build_codebook(analysis: Analysis, plan: Optional[RedactionPlan] = None) -> Dict[str, Any]:
     project = analysis.project
+    plan = plan or RedactionPlan()
     audit_fields = (analysis.audit or {}).get("fields", {})
     fields: List[Dict[str, Any]] = []
     for fld in project.ordered_fields():
@@ -56,6 +61,9 @@ def build_codebook(analysis: Analysis) -> Dict[str, Any]:
                            if (fld.validation or fld.validation_min or fld.validation_max) else None),
             "required": fld.required,
             "identifier": fld.identifier,
+            "sensitive": ({"level": fl.level, "reasons": fl.reasons}
+                          if (fl := plan.flag(fld.name)) else None),
+            "redaction": (plan.action(fld.name) if plan.action(fld.name) != "keep" else None),
             "form_status": fld.is_form_status,
             "matrix_group": fld.matrix_group or None,
             "annotation": fld.annotation or None,
@@ -105,6 +113,12 @@ def build_codebook(analysis: Analysis) -> Dict[str, Any]:
             },
         },
         "conventions": CONVENTIONS,
+        "redaction": {
+            "masked": [n for n, a in plan.redacted().items() if a == "mask"],
+            "dropped": [n for n, a in plan.redacted().items() if a == "drop"],
+            "flagged_but_kept": [f.field for f in plan.flags if plan.action(f.field) == "keep"],
+            "mask_token": MASK_TOKEN,
+        },
         "fields": fields,
         "issues": [i.to_dict() for i in analysis.issues],
         "implied_values": analysis.implied_values,

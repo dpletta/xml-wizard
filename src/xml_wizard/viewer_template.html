@@ -272,7 +272,7 @@ function fieldNode(f, it) {
   // Row 2: label, then type or data warning on the right
   const audit = f.data_summary;
   const hiddenAns = audit && audit.answered_when_hidden;
-  const typeTxt = hiddenAns ? `⚠ ${hiddenAns} answered while hidden` : f.type + (f.required ? " · req" : "") + (f.identifier ? " · PHI" : "");
+  const typeTxt = hiddenAns ? `⚠ ${hiddenAns} answered while hidden` : f.type + (f.required ? " · req" : "") + (f.redaction ? " · " + (f.redaction === "drop" ? "dropped" : "masked") : f.identifier ? " · PHI" : "");
   const labelRoom = Math.floor((right - 12 - typeTxt.length * 6.1 - 10) / 6.6);
   return `<g class="${cls.join(" ")}" data-field="${esc(f.name)}" transform="translate(${it.x},${it.y})">` +
     `<title>${esc(f.name + ": " + f.label + (f.branching_logic ? "\nShown if: " + f.branching_logic.text : ""))}</title>` +
@@ -478,6 +478,7 @@ function panel() {
     (f.section_header ? `<dt>Section</dt><dd>${esc(f.section_header)}</dd>` : "") +
     `<dt>Columns</dt><dd><code>${f.columns.map(esc).join(", ") || "none"}</code></dd>` +
     (f.required ? `<dt>Required</dt><dd>Yes</dd>` : "") + (f.identifier ? `<dt>Identifier</dt><dd>Yes (PHI)</dd>` : "") +
+    (f.sensitive ? `<dt>Privacy</dt><dd>${f.redaction ? (f.redaction === "drop" ? "Dropped" : "Masked") + " for the AI agent" : "Flagged, kept for the AI agent"} (${esc(f.sensitive.level)} risk: ${esc(f.sensitive.reasons.join("; "))})</dd>` : "") +
     (f.annotation ? `<dt>Annotation</dt><dd><code>${esc(f.annotation)}</code></dd>` : "") + `</dl>`;
   if ((f.issues || []).length) h += `<h3>Problems found</h3>` + f.issues.map(i => issueHtml(i, false)).join("");
   if (bl) {
