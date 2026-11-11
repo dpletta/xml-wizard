@@ -17,6 +17,8 @@ EX = os.path.join(ROOT, "examples", "practice_data", "housing_survey")
 ODM = os.path.join(EX, "housing_survey_odm.xml")
 DD = os.path.join(EX, "housing_survey_dictionary.csv")
 DATA = os.path.join(EX, "housing_survey_data.csv")
+# Metadata-only copy of a real REDCap longitudinal demo project (ClinicalData removed).
+MOST = os.path.join(ROOT, "examples", "practice_data", "most_data", "most_practice_metadata.xml")
 
 LONGITUDINAL_ODM = """<?xml version="1.0" encoding="UTF-8" ?>
 <ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:redcap="https://projectredcap.org" ODMVersion="1.3.1">
@@ -117,6 +119,21 @@ class ReaderTests(unittest.TestCase):
         self.assertIn("cross-event reference", a.fields["cigs"].unsupported)
         self.assertEqual(a.audit["fields"]["why"]["answered_when_hidden"], 1)
         self.assertEqual(a.audit["fields"]["why"]["rows"], 2)
+
+    def test_most_metadata_longitudinal_export(self):
+        project = load_project(MOST)
+        self.assertIsNone(project.data_rows)  # de-identified: no ClinicalData
+        self.assertTrue(project.longitudinal)
+        self.assertEqual(len(project.events), 41)
+        self.assertEqual(len(project.instruments), 13)
+        items = [f for f in project.fields.values() if not f.is_form_status]
+        self.assertEqual(len(items), 83)
+        a = analyse(project)
+        self.assertEqual(len(a.gated_fields), 10)
+        self.assertEqual([i for i in a.issues if i.severity == "error"], [])
+        for name in ("scond_check_notif_wrong", "scond_check_notif_correct"):
+            self.assertIn("cross-event reference", a.fields[name].unsupported)
+        self.assertNotIn("textarea", {f.field_type for f in project.fields.values()})
 
     def test_rejects_non_redcap_files(self):
         from xml_wizard.readers import InputError

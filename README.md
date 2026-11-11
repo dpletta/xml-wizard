@@ -54,6 +54,9 @@ Try it on the included synthetic example:
 xml-wizard examples/practice_data/housing_survey/housing_survey_odm.xml --open
 ```
 
+A second example, the metadata of a real longitudinal REDCap project template (no record data), is in
+[`examples/practice_data/most_data/`](examples/practice_data/most_data/README.md).
+
 ## What it checks
 
 Branching logic problems REDCap does not warn you about:

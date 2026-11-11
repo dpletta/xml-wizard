@@ -1,0 +1,1254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="MOST Manual" AsOfDateTime="2018-08-31T12:14:00" CreationDateTime="2018-08-31T12:14:00" SourceSystem="REDCap" SourceSystemVersion="8.1.11">
+<Study OID="Project.MOSTManual">
+<GlobalVariables>
+	<StudyName>MOST Manual</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "MOST Manual".</StudyDescription>
+	<ProtocolName>MOST Manual</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>0</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel>[last_name], [first_name]</redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+	<redcap:SchedulingEnabled>1</redcap:SchedulingEnabled>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes>Project to demonstrate use of REDCap for MOST studies</redcap:ProjectNotes>
+	<redcap:RepeatingInstrumentsAndEvents>
+		<redcap:RepeatingInstruments>
+			<redcap:RepeatingInstrument redcap:UniqueEventName="baseline_arm_2" redcap:RepeatInstrument="patient_health_questionnaire_9" redcap:CustomLabel=""/>
+		</redcap:RepeatingInstruments>
+	</redcap:RepeatingInstrumentsAndEvents>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.MOSTManual_2018-08-31_1214" Name="MOST Manual" redcap:RecordIdField="unique_id">
+	<Protocol>
+		<StudyEventRef StudyEventOID="Event.screening_and_loca_arm_1" OrderNumber="1" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.baseline_arm_2" OrderNumber="2" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.randomization_arm_2" OrderNumber="3" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.first_follow_arm_2" OrderNumber="4" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.second_follow_arm_2" OrderNumber="5" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.core_arm_3" OrderNumber="6" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.detailed_video_arm_3" OrderNumber="7" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_1_arm_3" OrderNumber="8" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_2_arm_3" OrderNumber="9" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_3_arm_3" OrderNumber="10" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.text_message_1_arm_3" OrderNumber="11" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.text_message_2_arm_3" OrderNumber="12" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.core_arm_4" OrderNumber="13" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.detailed_video_arm_4" OrderNumber="14" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.text_message_1_arm_4" OrderNumber="15" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.text_message_2_arm_4" OrderNumber="16" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.core_arm_5" OrderNumber="17" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.detailed_video_arm_5" OrderNumber="18" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_one_arm_5" OrderNumber="19" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_two_arm_5" OrderNumber="20" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_three_arm_5" OrderNumber="21" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.core_arm_6" OrderNumber="22" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.detailed_video_arm_6" OrderNumber="23" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.core_arm_7" OrderNumber="24" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.brief_video_arm_7" OrderNumber="25" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_1_arm_7" OrderNumber="26" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_2_arm_7" OrderNumber="27" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_3_arm_7" OrderNumber="28" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.text_message_1_arm_7" OrderNumber="29" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.text_message_2_arm_7" OrderNumber="30" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.core_arm_8" OrderNumber="31" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.brief_video_arm_8" OrderNumber="32" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.text_message_1_arm_8" OrderNumber="33" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.text_message_2_arm_8" OrderNumber="34" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.core_arm_9" OrderNumber="35" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.brief_video_arm_9" OrderNumber="36" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_1_arm_9" OrderNumber="37" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_2_arm_9" OrderNumber="38" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.group_3_arm_9" OrderNumber="39" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.core_arm_10" OrderNumber="40" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.brief_video_arm_10" OrderNumber="41" Mandatory="No"/>
+	</Protocol>
+	<StudyEventDef OID="Event.screening_and_loca_arm_1" Name="Screening and Locator (Arm 1: Screening)" Type="Common" Repeating="No" redcap:EventName="Screening and Locator" redcap:CustomEventLabel="" redcap:UniqueEventName="screening_and_loca_arm_1" redcap:ArmNum="1" redcap:ArmName="Screening" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="20">
+		<FormRef FormOID="Form.screening" OrderNumber="1" Mandatory="No" redcap:FormName="screening"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.baseline_arm_2" Name="Baseline (Arm 2: Assessment)" Type="Common" Repeating="No" redcap:EventName="Baseline" redcap:CustomEventLabel="" redcap:UniqueEventName="baseline_arm_2" redcap:ArmNum="2" redcap:ArmName="Assessment" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="10">
+		<FormRef FormOID="Form.baseline_interview" OrderNumber="1" Mandatory="No" redcap:FormName="baseline_interview"/>
+		<FormRef FormOID="Form.patient_health_questionnaire_9" OrderNumber="2" Mandatory="No" redcap:FormName="patient_health_questionnaire_9"/>
+		<FormRef FormOID="Form.gad7" OrderNumber="3" Mandatory="No" redcap:FormName="gad7"/>
+		<FormRef FormOID="Form.locator" OrderNumber="4" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.randomization_arm_2" Name="Randomization (Arm 2: Assessment)" Type="Common" Repeating="No" redcap:EventName="Randomization" redcap:CustomEventLabel="" redcap:UniqueEventName="randomization_arm_2" redcap:ArmNum="2" redcap:ArmName="Assessment" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="10">
+		<FormRef FormOID="Form.randomization_form" OrderNumber="1" Mandatory="No" redcap:FormName="randomization_form"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.first_follow_arm_2" Name="First Follow (Arm 2: Assessment)" Type="Common" Repeating="No" redcap:EventName="First Follow" redcap:CustomEventLabel="" redcap:UniqueEventName="first_follow_arm_2" redcap:ArmNum="2" redcap:ArmName="Assessment" redcap:DayOffset="70" redcap:OffsetMin="10" redcap:OffsetMax="20">
+		<FormRef FormOID="Form.patient_health_questionnaire_9" OrderNumber="1" Mandatory="No" redcap:FormName="patient_health_questionnaire_9"/>
+		<FormRef FormOID="Form.gad7" OrderNumber="2" Mandatory="No" redcap:FormName="gad7"/>
+		<FormRef FormOID="Form.locator" OrderNumber="3" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.second_follow_arm_2" Name="Second Follow (Arm 2: Assessment)" Type="Common" Repeating="No" redcap:EventName="Second Follow" redcap:CustomEventLabel="" redcap:UniqueEventName="second_follow_arm_2" redcap:ArmNum="2" redcap:ArmName="Assessment" redcap:DayOffset="150" redcap:OffsetMin="10" redcap:OffsetMax="20">
+		<FormRef FormOID="Form.patient_health_questionnaire_9" OrderNumber="1" Mandatory="No" redcap:FormName="patient_health_questionnaire_9"/>
+		<FormRef FormOID="Form.gad7" OrderNumber="2" Mandatory="No" redcap:FormName="gad7"/>
+		<FormRef FormOID="Form.locator" OrderNumber="3" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.core_arm_3" Name="Core (Arm 3: tuna)" Type="Common" Repeating="No" redcap:EventName="Core" redcap:CustomEventLabel="" redcap:UniqueEventName="core_arm_3" redcap:ArmNum="3" redcap:ArmName="tuna" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.locator" OrderNumber="1" Mandatory="No" redcap:FormName="locator"/>
+		<FormRef FormOID="Form.core_component_form" OrderNumber="2" Mandatory="No" redcap:FormName="core_component_form"/>
+		<FormRef FormOID="Form.randomization_check_form" OrderNumber="3" Mandatory="No" redcap:FormName="randomization_check_form"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.detailed_video_arm_3" Name="Detailed Video (Arm 3: tuna)" Type="Common" Repeating="No" redcap:EventName="Detailed Video" redcap:CustomEventLabel="" redcap:UniqueEventName="detailed_video_arm_3" redcap:ArmNum="3" redcap:ArmName="tuna" redcap:DayOffset="1" redcap:OffsetMin="1" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.detailed_video" OrderNumber="1" Mandatory="No" redcap:FormName="detailed_video"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_1_arm_3" Name="Group 1 (Arm 3: tuna)" Type="Common" Repeating="No" redcap:EventName="Group 1" redcap:CustomEventLabel="" redcap:UniqueEventName="group_1_arm_3" redcap:ArmNum="3" redcap:ArmName="tuna" redcap:DayOffset="10" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_2_arm_3" Name="Group 2 (Arm 3: tuna)" Type="Common" Repeating="No" redcap:EventName="Group 2" redcap:CustomEventLabel="" redcap:UniqueEventName="group_2_arm_3" redcap:ArmNum="3" redcap:ArmName="tuna" redcap:DayOffset="20" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_3_arm_3" Name="Group 3 (Arm 3: tuna)" Type="Common" Repeating="No" redcap:EventName="Group 3" redcap:CustomEventLabel="" redcap:UniqueEventName="group_3_arm_3" redcap:ArmNum="3" redcap:ArmName="tuna" redcap:DayOffset="30" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.text_message_1_arm_3" Name="Text Message 1 (Arm 3: tuna)" Type="Common" Repeating="No" redcap:EventName="Text Message 1" redcap:CustomEventLabel="" redcap:UniqueEventName="text_message_1_arm_3" redcap:ArmNum="3" redcap:ArmName="tuna" redcap:DayOffset="50" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.text_messages" OrderNumber="1" Mandatory="No" redcap:FormName="text_messages"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.text_message_2_arm_3" Name="Text Message 2 (Arm 3: tuna)" Type="Common" Repeating="No" redcap:EventName="Text Message 2" redcap:CustomEventLabel="" redcap:UniqueEventName="text_message_2_arm_3" redcap:ArmNum="3" redcap:ArmName="tuna" redcap:DayOffset="60" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.text_messages" OrderNumber="1" Mandatory="No" redcap:FormName="text_messages"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.core_arm_4" Name="Core (Arm 4: salmon)" Type="Common" Repeating="No" redcap:EventName="Core" redcap:CustomEventLabel="" redcap:UniqueEventName="core_arm_4" redcap:ArmNum="4" redcap:ArmName="salmon" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.locator" OrderNumber="1" Mandatory="No" redcap:FormName="locator"/>
+		<FormRef FormOID="Form.core_component_form" OrderNumber="2" Mandatory="No" redcap:FormName="core_component_form"/>
+		<FormRef FormOID="Form.randomization_check_form" OrderNumber="3" Mandatory="No" redcap:FormName="randomization_check_form"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.detailed_video_arm_4" Name="Detailed Video (Arm 4: salmon)" Type="Common" Repeating="No" redcap:EventName="Detailed Video" redcap:CustomEventLabel="" redcap:UniqueEventName="detailed_video_arm_4" redcap:ArmNum="4" redcap:ArmName="salmon" redcap:DayOffset="1" redcap:OffsetMin="1" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.detailed_video" OrderNumber="1" Mandatory="No" redcap:FormName="detailed_video"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.text_message_1_arm_4" Name="Text Message 1 (Arm 4: salmon)" Type="Common" Repeating="No" redcap:EventName="Text Message 1" redcap:CustomEventLabel="" redcap:UniqueEventName="text_message_1_arm_4" redcap:ArmNum="4" redcap:ArmName="salmon" redcap:DayOffset="10" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.text_messages" OrderNumber="1" Mandatory="No" redcap:FormName="text_messages"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.text_message_2_arm_4" Name="Text Message 2 (Arm 4: salmon)" Type="Common" Repeating="No" redcap:EventName="Text Message 2" redcap:CustomEventLabel="" redcap:UniqueEventName="text_message_2_arm_4" redcap:ArmNum="4" redcap:ArmName="salmon" redcap:DayOffset="20" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.text_messages" OrderNumber="1" Mandatory="No" redcap:FormName="text_messages"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.core_arm_5" Name="Core (Arm 5: marlin)" Type="Common" Repeating="No" redcap:EventName="Core" redcap:CustomEventLabel="" redcap:UniqueEventName="core_arm_5" redcap:ArmNum="5" redcap:ArmName="marlin" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.locator" OrderNumber="1" Mandatory="No" redcap:FormName="locator"/>
+		<FormRef FormOID="Form.core_component_form" OrderNumber="2" Mandatory="No" redcap:FormName="core_component_form"/>
+		<FormRef FormOID="Form.randomization_check_form" OrderNumber="3" Mandatory="No" redcap:FormName="randomization_check_form"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.detailed_video_arm_5" Name="Detailed Video (Arm 5: marlin)" Type="Common" Repeating="No" redcap:EventName="Detailed Video" redcap:CustomEventLabel="" redcap:UniqueEventName="detailed_video_arm_5" redcap:ArmNum="5" redcap:ArmName="marlin" redcap:DayOffset="1" redcap:OffsetMin="1" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.detailed_video" OrderNumber="1" Mandatory="No" redcap:FormName="detailed_video"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_one_arm_5" Name="Group One (Arm 5: marlin)" Type="Common" Repeating="No" redcap:EventName="Group One" redcap:CustomEventLabel="" redcap:UniqueEventName="group_one_arm_5" redcap:ArmNum="5" redcap:ArmName="marlin" redcap:DayOffset="10" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_two_arm_5" Name="Group Two (Arm 5: marlin)" Type="Common" Repeating="No" redcap:EventName="Group Two" redcap:CustomEventLabel="" redcap:UniqueEventName="group_two_arm_5" redcap:ArmNum="5" redcap:ArmName="marlin" redcap:DayOffset="20" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_three_arm_5" Name="Group Three (Arm 5: marlin)" Type="Common" Repeating="No" redcap:EventName="Group Three" redcap:CustomEventLabel="" redcap:UniqueEventName="group_three_arm_5" redcap:ArmNum="5" redcap:ArmName="marlin" redcap:DayOffset="30" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.core_arm_6" Name="Core (Arm 6: bass)" Type="Common" Repeating="No" redcap:EventName="Core" redcap:CustomEventLabel="" redcap:UniqueEventName="core_arm_6" redcap:ArmNum="6" redcap:ArmName="bass" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.locator" OrderNumber="1" Mandatory="No" redcap:FormName="locator"/>
+		<FormRef FormOID="Form.core_component_form" OrderNumber="2" Mandatory="No" redcap:FormName="core_component_form"/>
+		<FormRef FormOID="Form.randomization_check_form" OrderNumber="3" Mandatory="No" redcap:FormName="randomization_check_form"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.detailed_video_arm_6" Name="Detailed Video (Arm 6: bass)" Type="Common" Repeating="No" redcap:EventName="Detailed Video" redcap:CustomEventLabel="" redcap:UniqueEventName="detailed_video_arm_6" redcap:ArmNum="6" redcap:ArmName="bass" redcap:DayOffset="1" redcap:OffsetMin="1" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.detailed_video" OrderNumber="1" Mandatory="No" redcap:FormName="detailed_video"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.core_arm_7" Name="Core (Arm 7: trout)" Type="Common" Repeating="No" redcap:EventName="Core" redcap:CustomEventLabel="" redcap:UniqueEventName="core_arm_7" redcap:ArmNum="7" redcap:ArmName="trout" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.locator" OrderNumber="1" Mandatory="No" redcap:FormName="locator"/>
+		<FormRef FormOID="Form.core_component_form" OrderNumber="2" Mandatory="No" redcap:FormName="core_component_form"/>
+		<FormRef FormOID="Form.randomization_check_form" OrderNumber="3" Mandatory="No" redcap:FormName="randomization_check_form"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.brief_video_arm_7" Name="Brief Video (Arm 7: trout)" Type="Common" Repeating="No" redcap:EventName="Brief Video" redcap:CustomEventLabel="" redcap:UniqueEventName="brief_video_arm_7" redcap:ArmNum="7" redcap:ArmName="trout" redcap:DayOffset="1" redcap:OffsetMin="1" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.brief_video" OrderNumber="1" Mandatory="No" redcap:FormName="brief_video"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_1_arm_7" Name="Group 1 (Arm 7: trout)" Type="Common" Repeating="No" redcap:EventName="Group 1" redcap:CustomEventLabel="" redcap:UniqueEventName="group_1_arm_7" redcap:ArmNum="7" redcap:ArmName="trout" redcap:DayOffset="10" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_2_arm_7" Name="Group 2 (Arm 7: trout)" Type="Common" Repeating="No" redcap:EventName="Group 2" redcap:CustomEventLabel="" redcap:UniqueEventName="group_2_arm_7" redcap:ArmNum="7" redcap:ArmName="trout" redcap:DayOffset="20" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_3_arm_7" Name="Group 3 (Arm 7: trout)" Type="Common" Repeating="No" redcap:EventName="Group 3" redcap:CustomEventLabel="" redcap:UniqueEventName="group_3_arm_7" redcap:ArmNum="7" redcap:ArmName="trout" redcap:DayOffset="30" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.text_message_1_arm_7" Name="Text Message 1 (Arm 7: trout)" Type="Common" Repeating="No" redcap:EventName="Text Message 1" redcap:CustomEventLabel="" redcap:UniqueEventName="text_message_1_arm_7" redcap:ArmNum="7" redcap:ArmName="trout" redcap:DayOffset="50" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.text_messages" OrderNumber="1" Mandatory="No" redcap:FormName="text_messages"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.text_message_2_arm_7" Name="Text Message 2 (Arm 7: trout)" Type="Common" Repeating="No" redcap:EventName="Text Message 2" redcap:CustomEventLabel="" redcap:UniqueEventName="text_message_2_arm_7" redcap:ArmNum="7" redcap:ArmName="trout" redcap:DayOffset="60" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.text_messages" OrderNumber="1" Mandatory="No" redcap:FormName="text_messages"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.core_arm_8" Name="Core (Arm 8: shark)" Type="Common" Repeating="No" redcap:EventName="Core" redcap:CustomEventLabel="" redcap:UniqueEventName="core_arm_8" redcap:ArmNum="8" redcap:ArmName="shark" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.locator" OrderNumber="1" Mandatory="No" redcap:FormName="locator"/>
+		<FormRef FormOID="Form.core_component_form" OrderNumber="2" Mandatory="No" redcap:FormName="core_component_form"/>
+		<FormRef FormOID="Form.randomization_check_form" OrderNumber="3" Mandatory="No" redcap:FormName="randomization_check_form"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.brief_video_arm_8" Name="Brief Video (Arm 8: shark)" Type="Common" Repeating="No" redcap:EventName="Brief Video" redcap:CustomEventLabel="" redcap:UniqueEventName="brief_video_arm_8" redcap:ArmNum="8" redcap:ArmName="shark" redcap:DayOffset="1" redcap:OffsetMin="1" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.brief_video" OrderNumber="1" Mandatory="No" redcap:FormName="brief_video"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.text_message_1_arm_8" Name="Text Message 1 (Arm 8: shark)" Type="Common" Repeating="No" redcap:EventName="Text Message 1" redcap:CustomEventLabel="" redcap:UniqueEventName="text_message_1_arm_8" redcap:ArmNum="8" redcap:ArmName="shark" redcap:DayOffset="10" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.text_messages" OrderNumber="1" Mandatory="No" redcap:FormName="text_messages"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.text_message_2_arm_8" Name="Text Message 2 (Arm 8: shark)" Type="Common" Repeating="No" redcap:EventName="Text Message 2" redcap:CustomEventLabel="" redcap:UniqueEventName="text_message_2_arm_8" redcap:ArmNum="8" redcap:ArmName="shark" redcap:DayOffset="20" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.text_messages" OrderNumber="1" Mandatory="No" redcap:FormName="text_messages"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.core_arm_9" Name="Core (Arm 9: carp)" Type="Common" Repeating="No" redcap:EventName="Core" redcap:CustomEventLabel="" redcap:UniqueEventName="core_arm_9" redcap:ArmNum="9" redcap:ArmName="carp" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.locator" OrderNumber="1" Mandatory="No" redcap:FormName="locator"/>
+		<FormRef FormOID="Form.core_component_form" OrderNumber="2" Mandatory="No" redcap:FormName="core_component_form"/>
+		<FormRef FormOID="Form.randomization_check_form" OrderNumber="3" Mandatory="No" redcap:FormName="randomization_check_form"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.brief_video_arm_9" Name="Brief Video (Arm 9: carp)" Type="Common" Repeating="No" redcap:EventName="Brief Video" redcap:CustomEventLabel="" redcap:UniqueEventName="brief_video_arm_9" redcap:ArmNum="9" redcap:ArmName="carp" redcap:DayOffset="1" redcap:OffsetMin="1" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.brief_video" OrderNumber="1" Mandatory="No" redcap:FormName="brief_video"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_1_arm_9" Name="Group 1 (Arm 9: carp)" Type="Common" Repeating="No" redcap:EventName="Group 1" redcap:CustomEventLabel="" redcap:UniqueEventName="group_1_arm_9" redcap:ArmNum="9" redcap:ArmName="carp" redcap:DayOffset="10" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_2_arm_9" Name="Group 2 (Arm 9: carp)" Type="Common" Repeating="No" redcap:EventName="Group 2" redcap:CustomEventLabel="" redcap:UniqueEventName="group_2_arm_9" redcap:ArmNum="9" redcap:ArmName="carp" redcap:DayOffset="20" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.group_3_arm_9" Name="Group 3 (Arm 9: carp)" Type="Common" Repeating="No" redcap:EventName="Group 3" redcap:CustomEventLabel="" redcap:UniqueEventName="group_3_arm_9" redcap:ArmNum="9" redcap:ArmName="carp" redcap:DayOffset="30" redcap:OffsetMin="5" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.support_groups" OrderNumber="1" Mandatory="No" redcap:FormName="support_groups"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.core_arm_10" Name="Core (Arm 10: halibut)" Type="Common" Repeating="No" redcap:EventName="Core" redcap:CustomEventLabel="" redcap:UniqueEventName="core_arm_10" redcap:ArmNum="10" redcap:ArmName="halibut" redcap:DayOffset="0" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.locator" OrderNumber="1" Mandatory="No" redcap:FormName="locator"/>
+		<FormRef FormOID="Form.core_component_form" OrderNumber="2" Mandatory="No" redcap:FormName="core_component_form"/>
+		<FormRef FormOID="Form.randomization_check_form" OrderNumber="3" Mandatory="No" redcap:FormName="randomization_check_form"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.brief_video_arm_10" Name="Brief Video (Arm 10: halibut)" Type="Common" Repeating="No" redcap:EventName="Brief Video" redcap:CustomEventLabel="" redcap:UniqueEventName="brief_video_arm_10" redcap:ArmNum="10" redcap:ArmName="halibut" redcap:DayOffset="1" redcap:OffsetMin="1" redcap:OffsetMax="5">
+		<FormRef FormOID="Form.brief_video" OrderNumber="1" Mandatory="No" redcap:FormName="brief_video"/>
+		<FormRef FormOID="Form.locator" OrderNumber="2" Mandatory="No" redcap:FormName="locator"/>
+	</StudyEventDef>
+	<FormDef OID="Form.unique_id" Name="Unique Id" Repeating="No" redcap:FormName="unique_id">
+		<ItemGroupRef ItemGroupOID="unique_id.unique_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="unique_id.unique_id_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.screening" Name="Screening" Repeating="No" redcap:FormName="screening">
+		<ItemGroupRef ItemGroupOID="screening.scr1_timestamp_auto" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="screening.scr1_date" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="screening.scr1_notif_ie" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="screening.scr1_notif_e" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="screening.screening_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.baseline_interview" Name="Baseline Interview" Repeating="No" redcap:FormName="baseline_interview">
+		<ItemGroupRef ItemGroupOID="baseline_interview.bl_timestamp_auto" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="baseline_interview.bl_date" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="baseline_interview.baseline_interview_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.patient_health_questionnaire_9" Name="Patient Health Questionnaire 9" Repeating="No" redcap:FormName="patient_health_questionnaire_9">
+		<ItemGroupRef ItemGroupOID="patient_health_questionnaire_9.phq9_1" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="patient_health_questionnaire_9.phq9_2" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="patient_health_questionnaire_9.patient_health_questionnaire_9_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.gad7" Name="GAD-7" Repeating="No" redcap:FormName="gad7">
+		<ItemGroupRef ItemGroupOID="gad7.gad_q0" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="gad7.gad_q5" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="gad7.gad_q6" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="gad7.gad7_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.brief_video" Name="Brief Video" Repeating="No" redcap:FormName="brief_video">
+		<ItemGroupRef ItemGroupOID="brief_video.brief_timestamp_auto" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="brief_video.brief_video_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.detailed_video" Name="Detailed Video" Repeating="No" redcap:FormName="detailed_video">
+		<ItemGroupRef ItemGroupOID="detailed_video.detailed_timestamp_auto" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="detailed_video.detailed_video_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.support_groups" Name="Support Groups" Repeating="No" redcap:FormName="support_groups">
+		<ItemGroupRef ItemGroupOID="support_groups.sg_timestamp_auto" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="support_groups.support_groups_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.text_messages" Name="Text Messages" Repeating="No" redcap:FormName="text_messages">
+		<ItemGroupRef ItemGroupOID="text_messages.text_date" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="text_messages.text_messages_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.locator" Name="Locator" Repeating="No" redcap:FormName="locator">
+		<ItemGroupRef ItemGroupOID="locator.loc_date" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="locator.loc_date_update" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="locator.locator_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.randomization_form" Name="Randomization Form" Repeating="No" redcap:FormName="randomization_form">
+		<ItemGroupRef ItemGroupOID="randomization_form.rand_timestamp_auto" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="randomization_form.randomization_form_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.core_component_form" Name="Core Component Form" Repeating="No" redcap:FormName="core_component_form">
+		<ItemGroupRef ItemGroupOID="core_component_form.core_timestamp_auto" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="core_component_form.core_activity1" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="core_component_form.core_activity1_reason" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="core_component_form.core_activity2" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="core_component_form.core_activity2_reason" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="core_component_form.core_went_well" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="core_component_form.core_challenges" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="core_component_form.core_component_form_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.randomization_check_form" Name="Randomization Check Form" Repeating="No" redcap:FormName="randomization_check_form">
+		<ItemGroupRef ItemGroupOID="randomization_check_form.check_staff_rcond" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="randomization_check_form.randomization_check_form_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="unique_id.unique_id" Name="Unique Id" Repeating="No">
+		<ItemRef ItemOID="unique_id" Mandatory="Yes" redcap:Variable="unique_id"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="unique_id.unique_id_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="unique_id_complete" Mandatory="No" redcap:Variable="unique_id_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="screening.scr1_timestamp_auto" Name="&lt;center&gt;&lt;h4&gt;&lt;strong&gt;INTRODUCTION&lt;/strong&gt;&lt;/h4&gt;&lt;/center&gt; 
+
+Thank you for agreeing to participate in this interview. We are going to ask you some questions about your health, service use, and how you think about things. 
+
+
+Please answer as honestly as you can. We are not here to judge you and what you tell us is confidential. That means we won&#039;t tell anyone anything that you say today. " Repeating="No">
+		<ItemRef ItemOID="scr1_timestamp_auto" Mandatory="No" redcap:Variable="scr1_timestamp_auto"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="screening.scr1_date" Name="Screening" Repeating="No">
+		<ItemRef ItemOID="scr1_date" Mandatory="Yes" redcap:Variable="scr1_date"/>
+		<ItemRef ItemOID="scr1_gender" Mandatory="Yes" redcap:Variable="scr1_gender"/>
+		<ItemRef ItemOID="scr1_dob" Mandatory="Yes" redcap:Variable="scr1_dob"/>
+		<ItemRef ItemOID="scr1_auto_age" Mandatory="Yes" redcap:Variable="scr1_auto_age"/>
+		<ItemRef ItemOID="scr1_livingin" Mandatory="Yes" redcap:Variable="scr1_livingin"/>
+		<ItemRef ItemOID="scr1_leave" Mandatory="Yes" redcap:Variable="scr1_leave"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="screening.scr1_notif_ie" Name="&lt;div class=&quot;red&quot;&gt;&lt;center&gt;&lt;strong&gt; FOR THE INTERVIEWER ONLY: &lt;/center&gt;&lt;/strong&gt;&lt;/div&gt;" Repeating="No">
+		<ItemRef ItemOID="scr1_notif_ie" Mandatory="No" redcap:Variable="scr1_notif_ie"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="screening.scr1_notif_e" Name="Screening" Repeating="No">
+		<ItemRef ItemOID="scr1_notif_e" Mandatory="No" redcap:Variable="scr1_notif_e"/>
+		<ItemRef ItemOID="scr1_eligibility" Mandatory="Yes" redcap:Variable="scr1_eligibility"/>
+		<ItemRef ItemOID="scr1_e_wrong_notif" Mandatory="No" redcap:Variable="scr1_e_wrong_notif"/>
+		<ItemRef ItemOID="scr1_ie_wrong_notif" Mandatory="No" redcap:Variable="scr1_ie_wrong_notif"/>
+		<ItemRef ItemOID="scr1_notif_end" Mandatory="No" redcap:Variable="scr1_notif_end"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="screening.screening_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="screening_complete" Mandatory="No" redcap:Variable="screening_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="baseline_interview.bl_timestamp_auto" Name="Thank you for agreeing to participate in this project.  
+
+
+
+We are going to ask you some questions about how you think about things, how you manage some issues, and about your health habits. What you tell us may help us develop better programs and services for others.
+
+
+
+We will be talking about some serious issues. To help us understand them, please answer as honestly as you can.  We are not here to judge you and what you tell us is confidential.  That means we won&#039;t tell anyone anything that you say today.
+
+
+
+Some of the questions may not apply to you, but it will help us if you try to answer them the best way you can. And, you don&#039;t have to answer any question that you don&#039;t want to.
+
+
+
+First we will get some background information about you.
+
+" Repeating="No">
+		<ItemRef ItemOID="bl_timestamp_auto" Mandatory="No" redcap:Variable="bl_timestamp_auto"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="baseline_interview.bl_date" Name="Baseline Interview" Repeating="No">
+		<ItemRef ItemOID="bl_date" Mandatory="Yes" redcap:Variable="bl_date"/>
+		<ItemRef ItemOID="bl_month" Mandatory="Yes" redcap:Variable="bl_month"/>
+		<ItemRef ItemOID="bl_dob" Mandatory="Yes" redcap:Variable="bl_dob"/>
+		<ItemRef ItemOID="bl_birthplace" Mandatory="Yes" redcap:Variable="bl_birthplace"/>
+		<ItemRef ItemOID="bl_birthplace_other" Mandatory="Yes" redcap:Variable="bl_birthplace_other"/>
+		<ItemRef ItemOID="bl_spiritual" Mandatory="Yes" redcap:Variable="bl_spiritual"/>
+		<ItemRef ItemOID="bl_education" Mandatory="Yes" redcap:Variable="bl_education"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="baseline_interview.baseline_interview_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="baseline_interview_complete" Mandatory="No" redcap:Variable="baseline_interview_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="patient_health_questionnaire_9.phq9_1" Name="Over the &lt;u&gt;last 2 weeks&lt;/u&gt; how often have you been bothered by any of the following problems? &lt;i&gt;(Click the circle to indicate your answer)&lt;/u&gt;" Repeating="No">
+		<ItemRef ItemOID="phq9_1" Mandatory="No" redcap:Variable="phq9_1"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="patient_health_questionnaire_9.phq9_2" Name="Patient Health Questionnaire 9" Repeating="No">
+		<ItemRef ItemOID="phq9_2" Mandatory="No" redcap:Variable="phq9_2"/>
+		<ItemRef ItemOID="phq9_3" Mandatory="No" redcap:Variable="phq9_3"/>
+		<ItemRef ItemOID="phq9_4" Mandatory="No" redcap:Variable="phq9_4"/>
+		<ItemRef ItemOID="phq9_5" Mandatory="No" redcap:Variable="phq9_5"/>
+		<ItemRef ItemOID="phq9_6" Mandatory="No" redcap:Variable="phq9_6"/>
+		<ItemRef ItemOID="phq9_7" Mandatory="No" redcap:Variable="phq9_7"/>
+		<ItemRef ItemOID="phq9_8" Mandatory="No" redcap:Variable="phq9_8"/>
+		<ItemRef ItemOID="phq9_9" Mandatory="No" redcap:Variable="phq9_9"/>
+		<ItemRef ItemOID="phq9_how_difficult" Mandatory="No" redcap:Variable="phq9_how_difficult"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="patient_health_questionnaire_9.patient_health_questionnaire_9_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="patient_health_questionnaire_9_complete" Mandatory="No" redcap:Variable="patient_health_questionnaire_9_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="gad7.gad_q0" Name="GAD-7" Repeating="No">
+		<ItemRef ItemOID="gad_q0" Mandatory="No" redcap:Variable="gad_q0"/>
+		<ItemRef ItemOID="gad_q1" Mandatory="Yes" redcap:Variable="gad_q1"/>
+		<ItemRef ItemOID="gad_q2" Mandatory="Yes" redcap:Variable="gad_q2"/>
+		<ItemRef ItemOID="gad_q3" Mandatory="Yes" redcap:Variable="gad_q3"/>
+		<ItemRef ItemOID="gad_q4" Mandatory="Yes" redcap:Variable="gad_q4"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="gad7.gad_q5" Name="Now we are going to ask you about your feelings about some things. " Repeating="No">
+		<ItemRef ItemOID="gad_q5" Mandatory="No" redcap:Variable="gad_q5"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="gad7.gad_q6" Name="GAD-7" Repeating="No">
+		<ItemRef ItemOID="gad_q6" Mandatory="Yes" redcap:Variable="gad_q6"/>
+		<ItemRef ItemOID="gad_q7" Mandatory="Yes" redcap:Variable="gad_q7"/>
+		<ItemRef ItemOID="gad_q8" Mandatory="Yes" redcap:Variable="gad_q8"/>
+		<ItemRef ItemOID="gad_q9" Mandatory="Yes" redcap:Variable="gad_q9"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="gad7.gad7_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="gad7_complete" Mandatory="No" redcap:Variable="gad7_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="brief_video.brief_timestamp_auto" Name="Brief Video" Repeating="No">
+		<ItemRef ItemOID="brief_timestamp_auto" Mandatory="No" redcap:Variable="brief_timestamp_auto"/>
+		<ItemRef ItemOID="brief_date" Mandatory="Yes" redcap:Variable="brief_date"/>
+		<ItemRef ItemOID="brief_staff_initials" Mandatory="Yes" redcap:Variable="brief_staff_initials"/>
+		<ItemRef ItemOID="brief_like" Mandatory="No" redcap:Variable="brief_like"/>
+		<ItemRef ItemOID="brief_length" Mandatory="No" redcap:Variable="brief_length"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="brief_video.brief_video_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="brief_video_complete" Mandatory="No" redcap:Variable="brief_video_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="detailed_video.detailed_timestamp_auto" Name="Detailed Video" Repeating="No">
+		<ItemRef ItemOID="detailed_timestamp_auto" Mandatory="No" redcap:Variable="detailed_timestamp_auto"/>
+		<ItemRef ItemOID="detailed_date" Mandatory="Yes" redcap:Variable="detailed_date"/>
+		<ItemRef ItemOID="detailed_staff_initials" Mandatory="Yes" redcap:Variable="detailed_staff_initials"/>
+		<ItemRef ItemOID="detailed_like" Mandatory="No" redcap:Variable="detailed_like"/>
+		<ItemRef ItemOID="detailed_length" Mandatory="No" redcap:Variable="detailed_length"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="detailed_video.detailed_video_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="detailed_video_complete" Mandatory="No" redcap:Variable="detailed_video_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="support_groups.sg_timestamp_auto" Name="Support Groups" Repeating="No">
+		<ItemRef ItemOID="sg_timestamp_auto" Mandatory="No" redcap:Variable="sg_timestamp_auto"/>
+		<ItemRef ItemOID="sg_date" Mandatory="Yes" redcap:Variable="sg_date"/>
+		<ItemRef ItemOID="sg_staff_initials" Mandatory="Yes" redcap:Variable="sg_staff_initials"/>
+		<ItemRef ItemOID="support_leader_effective" Mandatory="No" redcap:Variable="support_leader_effective"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="support_groups.support_groups_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="support_groups_complete" Mandatory="No" redcap:Variable="support_groups_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="text_messages.text_date" Name="Text Messages" Repeating="No">
+		<ItemRef ItemOID="text_date" Mandatory="Yes" redcap:Variable="text_date"/>
+		<ItemRef ItemOID="text_read" Mandatory="No" redcap:Variable="text_read"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="text_messages.text_messages_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="text_messages_complete" Mandatory="No" redcap:Variable="text_messages_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="locator.loc_date" Name="An important part of the project is that we can reach you in the future. 
+In order to do this, we need as much contact information for you as possible, in case anything changes like your phone number or your living situation. So we are asking for your contact information as well as names, addresses and phone numbers of your friends, counselors, doctors, job, or family members - any people in New York or elsewhere - who you have regular contact with and who could help us reach you if necessary.
+
+If you don&#039;t feel comfortable with us contacting you through a certain person or in a certain way, &lt;b&gt; please don&#039;t give us that information &lt;/b&gt;.
+
+Whenever we try to contact you or any of your contacts, we will just say you are a part of a &quot;community health project&quot; and won&#039;t mention any information about you, what the project is about, or the names of any specific agencies in order to protect your confidentiality. Do you have any questions? Now we&#039;ll ask you for your contact information and then information for at least 3 other people who, if we can&#039;t get in touch with you directly, may be able to help us reach you.
+
+&lt;div class = &quot;red&quot;&gt;&lt;b&gt;NOTE&lt;/b&gt; to Interviewer: Attempt to get &lt;b&gt;three&lt;/b&gt; different sources of tracking information &lt;/div&gt;" Repeating="No">
+		<ItemRef ItemOID="loc_date" Mandatory="No" redcap:Variable="loc_date"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="locator.loc_date_update" Name="Locator" Repeating="No">
+		<ItemRef ItemOID="loc_date_update" Mandatory="No" redcap:Variable="loc_date_update"/>
+		<ItemRef ItemOID="loc_fname" Mandatory="Yes" redcap:Variable="loc_fname"/>
+		<ItemRef ItemOID="loc_lname" Mandatory="Yes" redcap:Variable="loc_lname"/>
+		<ItemRef ItemOID="loc_dob" Mandatory="Yes" redcap:Variable="loc_dob"/>
+		<ItemRef ItemOID="cellphone" Mandatory="Yes" redcap:Variable="cellphone"/>
+		<ItemRef ItemOID="email" Mandatory="Yes" redcap:Variable="email"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="locator.locator_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="locator_complete" Mandatory="No" redcap:Variable="locator_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="randomization_form.rand_timestamp_auto" Name="Randomization Form" Repeating="No">
+		<ItemRef ItemOID="rand_timestamp_auto" Mandatory="No" redcap:Variable="rand_timestamp_auto"/>
+		<ItemRef ItemOID="rand_date" Mandatory="Yes" redcap:Variable="rand_date"/>
+		<ItemRef ItemOID="rand_scond" Mandatory="Yes" redcap:Variable="rand_scond"/>
+		<ItemRef ItemOID="rand_descr" Mandatory="No" redcap:Variable="rand_descr"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="randomization_form.randomization_form_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="randomization_form_complete" Mandatory="No" redcap:Variable="randomization_form_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="core_component_form.core_timestamp_auto" Name="Core Component Form" Repeating="No">
+		<ItemRef ItemOID="core_timestamp_auto" Mandatory="No" redcap:Variable="core_timestamp_auto"/>
+		<ItemRef ItemOID="core_date" Mandatory="Yes" redcap:Variable="core_date"/>
+		<ItemRef ItemOID="core_staff_initials" Mandatory="Yes" redcap:Variable="core_staff_initials"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="core_component_form.core_activity1" Name="To what extent was the following activity completed?" Repeating="No">
+		<ItemRef ItemOID="core_activity1" Mandatory="Yes" redcap:Variable="core_activity1"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="core_component_form.core_activity1_reason" Name="Core Component Form" Repeating="No">
+		<ItemRef ItemOID="core_activity1_reason" Mandatory="Yes" redcap:Variable="core_activity1_reason"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="core_component_form.core_activity2" Name="To what extent was the following activity completed?" Repeating="No">
+		<ItemRef ItemOID="core_activity2" Mandatory="Yes" redcap:Variable="core_activity2"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="core_component_form.core_activity2_reason" Name="Core Component Form" Repeating="No">
+		<ItemRef ItemOID="core_activity2_reason" Mandatory="Yes" redcap:Variable="core_activity2_reason"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="core_component_form.core_went_well" Name="Summary:" Repeating="No">
+		<ItemRef ItemOID="core_went_well" Mandatory="Yes" redcap:Variable="core_went_well"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="core_component_form.core_challenges" Name="Core Component Form" Repeating="No">
+		<ItemRef ItemOID="core_challenges" Mandatory="Yes" redcap:Variable="core_challenges"/>
+		<ItemRef ItemOID="core_next_steps" Mandatory="Yes" redcap:Variable="core_next_steps"/>
+		<ItemRef ItemOID="core_notes" Mandatory="No" redcap:Variable="core_notes"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="core_component_form.core_component_form_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="core_component_form_complete" Mandatory="No" redcap:Variable="core_component_form_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="randomization_check_form.check_staff_rcond" Name="Randomization Check Form" Repeating="No">
+		<ItemRef ItemOID="check_staff_rcond" Mandatory="Yes" redcap:Variable="check_staff_rcond"/>
+		<ItemRef ItemOID="scond_check_notif_wrong" Mandatory="No" redcap:Variable="scond_check_notif_wrong"/>
+		<ItemRef ItemOID="scond_check_notif_correct" Mandatory="No" redcap:Variable="scond_check_notif_correct"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="randomization_check_form.randomization_check_form_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="randomization_check_form_complete" Mandatory="No" redcap:Variable="randomization_check_form_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="unique_id" Name="unique_id" DataType="text" Length="999" redcap:Variable="unique_id" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>unique_id</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="unique_id_complete" Name="unique_id_complete" DataType="text" Length="1" redcap:Variable="unique_id_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="unique_id_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="scr1_timestamp_auto" Name="scr1_timestamp_auto" DataType="partialDatetime" Length="999" redcap:Variable="scr1_timestamp_auto" redcap:FieldType="text" redcap:TextValidationType="datetime_mdy" redcap:SectionHeader="&lt;center&gt;&lt;h4&gt;&lt;strong&gt;INTRODUCTION&lt;/strong&gt;&lt;/h4&gt;&lt;/center&gt; 
+
+Thank you for agreeing to participate in this interview. We are going to ask you some questions about your health, service use, and how you think about things. 
+
+
+Please answer as honestly as you can. We are not here to judge you and what you tell us is confidential. That means we won&#039;t tell anyone anything that you say today. " redcap:FieldAnnotation="@TODAY @READONLY @NOW @READONLY @HIDDEN">
+		<Question><TranslatedText>Auto datetime stamp</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="scr1_date" Name="scr1_date" DataType="date" Length="999" redcap:Variable="scr1_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
+		<Question><TranslatedText>Today&#039;s Date:</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="scr1_gender" Name="scr1_gender" DataType="text" Length="1" redcap:Variable="scr1_gender" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Gender at birth?</TranslatedText></Question>
+		<CodeListRef CodeListOID="scr1_gender.choices"/>
+	</ItemDef>
+	<ItemDef OID="scr1_dob" Name="scr1_dob" DataType="date" Length="999" redcap:Variable="scr1_dob" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:Identifier="y" redcap:RequiredField="y" redcap:FieldAnnotation="@HIDEBUTTON">
+		<Question><TranslatedText>What is your date of birth?</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="scr1_auto_age" Name="scr1_auto_age" DataType="float" Length="999" redcap:Variable="scr1_auto_age" redcap:FieldType="calc" redcap:Calculation="rounddown(datediff([scr1_dob], [scr1_date], &quot;y&quot;, &quot;mdy&quot;), 0, true)" redcap:RequiredField="y" redcap:FieldAnnotation="@HIDDEN">
+		<Question><TranslatedText>Current age (automatically calculated)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="scr1_livingin" Name="scr1_livingin" DataType="text" Length="3" redcap:Variable="scr1_livingin" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Where have you been living during the past month, that is, what borough or other location? 
+
+ NOTE TO INTERVIEWER: 
+&quot;Larger NYC metropolitan area&quot; includes locations that border NYC in Nassau County Long Island, and counties in North-East New Jersey on the Hudson River including Middlesex, Union, Essex, Hudson, and Bergen counties </TranslatedText><redcap:FormattedTranslatedText>Where have you been living during the past month, that is, what borough or other location? &lt;br&gt;&lt;br&gt;&lt;div class=&quot;red&quot;&gt;&lt;b&gt; NOTE TO INTERVIEWER: &lt;/b&gt;&lt;br&gt;&quot;Larger NYC metropolitan area&quot; includes locations that border NYC in Nassau County Long Island, and counties in North-East New Jersey on the Hudson River including Middlesex, Union, Essex, Hudson, and Bergen counties &lt;/div&gt;</redcap:FormattedTranslatedText></Question>
+		<CodeListRef CodeListOID="scr1_livingin.choices"/>
+	</ItemDef>
+	<ItemDef OID="scr1_leave" Name="scr1_leave" DataType="text" Length="3" redcap:Variable="scr1_leave" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Do you have any plans to leave the New York City metropolitan area in the next year?</TranslatedText></Question>
+		<CodeListRef CodeListOID="scr1_leave.choices"/>
+	</ItemDef>
+	<ItemDef OID="scr1_notif_ie" Name="scr1_notif_ie" DataType="text" Length="999" redcap:Variable="scr1_notif_ie" redcap:FieldType="descriptive" redcap:SectionHeader="&lt;div class=&quot;red&quot;&gt;&lt;center&gt;&lt;strong&gt; FOR THE INTERVIEWER ONLY: &lt;/center&gt;&lt;/strong&gt;&lt;/div&gt;" redcap:BranchingLogic="[scr1_auto_age] &lt;  18 or [scr1_auto_age] &gt; 65 or [scr1_livingin] = &#039;6&#039; or [scr1_livingin] = &#039;998&#039; or [scr1_leave] = &#039;1&#039;">
+		<Question><TranslatedText>Participant is 
+
+INELIGIBLE 
+
+That&#039;s the end of the interview. Thank you so much for your time, and for telling us about yourself.
+You are Not Eligible for the other part of the study.</TranslatedText><redcap:FormattedTranslatedText>Participant is 
+
+&lt;div class = &quot;red&quot;&gt;&lt;font color= &quot;red&quot;&gt;&lt;h3&gt;&lt;strong&gt;&lt;center&gt;INELIGIBLE &lt;/center&gt;&lt;/strong&gt;&lt;/font&gt;&lt;/h3&gt;&lt;/div&gt;
+
+That&#039;s the end of the interview. Thank you so much for your time, and for telling us about yourself.
+You are &lt;font color = &quot;red&quot;&gt;&lt;strong&gt;Not Eligible&lt;/strong&gt;&lt;/font&gt; for the other part of the study.</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="scr1_notif_e" Name="scr1_notif_e" DataType="text" Length="999" redcap:Variable="scr1_notif_e" redcap:FieldType="descriptive" redcap:BranchingLogic="[scr1_auto_age] &gt;= 18 and [scr1_auto_age] &lt;= 65 and [scr1_livingin] != &#039;6&#039; and [scr1_livingin] != &#039;998&#039; and [scr1_leave] != &#039;1&#039;">
+		<Question><TranslatedText>Participant is 
+
+ELIGIBLE</TranslatedText><redcap:FormattedTranslatedText>Participant is 
+
+&lt;div class = &quot;green&quot;&gt;&lt;font color=&quot;green&quot;&gt;&lt;h3&gt;&lt;center&gt;&lt;strong&gt;ELIGIBLE&lt;/strong&gt;&lt;/center&gt;&lt;/h3&gt;&lt;/font&gt;&lt;/div&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="scr1_eligibility" Name="scr1_eligibility" DataType="text" Length="1" redcap:Variable="scr1_eligibility" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Is the participant:</TranslatedText></Question>
+		<CodeListRef CodeListOID="scr1_eligibility.choices"/>
+	</ItemDef>
+	<ItemDef OID="scr1_e_wrong_notif" Name="scr1_e_wrong_notif" DataType="text" Length="999" redcap:Variable="scr1_e_wrong_notif" redcap:FieldType="descriptive" redcap:BranchingLogic="[scr1_auto_age] &gt;= 18 and [scr1_auto_age] &lt;= 65 and [scr1_livingin] &lt;&gt; &#039;6&#039; and [scr1_livingin] &lt;&gt; &#039;998&#039; and [scr1_leave] &lt;&gt; &#039;1&#039;">
+		<Question><TranslatedText>
+
+PLEASE CHECK THE ELIGIBILITY STATUS - 
+THE PARTICIPANT SHOULD BE ELIGIBLE
+
+</TranslatedText><redcap:FormattedTranslatedText>&lt;center&gt;&lt;div class = &quot;red&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;h3&gt;PLEASE CHECK THE ELIGIBILITY STATUS - 
+&lt;b&gt;THE PARTICIPANT SHOULD BE &lt;font color =&quot;green&quot;&gt;&lt;u&gt;ELIGIBLE&lt;/u&gt;&lt;/font&gt;&lt;/h3&gt;&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;/center&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="scr1_ie_wrong_notif" Name="scr1_ie_wrong_notif" DataType="text" Length="999" redcap:Variable="scr1_ie_wrong_notif" redcap:FieldType="descriptive" redcap:BranchingLogic="[scr1_auto_age] &lt;  18 or [scr1_auto_age] &gt; 65 or [scr1_livingin] = &#039;6&#039; or [scr1_livingin] = &#039;998&#039; or [scr1_leave] = &#039;1&#039;">
+		<Question><TranslatedText>
+
+PLEASE CHECK THE ELIGIBILITY STATUS - 
+THE PARTICIPANT SHOULD BE INELIGIBLE
+
+</TranslatedText><redcap:FormattedTranslatedText>&lt;center&gt;&lt;div class = &quot;red&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;h3&gt;PLEASE CHECK THE ELIGIBILITY STATUS - 
+&lt;b&gt;THE PARTICIPANT SHOULD BE &lt;u&gt;INELIGIBLE&lt;/u&gt;&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;/h3&gt;&lt;/div&gt;&lt;/center&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="scr1_notif_end" Name="scr1_notif_end" DataType="text" Length="999" redcap:Variable="scr1_notif_end" redcap:FieldType="descriptive" redcap:BranchingLogic="[scr1_eligibility] = &#039;1&#039; and [scr1_auto_age] &gt;= 18 and [scr1_auto_age] &lt;= 65 and [scr1_livingin] != &#039;6&#039; and [scr1_livingin] != &#039;998&#039; and [scr1_leave] != &#039;1&#039;">
+		<Question><TranslatedText>
+That&#039;s the end of the interview.
+Thank you so much for your time, and for telling us about yourself.
+
+You are eligible for another part of the study, and I will explain what that involves next.</TranslatedText><redcap:FormattedTranslatedText>&lt;center&gt;&lt;h4&gt;&lt;br&gt;That&#039;s the end of the interview.&lt;br&gt;Thank you so much for your time, and for telling us about yourself.&lt;br&gt;&lt;br&gt;You are &lt;font color = &quot;green&quot;&gt;eligible&lt;/font&gt; for another part of the study, and I will explain what that involves next.&lt;/h4&gt;&lt;/center&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="screening_complete" Name="screening_complete" DataType="text" Length="1" redcap:Variable="screening_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="screening_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="bl_timestamp_auto" Name="bl_timestamp_auto" DataType="partialDatetime" Length="999" redcap:Variable="bl_timestamp_auto" redcap:FieldType="text" redcap:TextValidationType="datetime_mdy" redcap:SectionHeader="Thank you for agreeing to participate in this project.  
+
+
+
+We are going to ask you some questions about how you think about things, how you manage some issues, and about your health habits. What you tell us may help us develop better programs and services for others.
+
+
+
+We will be talking about some serious issues. To help us understand them, please answer as honestly as you can.  We are not here to judge you and what you tell us is confidential.  That means we won&#039;t tell anyone anything that you say today.
+
+
+
+Some of the questions may not apply to you, but it will help us if you try to answer them the best way you can. And, you don&#039;t have to answer any question that you don&#039;t want to.
+
+
+
+First we will get some background information about you.
+
+" redcap:FieldAnnotation="@TODAY @READONLY @NOW @READONLY @HIDDEN">
+		<Question><TranslatedText>Auto datetime stamp</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="bl_date" Name="bl_date" DataType="date" Length="999" redcap:Variable="bl_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
+		<Question><TranslatedText>Interviewer: Enter today&#039;s date </TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="bl_month" Name="bl_month" DataType="text" Length="2" redcap:Variable="bl_month" redcap:FieldType="select" redcap:RequiredField="y">
+		<Question><TranslatedText>What is the current month:</TranslatedText></Question>
+		<CodeListRef CodeListOID="bl_month.choices"/>
+	</ItemDef>
+	<ItemDef OID="bl_dob" Name="bl_dob" DataType="date" Length="999" redcap:Variable="bl_dob" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y" redcap:FieldAnnotation="@HIDEBUTTON">
+		<Question><TranslatedText>What is your date of birth?
+
+Interviewer
+
+Explain to participant how to input dates by typing it in, or using the calendar icon to select the date. </TranslatedText><redcap:FormattedTranslatedText>What is your date of birth?&lt;br&gt;&lt;br&gt;&lt;div class=&quot;red&quot;&gt;&lt;strong&gt;Interviewer&lt;/strong&gt;&lt;br&gt;&lt;br&gt;Explain to participant how to input dates by typing it in, or using the calendar icon to select the date. &lt;/div&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="bl_birthplace" Name="bl_birthplace" DataType="text" Length="3" redcap:Variable="bl_birthplace" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Where were you born?</TranslatedText></Question>
+		<CodeListRef CodeListOID="bl_birthplace.choices"/>
+	</ItemDef>
+	<ItemDef OID="bl_birthplace_other" Name="bl_birthplace_other" DataType="text" Length="999" redcap:Variable="bl_birthplace_other" redcap:FieldType="text" redcap:RequiredField="y" redcap:BranchingLogic="[bl_birthplace] = &#039;9&#039;">
+		<Question><TranslatedText>If Other please specify:</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="bl_spiritual" Name="bl_spiritual" DataType="text" Length="3" redcap:Variable="bl_spiritual" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>How religious or spiritual do you consider yourself to be?</TranslatedText></Question>
+		<CodeListRef CodeListOID="bl_spiritual.choices"/>
+	</ItemDef>
+	<ItemDef OID="bl_education" Name="bl_education" DataType="text" Length="3" redcap:Variable="bl_education" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>What is the highest level of education you have completed?</TranslatedText></Question>
+		<CodeListRef CodeListOID="bl_education.choices"/>
+	</ItemDef>
+	<ItemDef OID="baseline_interview_complete" Name="baseline_interview_complete" DataType="text" Length="1" redcap:Variable="baseline_interview_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="baseline_interview_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="phq9_1" Name="phq9_1" DataType="text" Length="1" redcap:Variable="phq9_1" redcap:FieldType="radio" redcap:SectionHeader="Over the &lt;u&gt;last 2 weeks&lt;/u&gt; how often have you been bothered by any of the following problems? &lt;i&gt;(Click the circle to indicate your answer)&lt;/u&gt;">
+		<Question><TranslatedText>1. Little interest or pleasure in doing things</TranslatedText></Question>
+		<CodeListRef CodeListOID="phq9_1.choices"/>
+	</ItemDef>
+	<ItemDef OID="phq9_2" Name="phq9_2" DataType="text" Length="1" redcap:Variable="phq9_2" redcap:FieldType="radio">
+		<Question><TranslatedText>2. Feeling down, depressed, or hopeless</TranslatedText></Question>
+		<CodeListRef CodeListOID="phq9_2.choices"/>
+	</ItemDef>
+	<ItemDef OID="phq9_3" Name="phq9_3" DataType="text" Length="1" redcap:Variable="phq9_3" redcap:FieldType="radio">
+		<Question><TranslatedText>3. Trouble falling or staying asleep, or sleeping too much</TranslatedText></Question>
+		<CodeListRef CodeListOID="phq9_3.choices"/>
+	</ItemDef>
+	<ItemDef OID="phq9_4" Name="phq9_4" DataType="text" Length="1" redcap:Variable="phq9_4" redcap:FieldType="radio">
+		<Question><TranslatedText>4. Feeling tired or having little energy</TranslatedText></Question>
+		<CodeListRef CodeListOID="phq9_4.choices"/>
+	</ItemDef>
+	<ItemDef OID="phq9_5" Name="phq9_5" DataType="text" Length="1" redcap:Variable="phq9_5" redcap:FieldType="radio">
+		<Question><TranslatedText>5. Poor appetite or overeating</TranslatedText></Question>
+		<CodeListRef CodeListOID="phq9_5.choices"/>
+	</ItemDef>
+	<ItemDef OID="phq9_6" Name="phq9_6" DataType="text" Length="1" redcap:Variable="phq9_6" redcap:FieldType="radio">
+		<Question><TranslatedText>6. Feeling bad about yourself -- or that you are a failure or have let yourself or your family down</TranslatedText></Question>
+		<CodeListRef CodeListOID="phq9_6.choices"/>
+	</ItemDef>
+	<ItemDef OID="phq9_7" Name="phq9_7" DataType="text" Length="1" redcap:Variable="phq9_7" redcap:FieldType="radio">
+		<Question><TranslatedText>7. Trouble concentrating on things, such as reading the newspaper or watching television</TranslatedText></Question>
+		<CodeListRef CodeListOID="phq9_7.choices"/>
+	</ItemDef>
+	<ItemDef OID="phq9_8" Name="phq9_8" DataType="text" Length="1" redcap:Variable="phq9_8" redcap:FieldType="radio">
+		<Question><TranslatedText>8. Moving or speaking so slowly that other people could have noticed? Or the opposite -- being so fidgety or restless that you have been moving around a lot more than usual</TranslatedText></Question>
+		<CodeListRef CodeListOID="phq9_8.choices"/>
+	</ItemDef>
+	<ItemDef OID="phq9_9" Name="phq9_9" DataType="text" Length="1" redcap:Variable="phq9_9" redcap:FieldType="radio">
+		<Question><TranslatedText>9. Thoughts that you would be better off dead or of hurting yourself in some way</TranslatedText></Question>
+		<CodeListRef CodeListOID="phq9_9.choices"/>
+	</ItemDef>
+	<ItemDef OID="phq9_how_difficult" Name="phq9_how_difficult" DataType="text" Length="1" redcap:Variable="phq9_how_difficult" redcap:FieldType="radio">
+		<Question><TranslatedText>If you checked off any problems, how difficult  have these problems made it for you to do your work, take care of things at home, or get along with other people?</TranslatedText><redcap:FormattedTranslatedText>If you checked off &lt;u&gt;any&lt;/u&gt; problems, how &lt;u&gt;difficult &lt;/u&gt; have these problems made it for you to do your work, take care of things at home, or get along with other people?</redcap:FormattedTranslatedText></Question>
+		<CodeListRef CodeListOID="phq9_how_difficult.choices"/>
+	</ItemDef>
+	<ItemDef OID="patient_health_questionnaire_9_complete" Name="patient_health_questionnaire_9_complete" DataType="text" Length="1" redcap:Variable="patient_health_questionnaire_9_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="patient_health_questionnaire_9_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="gad_q0" Name="gad_q0" DataType="text" Length="999" redcap:Variable="gad_q0" redcap:FieldType="descriptive" redcap:FieldAnnotation="gad7">
+		<Question><TranslatedText>Over the last 2 weeks, how often have you been bothered by the following problems?</TranslatedText><redcap:FormattedTranslatedText>&lt;div class = &quot;yellow&quot;&gt;&lt;strong&gt;Over the last 2 weeks, how often have you been bothered by the following problems?&lt;/strong&gt;&lt;/div&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="gad_q1" Name="gad_q1" DataType="text" Length="3" redcap:Variable="gad_q1" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="gad7">
+		<Question><TranslatedText>Feeling nervous, anxious or on edge.</TranslatedText></Question>
+		<CodeListRef CodeListOID="gad_q1.choices"/>
+	</ItemDef>
+	<ItemDef OID="gad_q2" Name="gad_q2" DataType="text" Length="3" redcap:Variable="gad_q2" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="gad7">
+		<Question><TranslatedText>Not being able to stop or control worrying.</TranslatedText></Question>
+		<CodeListRef CodeListOID="gad_q2.choices"/>
+	</ItemDef>
+	<ItemDef OID="gad_q3" Name="gad_q3" DataType="text" Length="3" redcap:Variable="gad_q3" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="gad7">
+		<Question><TranslatedText>Worrying too much about different things.</TranslatedText></Question>
+		<CodeListRef CodeListOID="gad_q3.choices"/>
+	</ItemDef>
+	<ItemDef OID="gad_q4" Name="gad_q4" DataType="text" Length="3" redcap:Variable="gad_q4" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="gad7">
+		<Question><TranslatedText>Trouble relaxing.</TranslatedText></Question>
+		<CodeListRef CodeListOID="gad_q4.choices"/>
+	</ItemDef>
+	<ItemDef OID="gad_q5" Name="gad_q5" DataType="text" Length="999" redcap:Variable="gad_q5" redcap:FieldType="descriptive" redcap:SectionHeader="Now we are going to ask you about your feelings about some things. " redcap:FieldAnnotation="gad7">
+		<Question><TranslatedText>Over the last 2 weeks, how often have you been bothered by the following problems?</TranslatedText><redcap:FormattedTranslatedText>&lt;div class = &quot;yellow&quot;&gt;&lt;strong&gt;Over the last 2 weeks, how often have you been bothered by the following problems?&lt;/strong&gt;&lt;/div&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="gad_q6" Name="gad_q6" DataType="text" Length="3" redcap:Variable="gad_q6" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="gad7">
+		<Question><TranslatedText>Being so restless that it is hard to sit still.</TranslatedText></Question>
+		<CodeListRef CodeListOID="gad_q6.choices"/>
+	</ItemDef>
+	<ItemDef OID="gad_q7" Name="gad_q7" DataType="text" Length="3" redcap:Variable="gad_q7" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="gad7">
+		<Question><TranslatedText>Becoming easily annoyed or irritable.</TranslatedText></Question>
+		<CodeListRef CodeListOID="gad_q7.choices"/>
+	</ItemDef>
+	<ItemDef OID="gad_q8" Name="gad_q8" DataType="text" Length="3" redcap:Variable="gad_q8" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="gad7">
+		<Question><TranslatedText>Feeling afraid as if something awful might happen.</TranslatedText></Question>
+		<CodeListRef CodeListOID="gad_q8.choices"/>
+	</ItemDef>
+	<ItemDef OID="gad_q9" Name="gad_q9" DataType="text" Length="3" redcap:Variable="gad_q9" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="gad7">
+		<Question><TranslatedText>If you checked off any problems, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?</TranslatedText></Question>
+		<CodeListRef CodeListOID="gad_q9.choices"/>
+	</ItemDef>
+	<ItemDef OID="gad7_complete" Name="gad7_complete" DataType="text" Length="1" redcap:Variable="gad7_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="gad7_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="brief_timestamp_auto" Name="brief_timestamp_auto" DataType="partialDatetime" Length="999" redcap:Variable="brief_timestamp_auto" redcap:FieldType="text" redcap:TextValidationType="datetime_mdy" redcap:FieldAnnotation="@NOW @READONLY @TODAY @READONLY @HIDDEN">
+		<Question><TranslatedText>Auto datetime stamp: (brief video)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="brief_date" Name="brief_date" DataType="date" Length="999" redcap:Variable="brief_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
+		<Question><TranslatedText>Date Session Completed </TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="brief_staff_initials" Name="brief_staff_initials" DataType="text" Length="999" redcap:Variable="brief_staff_initials" redcap:FieldType="text" redcap:TextValidationType="alpha_only" redcap:RequiredField="y">
+		<Question><TranslatedText>Staff initials</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="brief_like" Name="brief_like" DataType="text" Length="1" redcap:Variable="brief_like" redcap:FieldType="radio">
+		<Question><TranslatedText>How much did you like this video?</TranslatedText></Question>
+		<CodeListRef CodeListOID="brief_like.choices"/>
+	</ItemDef>
+	<ItemDef OID="brief_length" Name="brief_length" DataType="text" Length="1" redcap:Variable="brief_length" redcap:FieldType="radio">
+		<Question><TranslatedText>What did you think about the length of this video?</TranslatedText></Question>
+		<CodeListRef CodeListOID="brief_length.choices"/>
+	</ItemDef>
+	<ItemDef OID="brief_video_complete" Name="brief_video_complete" DataType="text" Length="1" redcap:Variable="brief_video_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="brief_video_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="detailed_timestamp_auto" Name="detailed_timestamp_auto" DataType="partialDatetime" Length="999" redcap:Variable="detailed_timestamp_auto" redcap:FieldType="text" redcap:TextValidationType="datetime_mdy" redcap:FieldAnnotation="@NOW @READONLY @TODAY @READONLY @HIDDEN">
+		<Question><TranslatedText>Auto datetime stamp: (brief video)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="detailed_date" Name="detailed_date" DataType="date" Length="999" redcap:Variable="detailed_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
+		<Question><TranslatedText>Date Session Completed </TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="detailed_staff_initials" Name="detailed_staff_initials" DataType="text" Length="999" redcap:Variable="detailed_staff_initials" redcap:FieldType="text" redcap:TextValidationType="alpha_only" redcap:RequiredField="y">
+		<Question><TranslatedText>Staff initials</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="detailed_like" Name="detailed_like" DataType="text" Length="1" redcap:Variable="detailed_like" redcap:FieldType="radio">
+		<Question><TranslatedText>How much did you like this video?</TranslatedText></Question>
+		<CodeListRef CodeListOID="detailed_like.choices"/>
+	</ItemDef>
+	<ItemDef OID="detailed_length" Name="detailed_length" DataType="text" Length="1" redcap:Variable="detailed_length" redcap:FieldType="radio">
+		<Question><TranslatedText>What did you think about the length of this video?</TranslatedText></Question>
+		<CodeListRef CodeListOID="detailed_length.choices"/>
+	</ItemDef>
+	<ItemDef OID="detailed_video_complete" Name="detailed_video_complete" DataType="text" Length="1" redcap:Variable="detailed_video_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="detailed_video_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="sg_timestamp_auto" Name="sg_timestamp_auto" DataType="partialDatetime" Length="999" redcap:Variable="sg_timestamp_auto" redcap:FieldType="text" redcap:TextValidationType="datetime_mdy" redcap:FieldAnnotation="@NOW @READONLY @TODAY @READONLY @HIDDEN">
+		<Question><TranslatedText>Auto datetime stamp: (brief video)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="sg_date" Name="sg_date" DataType="date" Length="999" redcap:Variable="sg_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
+		<Question><TranslatedText>Date Session Completed </TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="sg_staff_initials" Name="sg_staff_initials" DataType="text" Length="999" redcap:Variable="sg_staff_initials" redcap:FieldType="text" redcap:TextValidationType="alpha_only" redcap:RequiredField="y">
+		<Question><TranslatedText>Staff initials</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="support_leader_effective" Name="support_leader_effective" DataType="integer" Length="999" redcap:Variable="support_leader_effective" redcap:FieldType="slider" redcap:TextValidationType="number" redcap:CustomAlignment="RH">
+		<Question><TranslatedText>How effective was the group leader?</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="support_groups_complete" Name="support_groups_complete" DataType="text" Length="1" redcap:Variable="support_groups_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="support_groups_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="text_date" Name="text_date" DataType="date" Length="999" redcap:Variable="text_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
+		<Question><TranslatedText>Date Text Message Sent</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="text_read" Name="text_read" DataType="boolean" Length="1" redcap:Variable="text_read" redcap:FieldType="yesno" redcap:CustomAlignment="RH">
+		<Question><TranslatedText>Did you read the text message?</TranslatedText></Question>
+		<CodeListRef CodeListOID="text_read.choices"/>
+	</ItemDef>
+	<ItemDef OID="text_messages_complete" Name="text_messages_complete" DataType="text" Length="1" redcap:Variable="text_messages_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="text_messages_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="loc_date" Name="loc_date" DataType="date" Length="999" redcap:Variable="loc_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:SectionHeader="An important part of the project is that we can reach you in the future. 
+In order to do this, we need as much contact information for you as possible, in case anything changes like your phone number or your living situation. So we are asking for your contact information as well as names, addresses and phone numbers of your friends, counselors, doctors, job, or family members - any people in New York or elsewhere - who you have regular contact with and who could help us reach you if necessary.
+
+If you don&#039;t feel comfortable with us contacting you through a certain person or in a certain way, &lt;b&gt; please don&#039;t give us that information &lt;/b&gt;.
+
+Whenever we try to contact you or any of your contacts, we will just say you are a part of a &quot;community health project&quot; and won&#039;t mention any information about you, what the project is about, or the names of any specific agencies in order to protect your confidentiality. Do you have any questions? Now we&#039;ll ask you for your contact information and then information for at least 3 other people who, if we can&#039;t get in touch with you directly, may be able to help us reach you.
+
+&lt;div class = &quot;red&quot;&gt;&lt;b&gt;NOTE&lt;/b&gt; to Interviewer: Attempt to get &lt;b&gt;three&lt;/b&gt; different sources of tracking information &lt;/div&gt;">
+		<Question><TranslatedText>Today&#039;s Date:
+
+(date Locator form started)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="loc_date_update" Name="loc_date_update" DataType="date" Length="999" redcap:Variable="loc_date_update" redcap:FieldType="text" redcap:TextValidationType="date_mdy">
+		<Question><TranslatedText>Date of Locator form update
+
+(Update this date every time Locator form is updated)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="loc_fname" Name="loc_fname" DataType="text" Length="999" redcap:Variable="loc_fname" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>First Name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="loc_lname" Name="loc_lname" DataType="text" Length="999" redcap:Variable="loc_lname" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Last Name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="loc_dob" Name="loc_dob" DataType="date" Length="999" redcap:Variable="loc_dob" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:Identifier="y" redcap:RequiredField="y" redcap:FieldAnnotation="@HIDEBUTTON">
+		<Question><TranslatedText>Date of Birth</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="cellphone" Name="cellphone" DataType="text" Length="999" redcap:Variable="cellphone" redcap:FieldType="text" redcap:TextValidationType="phone" redcap:FieldNote="(XXX)-XXX-XXXX" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>What is you current cell phone number?</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="email" Name="email" DataType="text" Length="999" redcap:Variable="email" redcap:FieldType="text" redcap:TextValidationType="email" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>What is your email address?</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="locator_complete" Name="locator_complete" DataType="text" Length="1" redcap:Variable="locator_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="locator_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="rand_timestamp_auto" Name="rand_timestamp_auto" DataType="partialDatetime" Length="999" redcap:Variable="rand_timestamp_auto" redcap:FieldType="text" redcap:TextValidationType="datetime_mdy" redcap:FieldAnnotation="@NOW @READONLY @TODAY @READONLY @HIDDEN">
+		<Question><TranslatedText>Auto datetime stamp: (randomization)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="rand_date" Name="rand_date" DataType="date" Length="999" redcap:Variable="rand_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
+		<Question><TranslatedText>Today&#039;s Date</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="rand_scond" Name="rand_scond" DataType="text" Length="2" redcap:Variable="rand_scond" redcap:FieldType="select" redcap:TextValidationType="autocomplete" redcap:RequiredField="y">
+		<Question><TranslatedText>Study Condition</TranslatedText></Question>
+		<CodeListRef CodeListOID="rand_scond.choices"/>
+	</ItemDef>
+	<ItemDef OID="rand_descr" Name="rand_descr" DataType="text" Length="999" redcap:Variable="rand_descr" redcap:FieldType="descriptive">
+		<Question><TranslatedText>DO NOT change the auto-filled response.</TranslatedText><redcap:FormattedTranslatedText>&lt;h4&gt;&lt;font color = &quot;red&quot;&gt;DO NOT change the auto-filled response.&lt;/font&gt;&lt;/h4&gt;</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="randomization_form_complete" Name="randomization_form_complete" DataType="text" Length="1" redcap:Variable="randomization_form_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="randomization_form_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="core_timestamp_auto" Name="core_timestamp_auto" DataType="partialDatetime" Length="999" redcap:Variable="core_timestamp_auto" redcap:FieldType="text" redcap:TextValidationType="datetime_mdy" redcap:FieldAnnotation="@NOW @READONLY @TODAY @READONLY @HIDDEN">
+		<Question><TranslatedText>Auto datetime stamp: (core session)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="core_date" Name="core_date" DataType="date" Length="999" redcap:Variable="core_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
+		<Question><TranslatedText>Date Session Completed </TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="core_staff_initials" Name="core_staff_initials" DataType="text" Length="999" redcap:Variable="core_staff_initials" redcap:FieldType="text" redcap:TextValidationType="alpha_only" redcap:RequiredField="y">
+		<Question><TranslatedText>Staff initials</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="core_activity1" Name="core_activity1" DataType="text" Length="1" redcap:Variable="core_activity1" redcap:FieldType="radio" redcap:SectionHeader="To what extent was the following activity completed?" redcap:RequiredField="y">
+		<Question><TranslatedText>Introductions</TranslatedText></Question>
+		<CodeListRef CodeListOID="core_activity1.choices"/>
+	</ItemDef>
+	<ItemDef OID="core_activity1_reason" Name="core_activity1_reason" DataType="text" Length="999" redcap:Variable="core_activity1_reason" redcap:FieldType="textarea" redcap:RequiredField="y" redcap:BranchingLogic="[core_activity1] = &#039;1&#039;">
+		<Question><TranslatedText>Provide reason for the activity not being completed.</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="core_activity2" Name="core_activity2" DataType="text" Length="1" redcap:Variable="core_activity2" redcap:FieldType="radio" redcap:SectionHeader="To what extent was the following activity completed?" redcap:RequiredField="y">
+		<Question><TranslatedText>Orientation to the program</TranslatedText></Question>
+		<CodeListRef CodeListOID="core_activity2.choices"/>
+	</ItemDef>
+	<ItemDef OID="core_activity2_reason" Name="core_activity2_reason" DataType="text" Length="999" redcap:Variable="core_activity2_reason" redcap:FieldType="textarea" redcap:RequiredField="y" redcap:BranchingLogic="[core_activity2] = &#039;1&#039;">
+		<Question><TranslatedText>Provide reason for the activity not being completed.</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="core_went_well" Name="core_went_well" DataType="text" Length="999" redcap:Variable="core_went_well" redcap:FieldType="textarea" redcap:SectionHeader="Summary:" redcap:RequiredField="y">
+		<Question><TranslatedText>What went well during the encounter?</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="core_challenges" Name="core_challenges" DataType="text" Length="999" redcap:Variable="core_challenges" redcap:FieldType="textarea" redcap:RequiredField="y">
+		<Question><TranslatedText>What challenges came up during the encounter?
+(include issues you would like to cover in supervision):</TranslatedText><redcap:FormattedTranslatedText>What challenges came up during the encounter?&lt;br&gt;(include issues you would like to cover in supervision):</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="core_next_steps" Name="core_next_steps" DataType="text" Length="999" redcap:Variable="core_next_steps" redcap:FieldType="textarea" redcap:RequiredField="y">
+		<Question><TranslatedText>Next Steps:</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="core_notes" Name="core_notes" DataType="text" Length="999" redcap:Variable="core_notes" redcap:FieldType="textarea">
+		<Question><TranslatedText>Other Comments:</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="core_component_form_complete" Name="core_component_form_complete" DataType="text" Length="1" redcap:Variable="core_component_form_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="core_component_form_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="check_staff_rcond" Name="check_staff_rcond" DataType="text" Length="2" redcap:Variable="check_staff_rcond" redcap:FieldType="select" redcap:TextValidationType="autocomplete" redcap:RequiredField="y">
+		<Question><TranslatedText>Enter the Study Condition</TranslatedText></Question>
+		<CodeListRef CodeListOID="check_staff_rcond.choices"/>
+	</ItemDef>
+	<ItemDef OID="scond_check_notif_wrong" Name="scond_check_notif_wrong" DataType="text" Length="999" redcap:Variable="scond_check_notif_wrong" redcap:FieldType="descriptive" redcap:BranchingLogic="[randomization_arm_2][rand_scond] &lt;&gt; [check_staff_rcond]">
+		<Question><TranslatedText>You are currently in the WRONG study arm.
+
+Go to the Randomization Form, and check the correct study condition. 
+
+</TranslatedText><redcap:FormattedTranslatedText>&lt;div class = &quot;red&quot;&gt;You are currently in the &lt;strong&gt;WRONG&lt;/strong&gt; study arm.
+
+Go to the Randomization Form, and check the correct study condition. &lt;/div&gt;
+
+</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="scond_check_notif_correct" Name="scond_check_notif_correct" DataType="text" Length="999" redcap:Variable="scond_check_notif_correct" redcap:FieldType="descriptive" redcap:BranchingLogic="(([randomization_arm_2][rand_scond] = &#039;3&#039;)  and [check_staff_rcond] = &#039;3&#039;) or (([randomization_arm_2][rand_scond] = &#039;4&#039;) and [check_staff_rcond] = &#039;4&#039;) or (([randomization_arm_2][rand_scond] = &#039;5&#039;) and [check_staff_rcond] = &#039;5&#039;) or (([randomization_arm_2][rand_scond] = &#039;6&#039;)  and [check_staff_rcond] = &#039;6&#039;) or (([randomization_arm_2][rand_scond] = &#039;7&#039;) and [check_staff_rcond] = &#039;7&#039;) or (([randomization_arm_2][rand_scond] = &#039;8&#039;) and [check_staff_rcond] = &#039;8&#039;) or (([randomization_arm_2][rand_scond] = &#039;9&#039;) and [check_staff_rcond] = &#039;9&#039;) or (([randomization_arm_2][rand_scond] = &#039;10&#039;) and [check_staff_rcond] = &#039;10&#039;)">
+		<Question><TranslatedText>You are currently in the CORRECT study arm.
+
+</TranslatedText><redcap:FormattedTranslatedText>&lt;div class = &quot;green&quot;&gt;You are currently in the &lt;strong&gt;CORRECT&lt;/strong&gt; study arm.&lt;/div&gt;
+
+</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="randomization_check_form_complete" Name="randomization_check_form_complete" DataType="text" Length="1" redcap:Variable="randomization_check_form_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="randomization_check_form_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="unique_id_complete.choices" Name="unique_id_complete" DataType="text" redcap:Variable="unique_id_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="scr1_gender.choices" Name="scr1_gender" DataType="text" redcap:Variable="scr1_gender">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="scr1_livingin.choices" Name="scr1_livingin" DataType="text" redcap:Variable="scr1_livingin">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Manhattan</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>The Bronx</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Queens</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Brooklyn</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>Staten Island</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="5"><Decode><TranslatedText>Larger NYC metropolitan area</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="6"><Decode><TranslatedText>Outside NYC metropolitan area</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="scr1_leave.choices" Name="scr1_leave" DataType="text" redcap:Variable="scr1_leave">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="scr1_eligibility.choices" Name="scr1_eligibility" DataType="text" redcap:Variable="scr1_eligibility">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Ineligible</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Eligible</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="screening_complete.choices" Name="screening_complete" DataType="text" redcap:Variable="screening_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="bl_month.choices" Name="bl_month" DataType="text" redcap:Variable="bl_month">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>January</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Februrary</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>March</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>April</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="5"><Decode><TranslatedText>May</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="6"><Decode><TranslatedText>June</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="7"><Decode><TranslatedText>July</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="8"><Decode><TranslatedText>August</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="9"><Decode><TranslatedText>September</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="10"><Decode><TranslatedText>October</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="11"><Decode><TranslatedText>November</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="12"><Decode><TranslatedText>December</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="bl_birthplace.choices" Name="bl_birthplace" DataType="text" redcap:Variable="bl_birthplace">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>USA - mainland, Hawaii, Alaska</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Puerto Rico, US Virgin Islands</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Other North America</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Central America, incl. Mexico</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>Caribbean</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="5"><Decode><TranslatedText>South America</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="6"><Decode><TranslatedText>Europe, incl. Eastern Russia</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="7"><Decode><TranslatedText>Asia, Australia</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="8"><Decode><TranslatedText>Africa</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="9"><Decode><TranslatedText>Other</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="999"><Decode><TranslatedText>Not Applicable</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="bl_spiritual.choices" Name="bl_spiritual" DataType="text" redcap:Variable="bl_spiritual">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>A little</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Somewhat</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Quite a bit</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>A great deal</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="bl_education.choices" Name="bl_education" DataType="text" redcap:Variable="bl_education">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Middle School (Junior High School or less)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Some High School, no diploma</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>High School graduate/ GED or equivalent</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>Junior (2-year) College</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="5"><Decode><TranslatedText>Technical/ Trade/ Vocational School</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="6"><Decode><TranslatedText>Some college (4-year College or University)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="7"><Decode><TranslatedText>College graduate (4-year College or University)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="8"><Decode><TranslatedText>Post-College/ Graduate school</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="baseline_interview_complete.choices" Name="baseline_interview_complete" DataType="text" redcap:Variable="baseline_interview_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="phq9_1.choices" Name="phq9_1" DataType="text" redcap:Variable="phq9_1">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>0- Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>1- Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>2- More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>3- Nearly every day</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="phq9_2.choices" Name="phq9_2" DataType="text" redcap:Variable="phq9_2">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>0- Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>1- Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>2- More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>3- Nearly every day</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="phq9_3.choices" Name="phq9_3" DataType="text" redcap:Variable="phq9_3">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>0- Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>1- Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>2- More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>3- Nearly every day</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="phq9_4.choices" Name="phq9_4" DataType="text" redcap:Variable="phq9_4">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>0- Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>1- Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>2- More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>3- Nearly every day</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="phq9_5.choices" Name="phq9_5" DataType="text" redcap:Variable="phq9_5">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>0- Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>1- Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>2- More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>3- Nearly every day</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="phq9_6.choices" Name="phq9_6" DataType="text" redcap:Variable="phq9_6">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>0- Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>1- Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>2- More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>3- Nearly every day</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="phq9_7.choices" Name="phq9_7" DataType="text" redcap:Variable="phq9_7">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>0- Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>1- Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>2- More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>3- Nearly every day</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="phq9_8.choices" Name="phq9_8" DataType="text" redcap:Variable="phq9_8">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>0- Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>1- Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>2- More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>3- Nearly every day</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="phq9_9.choices" Name="phq9_9" DataType="text" redcap:Variable="phq9_9">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>0- Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>1- Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>2- More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>3- Nearly every day</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="phq9_how_difficult.choices" Name="phq9_how_difficult" DataType="text" redcap:Variable="phq9_how_difficult">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>1- Not difficult at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>2- Somewhat difficult</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>3- Very difficult</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>4- Extremely difficult</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="patient_health_questionnaire_9_complete.choices" Name="patient_health_questionnaire_9_complete" DataType="text" redcap:Variable="patient_health_questionnaire_9_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gad_q1.choices" Name="gad_q1" DataType="text" redcap:Variable="gad_q1">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Nearly everyday</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gad_q2.choices" Name="gad_q2" DataType="text" redcap:Variable="gad_q2">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Nearly everyday</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gad_q3.choices" Name="gad_q3" DataType="text" redcap:Variable="gad_q3">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Nearly everyday</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gad_q4.choices" Name="gad_q4" DataType="text" redcap:Variable="gad_q4">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Nearly everyday</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gad_q6.choices" Name="gad_q6" DataType="text" redcap:Variable="gad_q6">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Nearly everyday</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gad_q7.choices" Name="gad_q7" DataType="text" redcap:Variable="gad_q7">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Nearly everyday</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gad_q8.choices" Name="gad_q8" DataType="text" redcap:Variable="gad_q8">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Several days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>More than half the days</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Nearly everyday</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gad_q9.choices" Name="gad_q9" DataType="text" redcap:Variable="gad_q9">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Not difficult at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Somewhat difficult</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Very difficult</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Extremely difficult</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="997"><Decode><TranslatedText>Don&#039;t Know</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="998"><Decode><TranslatedText>Refuse to Answer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gad7_complete.choices" Name="gad7_complete" DataType="text" redcap:Variable="gad7_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="brief_like.choices" Name="brief_like" DataType="text" redcap:Variable="brief_like">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>a little</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>very much</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="brief_length.choices" Name="brief_length" DataType="text" redcap:Variable="brief_length">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>too short</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>too long</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>just right</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="brief_video_complete.choices" Name="brief_video_complete" DataType="text" redcap:Variable="brief_video_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="detailed_like.choices" Name="detailed_like" DataType="text" redcap:Variable="detailed_like">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>a little</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>very much</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="detailed_length.choices" Name="detailed_length" DataType="text" redcap:Variable="detailed_length">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>too short</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>too long</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>just right</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="detailed_video_complete.choices" Name="detailed_video_complete" DataType="text" redcap:Variable="detailed_video_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="support_groups_complete.choices" Name="support_groups_complete" DataType="text" redcap:Variable="support_groups_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="text_read.choices" Name="text_read" DataType="boolean" redcap:Variable="text_read">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="text_messages_complete.choices" Name="text_messages_complete" DataType="text" redcap:Variable="text_messages_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="locator_complete.choices" Name="locator_complete" DataType="text" redcap:Variable="locator_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="rand_scond.choices" Name="rand_scond" DataType="text" redcap:Variable="rand_scond">
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>tuna</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>salmon</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="5"><Decode><TranslatedText>marlin</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="6"><Decode><TranslatedText>bass</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="7"><Decode><TranslatedText>trout</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="8"><Decode><TranslatedText>shark</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="9"><Decode><TranslatedText>carp</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="10"><Decode><TranslatedText>halibut</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="randomization_form_complete.choices" Name="randomization_form_complete" DataType="text" redcap:Variable="randomization_form_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="core_activity1.choices" Name="core_activity1" DataType="text" redcap:Variable="core_activity1">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>A little</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>somewhat</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>A lot</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="5"><Decode><TranslatedText>Extensively</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="core_activity2.choices" Name="core_activity2" DataType="text" redcap:Variable="core_activity2">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Not at all</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>A little</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>somewhat</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>A lot</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="5"><Decode><TranslatedText>Extensively</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="core_component_form_complete.choices" Name="core_component_form_complete" DataType="text" redcap:Variable="core_component_form_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="check_staff_rcond.choices" Name="check_staff_rcond" DataType="text" redcap:Variable="check_staff_rcond">
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>tuna</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>salmon</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="5"><Decode><TranslatedText>marlin</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="6"><Decode><TranslatedText>bass</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="7"><Decode><TranslatedText>trout</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="8"><Decode><TranslatedText>shark</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="9"><Decode><TranslatedText>carp</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="10"><Decode><TranslatedText>halibut</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="randomization_check_form_complete.choices" Name="randomization_check_form_complete" DataType="text" redcap:Variable="randomization_check_form_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+</ODM>
