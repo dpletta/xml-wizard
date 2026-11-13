@@ -1,0 +1,2945 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>XML Wizard Designer</title>
+<style>
+:root {
+  --bg: #f6f5f1; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6a64; --line: #d9d6cc; --soft: #efede6;
+  --card: #ffffff; --card-line: #cfcbbf; --accent: #2f5d8a; --accent-ink: #ffffff; --accent-soft: #e6eef7;
+  --gate: #b06a00; --gate-bg: #fff3df; --err: #b42318; --err-bg: #fde8e6; --warn: #9a6700; --warn-bg: #fff6d6;
+  --ok: #2e7d4f; --ok-bg: #e3f3e9; --ins: #23395b; --ins-ink: #ffffff; --child: #8a3fa0; --shadow: 0 1px 2px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.06);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161614; --panel: #1f1f1c; --ink: #ecebe6; --muted: #a3a199; --line: #34332f; --soft: #2a2925;
+    --card: #23231f; --card-line: #45443e; --accent: #7fb0e0; --accent-ink: #10202f; --accent-soft: #1c2a3a;
+    --gate: #f0a540; --gate-bg: #3a2c14; --err: #ff8a80; --err-bg: #3d1d1a; --warn: #f2c94c; --warn-bg: #3a3115;
+    --ok: #6fcf97; --ok-bg: #173224; --ins: #3a5a85; --ins-ink: #ffffff; --child: #d39ce6; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.35);
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--sans); overflow: hidden; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { font-size: 13px; padding: 6px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); cursor: pointer; white-space: nowrap; }
+button:hover:not(:disabled) { border-color: var(--accent); }
+button:disabled { opacity: .45; cursor: default; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button.quiet { border-color: transparent; background: transparent; }
+button.quiet:hover:not(:disabled) { background: var(--soft); border-color: transparent; }
+button.danger { color: var(--err); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+input[type=text], input[type=number], input[type=date], input[type=email], select, textarea {
+  width: 100%; padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); min-width: 0; }
+textarea { resize: vertical; min-height: 56px; }
+code, .mono { font-family: var(--mono); font-size: 12px; }
+
+/* Top bar */
+#top { display: flex; align-items: center; gap: 8px; padding: 8px 12px; height: 52px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.brand { font-weight: 700; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
+.brand .logo { width: 24px; height: 24px; border-radius: 7px; background: var(--ins); color: var(--ins-ink); display: grid; place-items: center; font-size: 13px; }
+.brand .sub { font-weight: 400; color: var(--muted); }
+#title { flex: 1 1 160px; max-width: 420px; font-weight: 600; border-color: transparent; background: transparent; text-overflow: ellipsis; }
+#title:hover, #title:focus { border-color: var(--line); background: var(--bg); }
+.spacer { flex: 1; }
+.pill { border-radius: 999px; padding: 4px 11px; font-size: 12px; }
+.pill.ok { color: var(--ok); background: var(--ok-bg); border-color: transparent; }
+.pill.err { color: var(--err); background: var(--err-bg); border-color: transparent; }
+.pill.warn { color: var(--warn); background: var(--warn-bg); border-color: transparent; }
+
+main { display: flex; height: calc(100% - 52px); min-height: 0; }
+
+/* Palette */
+#palette { width: 196px; flex: none; border-right: 1px solid var(--line); background: var(--panel); overflow: auto; padding: 12px 10px 24px; }
+#palette h2, #inspector h3 { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin: 14px 4px 6px; font-weight: 600; }
+#palette h2:first-child { margin-top: 0; }
+.tile { display: flex; align-items: center; gap: 9px; width: 100%; padding: 7px 8px; margin: 3px 0; text-align: left; border: 1px solid var(--line);
+  border-radius: 9px; background: var(--card); cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+.tile:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+.tile small { display: none; color: var(--muted); font-size: 11px; line-height: 1.2; white-space: normal; }
+@media (min-height: 1040px) { .tile small { display: block; } }
+.glyph { flex: none; width: 28px; height: 24px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center;
+  font-size: 11px; font-weight: 700; letter-spacing: -.02em; }
+.palette-tip { color: var(--muted); font-size: 12px; margin: 14px 4px 0; }
+
+/* Canvas */
+#stage { flex: 1; position: relative; overflow: hidden; touch-action: none; cursor: grab; min-width: 0;
+  background-image: radial-gradient(var(--line) 1px, transparent 1px); background-size: 22px 22px; }
+#stage.panning { cursor: grabbing; }
+#world { position: absolute; left: 0; top: 0; transform-origin: 0 0; display: flex; align-items: flex-start; gap: 28px; padding: 4px; width: max-content; }
+.form { width: 316px; flex: none; background: color-mix(in srgb, var(--panel) 82%, transparent); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+.form.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft), var(--shadow); }
+.form-head { display: flex; align-items: center; gap: 8px; padding: 9px 10px 9px 12px; background: var(--ins); color: var(--ins-ink); border-radius: 13px 13px 0 0; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: none; }
+.form-head .name { flex: 1; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.form-head .count { font-size: 11px; opacity: .8; }
+.form-body { position: relative; padding: 10px 10px 4px; min-height: 40px; }
+.form-foot { padding: 4px 10px 10px; }
+.form-foot button { width: 100%; border-style: dashed; color: var(--muted); background: transparent; }
+.form-add { width: 200px; flex: none; min-height: 90px; border: 2px dashed var(--line); border-radius: 14px; background: transparent; color: var(--muted); font-size: 14px; white-space: normal; }
+.form-add.drop-hot, .form-add:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.wires path { fill: none; stroke: var(--card-line); stroke-width: 1.5; }
+.wires path.hot { stroke: var(--accent); stroke-width: 2.2; }
+
+.card { position: relative; background: var(--card); border: 1px solid var(--card-line); border-radius: 10px; padding: 7px 9px 8px; margin: 0 0 8px;
+  cursor: pointer; user-select: none; -webkit-user-select: none; }
+.card:hover { border-color: var(--accent); }
+.card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.card.ctl { box-shadow: 0 0 0 2px var(--accent-soft); border-color: var(--accent); }
+.card.dep { box-shadow: 0 0 0 2px color-mix(in srgb, var(--child) 30%, transparent); border-color: var(--child); }
+.card.dragging { opacity: .3; }
+.card.link-target { box-shadow: 0 0 0 3px var(--gate); border-color: var(--gate); }
+.card.flash { animation: flash 1s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 6px var(--gate); } to { box-shadow: 0 0 0 2px var(--accent); } }
+.card-top { display: flex; align-items: center; gap: 6px; min-height: 22px; }
+.card-top .glyph { width: 24px; height: 20px; font-size: 10px; }
+.card-top .kind { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.card-top .var { margin-left: auto; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 46%; }
+.badge { font-size: 10px; font-weight: 700; padding: 0 5px; border-radius: 5px; line-height: 16px; }
+.badge.req { color: var(--err); background: var(--err-bg); }
+.badge.rid { color: var(--accent); background: var(--accent-soft); }
+.badge.issue-error { color: var(--err); background: var(--err-bg); }
+.badge.issue-warning { color: var(--warn); background: var(--warn-bg); }
+.grip { flex: none; width: 14px; height: 20px; cursor: grab; touch-action: none; opacity: .45;
+  background-image: radial-gradient(currentColor 1.2px, transparent 1.3px); background-size: 6px 6px; background-position: 1px 1px; }
+.card-label { margin: 4px 0 0; font-size: 13.5px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+.card-label.empty { color: var(--muted); font-style: italic; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.chip { font-size: 11.5px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); cursor: crosshair; touch-action: none;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip:hover { border-color: var(--gate); background: var(--gate-bg); color: var(--gate); }
+.chip.more { cursor: default; border-style: dashed; background: transparent; color: var(--muted); }
+.gate { margin-top: 6px; font-size: 12px; background: var(--gate-bg); border-left: 3px solid var(--gate); border-radius: 4px; padding: 3px 7px;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+.gate b { color: var(--gate); font-weight: 650; }
+.branch { position: absolute; right: -11px; top: 50%; margin-top: -11px; width: 22px; height: 22px; padding: 0; border-radius: 50%; font-size: 12px; line-height: 1;
+  color: var(--gate); border-color: var(--gate); background: var(--gate-bg); cursor: crosshair; touch-action: none; display: none; }
+.card:hover .branch, .card.selected .branch { display: block; }
+.card.section { background: transparent; border: none; border-bottom: 2px solid var(--ins); border-radius: 0; padding: 8px 2px 3px; display: flex; gap: 6px; align-items: center; }
+.card.section .card-label { margin: 0; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; -webkit-line-clamp: 2; }
+.card.section.selected { box-shadow: none; background: var(--accent-soft); }
+.drop-slot { height: 4px; margin: -2px 0; border-radius: 2px; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); position: relative; z-index: 2; }
+.form-slot { width: 4px; align-self: stretch; margin: 0 -16px; border-radius: 2px; background: var(--accent); min-height: 80px; }
+.drag-ghost { position: fixed; z-index: 50; pointer-events: none; opacity: .92; transform-origin: 0 0; box-shadow: 0 8px 28px rgba(0,0,0,.25); margin: 0; }
+.drag-ghost.tile { width: 180px; }
+#linkLayer { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 40; }
+#linkLayer path { fill: none; stroke: var(--gate); stroke-width: 2.5; stroke-dasharray: 6 5; }
+#linkLayer circle { fill: var(--gate); }
+
+#zoom { position: absolute; left: 12px; bottom: 12px; display: flex; align-items: center; gap: 2px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 3px; box-shadow: var(--shadow); cursor: default; }
+#zoom button { border: none; padding: 4px 9px; }
+#zoom span { font-size: 12px; color: var(--muted); min-width: 42px; text-align: center; }
+#canvas-hint[hidden] { display: none; }
+#canvas-hint { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px;
+  font-size: 12px; color: var(--muted); box-shadow: var(--shadow); white-space: nowrap; max-width: calc(100% - 200px); overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+#fab { display: none; position: absolute; right: 14px; bottom: 14px; width: 54px; height: 54px; border-radius: 50%; font-size: 26px; padding: 0; box-shadow: var(--shadow); }
+
+/* Inspector */
+#inspector { width: 348px; flex: none; border-left: 1px solid var(--line); background: var(--panel); overflow: auto; padding: 14px 16px 60px; }
+#inspector h2 { font-size: 15px; margin: 0 0 2px; display: flex; align-items: center; gap: 8px; }
+#inspector h3 { margin: 18px 0 6px; }
+#inspector .lead { color: var(--muted); font-size: 12.5px; margin: 2px 0 10px; }
+.sheet-close { display: none; margin-left: auto; }
+label.f { display: block; margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+label.f > input, label.f > select, label.f > textarea { margin-top: 3px; color: var(--ink); font-size: 14px; }
+.row { display: flex; gap: 8px; align-items: center; }
+.row > * { flex: 1; }
+.check { display: flex; gap: 8px; align-items: flex-start; margin: 8px 0 0; font-size: 13px; cursor: pointer; }
+.check input { margin-top: 3px; }
+.check small { display: block; color: var(--muted); }
+.choice-row { display: grid; grid-template-columns: 58px 1fr 28px; gap: 5px; margin: 4px 0; }
+.choice-row input:first-child { font-family: var(--mono); font-size: 12px; text-align: center; padding: 6px 4px; }
+.icon-btn { padding: 0; width: 28px; height: 32px; border-color: transparent; background: transparent; color: var(--muted); font-size: 15px; }
+.icon-btn:hover:not(:disabled) { color: var(--err); background: var(--err-bg); border-color: transparent; }
+.link-btn { border: none; background: none; padding: 2px 0; color: var(--accent); font-size: 12.5px; text-decoration: underline; text-underline-offset: 2px; }
+.seg { display: flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+.seg button { flex: 1; border: none; border-radius: 0; background: transparent; padding: 6px 8px; }
+.seg button[aria-pressed=true] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.rules { background: var(--gate-bg); border-left: 3px solid var(--gate); border-radius: 6px; padding: 8px 8px 6px; margin-top: 8px; }
+.rule { display: grid; grid-template-columns: 1fr 28px; gap: 4px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed color-mix(in srgb, var(--gate) 40%, transparent); }
+.rule .parts { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.rule .parts select:first-child { grid-column: 1 / -1; }
+.rule .parts .solo { grid-column: 1 / -1; }
+.rules .english { font-size: 12.5px; margin: 2px 0 6px; }
+.note { font-size: 12.5px; border-radius: 8px; padding: 7px 10px; margin: 6px 0; }
+.note.error { background: var(--err-bg); } .note.warning { background: var(--warn-bg); } .note.info { background: var(--accent-soft); }
+.note.click { cursor: pointer; }
+.note b { font-weight: 650; }
+.actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 18px; }
+.dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 13px; margin: 6px 0; }
+.dl dt { color: var(--muted); } .dl dd { margin: 0; }
+details.adv { margin-top: 16px; } details.adv summary { cursor: pointer; color: var(--muted); font-size: 12.5px; }
+.steps { margin: 6px 0 0; padding-left: 20px; } .steps li { margin: 3px 0; }
+
+/* Modals, menus, toasts */
+.scrim { position: fixed; inset: 0; background: rgba(15,15,12,.45); z-index: 100; display: grid; place-items: center; padding: 16px; }
+.modal { background: var(--panel); border-radius: 16px; max-width: 760px; width: 100%; max-height: calc(100vh - 32px); overflow: auto; box-shadow: 0 20px 60px rgba(0,0,0,.35); padding: 22px 24px; }
+.modal.wide { max-width: 880px; }
+.modal h2 { margin: 0 0 4px; font-size: 20px; }
+.modal .lead { color: var(--muted); margin: 0 0 16px; }
+.modal-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.modal-head h2 { flex: 1; margin: 0; min-width: 140px; }
+.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.option { text-align: left; white-space: normal; padding: 16px; border-radius: 14px; background: var(--card); display: flex; flex-direction: column; gap: 6px; height: 100%; }
+.option:hover { box-shadow: var(--shadow); }
+.option .big { font-size: 26px; line-height: 1; }
+.option strong { font-size: 15px; }
+.option span { color: var(--muted); font-size: 13px; }
+.panelbox { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+.panelbox h3 { margin: 0 0 2px; font-size: 15px; }
+.panelbox p { margin: 2px 0 8px; color: var(--muted); font-size: 13px; }
+.menu { position: fixed; z-index: 90; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 5px; min-width: 200px; max-height: 70vh; overflow: auto; }
+.menu button { display: flex; gap: 9px; align-items: center; width: 100%; text-align: left; border: none; border-radius: 8px; background: transparent; padding: 7px 10px; }
+.menu button:hover { background: var(--soft); }
+.menu hr { border: none; border-top: 1px solid var(--line); margin: 4px 0; }
+#toast { position: fixed; left: 50%; bottom: 58px; transform: translateX(-50%); z-index: 120; background: var(--ink); color: var(--bg); padding: 9px 16px; border-radius: 10px;
+  font-size: 13px; max-width: min(560px, calc(100vw - 24px)); box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .2s; }
+#toast.show { opacity: 1; }
+.dropzone { position: fixed; inset: 0; z-index: 130; background: color-mix(in srgb, var(--accent) 22%, transparent); border: 4px dashed var(--accent); display: none; place-items: center; font-size: 22px; font-weight: 700; color: var(--accent); pointer-events: none; }
+.dropzone.show { display: grid; }
+
+/* Preview */
+.pv-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 10px 0 14px; }
+.pv-bar select { width: auto; flex: 1 1 160px; }
+.pv-form { border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px 18px; background: var(--card); }
+.pv-section { margin: 20px -18px 0; padding: 7px 18px; background: var(--soft); font-weight: 700; }
+.pv-q { padding: 14px 0 0; }
+.pv-q.skipped { display: none; }
+.show-skipped .pv-q.skipped { display: block; opacity: .45; }
+.pv-q .q { font-weight: 600; margin-bottom: 6px; }
+.pv-q .q .star { color: var(--err); }
+.pv-q .hint { color: var(--muted); font-size: 12px; margin-top: 3px; }
+.pv-q label.opt { display: flex; gap: 8px; align-items: center; padding: 3px 0; cursor: pointer; font-weight: 400; }
+.pv-q input[type=text], .pv-q input[type=number], .pv-q input[type=date], .pv-q input[type=email], .pv-q select, .pv-q textarea { max-width: 420px; }
+.pv-tag { display: inline-block; font-size: 11px; border-radius: 999px; padding: 0 8px; margin-left: 6px; font-weight: 600; vertical-align: middle; }
+.pv-tag.skip { background: var(--soft); color: var(--muted); } .pv-tag.unk { background: var(--warn-bg); color: var(--warn); } .pv-tag.cond { background: var(--gate-bg); color: var(--gate); }
+.pv-desc { padding: 10px 12px; background: var(--accent-soft); border-radius: 8px; }
+
+@media (max-width: 1080px) { #inspector { width: 300px; } #palette { width: 168px; } .tile small { display: none; } }
+@media (max-width: 820px) {
+  #palette { display: none; position: fixed; left: 0; right: 0; bottom: 0; top: auto; width: auto; max-height: 62vh; z-index: 80; border: none; border-top: 1px solid var(--line);
+    border-radius: 16px 16px 0 0; box-shadow: 0 -8px 30px rgba(0,0,0,.25); padding-bottom: 28px; }
+  #palette.open { display: block; }
+  #palette .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8px; }
+  #fab { display: block; }
+  #inspector { display: none; position: fixed; left: 0; right: 0; bottom: 0; width: auto; max-height: 68vh; z-index: 70; border: none; border-top: 1px solid var(--line);
+    border-radius: 16px 16px 0 0; box-shadow: 0 -8px 30px rgba(0,0,0,.25); }
+  #inspector.open { display: block; }
+  .sheet-close { display: inline-block; }
+  #canvas-hint, .brand .sub, .brand .word, #undo, #redo { display: none; }
+  #top { gap: 5px; padding: 8px; }
+  #top button { padding: 6px 8px; }
+  #zoom { bottom: 14px; }
+  #toast { bottom: auto; top: 62px; }
+}
+
+</style>
+</head>
+<body>
+<header id="top">
+  <div class="brand"><span class="logo">W</span><span class="word">XML Wizard</span><span class="sub">Designer</span></div>
+  <input id="title" type="text" aria-label="Survey title" placeholder="Survey title">
+  <span class="spacer"></span>
+  <button id="undo" class="quiet" title="Undo (Ctrl+Z)" aria-label="Undo">↶</button>
+  <button id="redo" class="quiet" title="Redo (Ctrl+Shift+Z)" aria-label="Redo">↷</button>
+  <button id="problems" class="pill ok" title="Things to fix before uploading to REDCap">✓ No problems</button>
+  <button id="preview" title="Answer the survey yourself to test the branching">▶ Preview</button>
+  <button id="open" title="Open a REDCap project XML or data dictionary CSV">Open</button>
+  <button id="export" class="primary">Export</button>
+  <button id="more" class="quiet" aria-label="More">⋯</button>
+</header>
+<main>
+  <aside id="palette" aria-label="Question types"></aside>
+  <section id="stage" aria-label="Survey canvas">
+    <div id="world"></div>
+    <div id="zoom">
+      <button id="zoom-out" aria-label="Zoom out">−</button><span id="zoom-level">100%</span><button id="zoom-in" aria-label="Zoom in">+</button><button id="zoom-fit">Fit</button>
+    </div>
+    <div id="canvas-hint"></div>
+    <button id="fab" class="primary" aria-label="Add a question">+</button>
+  </section>
+  <aside id="inspector" aria-label="Details"></aside>
+</main>
+<svg id="linkLayer" aria-hidden="true"></svg>
+<div id="toast" role="status"></div>
+<div id="dropzone" class="dropzone">Drop your REDCap file to open it</div>
+<input id="file" type="file" accept=".xml,.csv,text/xml,text/csv" hidden>
+<script type="application/json" id="xmlw-preload">null</script>
+<script>
+/* XML Wizard designer core: survey model, REDCap import/export, branching logic.
+ *
+ * No DOM and no dependencies, so the same file runs in the browser (inlined
+ * into designer.html as the global XMLWCore) and in Node (for the tests).
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.XMLWCore = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  function InputError(message) {
+    this.name = "InputError";
+    this.message = message;
+  }
+  InputError.prototype = Object.create(Error.prototype);
+
+  // -------------------------------------------------------------------------
+  // XML (a small parser: ODM files are plain elements, attributes and text)
+  // -------------------------------------------------------------------------
+
+  var ENTITIES = { lt: "<", gt: ">", amp: "&", quot: '"', apos: "'" };
+
+  function decodeEntities(s) {
+    if (s.indexOf("&") < 0) return s;
+    return s.replace(/&(#[xX][0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g, function (m, e) {
+      if (e.charAt(0) === "#") {
+        var hex = e.charAt(1) === "x" || e.charAt(1) === "X";
+        var cp = hex ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+        try { return String.fromCodePoint(cp); } catch (err) { return m; }
+      }
+      return Object.prototype.hasOwnProperty.call(ENTITIES, e) ? ENTITIES[e] : m;
+    });
+  }
+
+  function escText(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function escAttr(s) {
+    return escText(s).replace(/"/g, "&quot;").replace(/'/g, "&#039;")
+      .replace(/\r\n?|\n/g, "&#10;").replace(/\t/g, "&#9;");
+  }
+
+  function parseXml(text) {
+    var i = text.charCodeAt(0) === 0xfeff ? 1 : 0;
+    var n = text.length;
+    var doc = { name: "#document", attrs: [], children: [] };
+    var stack = [doc];
+    var nameRe = /[^\s\/>=]+/y;
+    var wsRe = /\s*/y;
+
+    function fail(msg) { throw new InputError("This file is not valid XML (" + msg + ")."); }
+    function skipWs() { wsRe.lastIndex = i; wsRe.exec(text); i = wsRe.lastIndex; }
+
+    while (i < n) {
+      var lt = text.indexOf("<", i);
+      var top = stack[stack.length - 1];
+      if (lt < 0) { top.children.push(decodeEntities(text.slice(i))); break; }
+      if (lt > i) top.children.push(decodeEntities(text.slice(i, lt)));
+      var end;
+      if (text.startsWith("<!--", lt)) {
+        end = text.indexOf("-->", lt + 4);
+        if (end < 0) fail("unclosed comment");
+        i = end + 3;
+      } else if (text.startsWith("<![CDATA[", lt)) {
+        end = text.indexOf("]]>", lt + 9);
+        if (end < 0) fail("unclosed CDATA section");
+        top.children.push(text.slice(lt + 9, end));
+        i = end + 3;
+      } else if (text.startsWith("<?", lt)) {
+        end = text.indexOf("?>", lt + 2);
+        if (end < 0) fail("unclosed processing instruction");
+        i = end + 2;
+      } else if (text.startsWith("<!", lt)) {
+        var depth = 0;
+        for (end = lt; end < n; end++) {
+          var ch = text.charAt(end);
+          if (ch === "[") depth++;
+          else if (ch === "]") depth--;
+          else if (ch === ">" && depth <= 0) break;
+        }
+        i = end + 1;
+      } else if (text.charAt(lt + 1) === "/") {
+        end = text.indexOf(">", lt);
+        if (end < 0) fail("unclosed tag");
+        var closing = text.slice(lt + 2, end).trim();
+        if (stack.length < 2 || top.name !== closing) fail("unexpected </" + closing + ">");
+        stack.pop();
+        i = end + 1;
+      } else {
+        nameRe.lastIndex = lt + 1;
+        var m = nameRe.exec(text);
+        if (!m) fail("stray '<'");
+        var node = { name: m[0], attrs: [], children: [] };
+        i = nameRe.lastIndex;
+        var selfClosing = false;
+        for (;;) {
+          skipWs();
+          if (i >= n) fail("unclosed <" + node.name + ">");
+          if (text.charAt(i) === ">") { i++; break; }
+          if (text.charAt(i) === "/" && text.charAt(i + 1) === ">") { i += 2; selfClosing = true; break; }
+          nameRe.lastIndex = i;
+          var am = nameRe.exec(text);
+          if (!am) fail("bad attribute in <" + node.name + ">");
+          i = nameRe.lastIndex;
+          skipWs();
+          if (text.charAt(i) !== "=") fail("attribute without a value in <" + node.name + ">");
+          i++;
+          skipWs();
+          var q = text.charAt(i);
+          if (q !== '"' && q !== "'") fail("unquoted attribute in <" + node.name + ">");
+          var close = text.indexOf(q, i + 1);
+          if (close < 0) fail("unclosed attribute in <" + node.name + ">");
+          node.attrs.push([am[0], decodeEntities(text.slice(i + 1, close))]);
+          i = close + 1;
+        }
+        top.children.push(node);
+        if (!selfClosing) stack.push(node);
+      }
+    }
+    if (stack.length > 1) fail("<" + stack[stack.length - 1].name + "> is never closed");
+    return doc;
+  }
+
+  function serializeXml(node) {
+    var a = node.attrs.map(function (kv) { return " " + kv[0] + '="' + escAttr(kv[1]) + '"'; }).join("");
+    if (!node.children.length) return "<" + node.name + a + "/>";
+    return "<" + node.name + a + ">" + node.children.map(function (c) {
+      return typeof c === "string" ? escText(c) : serializeXml(c);
+    }).join("") + "</" + node.name + ">";
+  }
+
+  function local(name) { var k = name.indexOf(":"); return k < 0 ? name : name.slice(k + 1); }
+  function elements(node) { return node.children.filter(function (c) { return typeof c !== "string"; }); }
+  function kids(node, name) { return elements(node).filter(function (c) { return local(c.name) === name; }); }
+  function kid(node, name) { return node ? kids(node, name)[0] || null : null; }
+  function attr(node, name, dflt) {
+    for (var k = 0; k < node.attrs.length; k++) {
+      if (node.attrs[k][0] === name || local(node.attrs[k][0]) === name) return node.attrs[k][1];
+    }
+    return dflt === undefined ? "" : dflt;
+  }
+  function textOf(node) {
+    if (!node) return "";
+    return node.children.map(function (c) { return typeof c === "string" ? c : textOf(c); }).join("");
+  }
+  function findDeep(node, name) {
+    var els = elements(node);
+    for (var k = 0; k < els.length; k++) {
+      if (local(els[k].name) === name) return els[k];
+      var hit = findDeep(els[k], name);
+      if (hit) return hit;
+    }
+    return null;
+  }
+
+  // -------------------------------------------------------------------------
+  // CSV
+  // -------------------------------------------------------------------------
+
+  function parseCsv(text) {
+    if (text.charCodeAt(0) === 0xfeff) text = text.slice(1);
+    var rows = [], row = [], cell = "", inQ = false, i = 0, n = text.length;
+    while (i < n) {
+      var ch = text.charAt(i);
+      if (inQ) {
+        if (ch === '"') {
+          if (text.charAt(i + 1) === '"') { cell += '"'; i += 2; continue; }
+          inQ = false; i++; continue;
+        }
+        cell += ch; i++; continue;
+      }
+      if (ch === '"') { inQ = true; i++; continue; }
+      if (ch === ",") { row.push(cell); cell = ""; i++; continue; }
+      if (ch === "\r" || ch === "\n") {
+        if (ch === "\r" && text.charAt(i + 1) === "\n") i++;
+        row.push(cell); rows.push(row); row = []; cell = ""; i++; continue;
+      }
+      cell += ch; i++;
+    }
+    if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
+    return rows;
+  }
+
+  function csvCell(v) {
+    v = v == null ? "" : String(v);
+    return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+
+  // -------------------------------------------------------------------------
+  // Model
+  // -------------------------------------------------------------------------
+
+  var CHOICE_TYPES = { radio: 1, dropdown: 1, checkbox: 1 };
+  var CODED_TYPES = { radio: 1, dropdown: 1, checkbox: 1, yesno: 1, truefalse: 1 };
+
+  // What people drag from the palette. `type` and `validation` are REDCap's.
+  var KINDS = [
+    { key: "text", label: "Short answer", glyph: "Aa", type: "text", hint: "A word or a line of text" },
+    { key: "notes", label: "Long answer", glyph: "¶", type: "notes", hint: "A paragraph of free text" },
+    { key: "integer", label: "Whole number", glyph: "123", type: "text", validation: "integer", hint: "Age, counts" },
+    { key: "number", label: "Decimal number", glyph: "1.5", type: "text", validation: "number", hint: "Weight, lab values" },
+    { key: "date", label: "Date", glyph: "31", type: "text", validation: "date_ymd", hint: "A calendar date" },
+    { key: "yesno", label: "Yes / No", glyph: "Y/N", type: "yesno", hint: "Coded 1 = Yes, 0 = No" },
+    { key: "radio", label: "Pick one", glyph: "◉", type: "radio", hint: "Radio buttons, one answer" },
+    { key: "dropdown", label: "Dropdown", glyph: "▾", type: "dropdown", hint: "One answer from a long list" },
+    { key: "checkbox", label: "Pick any", glyph: "☑", type: "checkbox", hint: "Checkboxes, several answers" },
+    { key: "slider", label: "Slider", glyph: "⟷", type: "slider", validation: "number", hint: "A 0 to 100 scale" },
+    { key: "email", label: "Email", glyph: "@", type: "text", validation: "email", hint: "Checked as an email address" },
+    { key: "calc", label: "Calculated", glyph: "ƒx", type: "calc", hint: "Worked out from other answers" },
+    { key: "file", label: "File upload", glyph: "⇪", type: "file", hint: "A document or image" },
+    { key: "descriptive", label: "Text block", glyph: "T", type: "descriptive", hint: "Instructions, no answer", layout: true },
+    { key: "section", label: "Section heading", glyph: "§", hint: "A heading between questions", layout: true }
+  ];
+  var KIND_BY_KEY = {};
+  KINDS.forEach(function (k) { KIND_BY_KEY[k.key] = k; });
+
+  var TYPE_LABELS = {
+    text: "Short answer", notes: "Long answer", radio: "Pick one", dropdown: "Dropdown", checkbox: "Pick any",
+    yesno: "Yes / No", truefalse: "True / False", calc: "Calculated", descriptive: "Text block",
+    slider: "Slider", file: "File upload", sql: "SQL dropdown"
+  };
+
+  var VALIDATIONS = [
+    ["", "Any text"], ["integer", "Whole number"], ["number", "Decimal number"],
+    ["date_ymd", "Date (Y-M-D)"], ["date_mdy", "Date (M-D-Y)"], ["date_dmy", "Date (D-M-Y)"],
+    ["datetime_ymd", "Date and time (Y-M-D)"], ["datetime_mdy", "Date and time (M-D-Y)"],
+    ["datetime_dmy", "Date and time (D-M-Y)"], ["time", "Time (HH:MM)"], ["email", "Email"],
+    ["phone", "Phone (North America)"], ["zipcode", "Zip code (US)"], ["alpha_only", "Letters only"]
+  ];
+
+  var uidCounter = 0;
+  function uid() {
+    uidCounter += 1;
+    return "i" + Date.now().toString(36) + uidCounter.toString(36) + Math.floor(Math.random() * 1296).toString(36);
+  }
+
+  function stripHtml(s) {
+    if (!s) return "";
+    return decodeEntities(String(s).replace(/<br\s*\/?>/gi, " ").replace(/<[^>]+>/g, "")
+      .replace(/&nbsp;/g, " ")).replace(/\s+/g, " ").trim();
+  }
+
+  var STOP_WORDS = {};
+  ("a an the of in on at to for with and or is are was were be been do does did have has had you your yours " +
+   "what which who when where how please this that it its as by from if any there their they we our us i my " +
+   "me would could should will can").split(" ").forEach(function (w) { STOP_WORDS[w] = 1; });
+
+  function slugify(label, fallback) {
+    var words = stripHtml(label).toLowerCase().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, " ").trim().split(" ")
+      .filter(Boolean);
+    var kept = words.filter(function (w) { return !STOP_WORDS[w]; });
+    if (!kept.length) kept = words;
+    var s = "";
+    for (var k = 0; k < kept.length; k++) {
+      var next = s ? s + "_" + kept[k] : kept[k];
+      if (next.length > 26) { if (!s) s = kept[k].slice(0, 26); break; }
+      s = next;
+    }
+    if (!s) s = fallback || "question";
+    if (!/^[a-z]/.test(s)) s = (fallback && /^[a-z]/.test(fallback) ? fallback.charAt(0) : "q") + "_" + s;
+    return s.slice(0, 26).replace(/_+$/, "");
+  }
+
+  function isField(item) { return item.kind === "field"; }
+
+  function allFields(project) {
+    var out = [];
+    project.forms.forEach(function (form) {
+      form.items.forEach(function (it) { if (isField(it)) out.push(it); });
+    });
+    return out;
+  }
+
+  function fieldIndex(project) {
+    var idx = {}, order = 0;
+    project.forms.forEach(function (form) {
+      form.items.forEach(function (it) {
+        if (isField(it) && !idx[it.name]) idx[it.name] = { field: it, form: form, order: order };
+        if (isField(it)) order++;
+      });
+    });
+    return idx;
+  }
+
+  function findItem(project, id) {
+    for (var f = 0; f < project.forms.length; f++) {
+      var items = project.forms[f].items;
+      for (var k = 0; k < items.length; k++) {
+        if (items[k].id === id) return { item: items[k], form: project.forms[f], index: k };
+      }
+    }
+    return null;
+  }
+
+  function takenNames(project, exceptId) {
+    var taken = {};
+    project.forms.forEach(function (form) {
+      taken[form.name + "_complete"] = 1;
+      form.items.forEach(function (it) { if (isField(it) && it.id !== exceptId) taken[it.name] = 1; });
+    });
+    return taken;
+  }
+
+  function uniqueName(project, base, exceptId) {
+    var taken = takenNames(project, exceptId);
+    if (!taken[base]) return base;
+    for (var k = 2; ; k++) {
+      var suffix = "_" + k;
+      var cand = base.slice(0, 26 - suffix.length).replace(/_+$/, "") + suffix;
+      if (!taken[cand]) return cand;
+    }
+  }
+
+  function uniqueFormName(project, base, exceptId) {
+    var taken = {};
+    project.forms.forEach(function (f) { if (f.id !== exceptId) taken[f.name] = 1; });
+    if (!taken[base]) return base;
+    for (var k = 2; ; k++) if (!taken[base + "_" + k]) return base + "_" + k;
+  }
+
+  function formSlug(label) {
+    var s = stripHtml(label).toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 50);
+    if (!s) s = "instrument";
+    if (!/^[a-z]/.test(s)) s = "form_" + s;
+    return s;
+  }
+
+  function newField(props) {
+    var f = {
+      id: uid(), kind: "field", name: "", autoName: true, type: "text", label: "", choices: [],
+      note: "", validation: "", min: "", max: "", required: false, identifier: false,
+      logic: "", calc: "", annotation: "", extra: []
+    };
+    for (var k in props) f[k] = props[k];
+    if (f.type === "yesno" && !f.choices.length) f.choices = [{ code: "1", label: "Yes" }, { code: "0", label: "No" }];
+    if (f.type === "truefalse" && !f.choices.length) f.choices = [{ code: "1", label: "True" }, { code: "0", label: "False" }];
+    return f;
+  }
+
+  function newSection(label) { return { id: uid(), kind: "section", label: label || "" }; }
+
+  function newForm(project, label) {
+    label = label || "New instrument";
+    return { id: uid(), name: uniqueFormName(project, formSlug(label)), autoName: true, label: label, items: [] };
+  }
+
+  function newProject(title) {
+    var project = { title: title || "My survey", forms: [], keep: null, source: null };
+    var form = newForm(project, "Survey");
+    form.items.push(newField({ name: "record_id", autoName: false, label: "Record ID" }));
+    project.forms.push(form);
+    return project;
+  }
+
+  // Create an item from a palette kind, named so it does not clash.
+  function createFromKind(project, key) {
+    var kind = KIND_BY_KEY[key];
+    if (!kind) throw new Error("Unknown kind " + key);
+    if (key === "section") return newSection("New section");
+    var f = newField({ type: kind.type, validation: kind.validation || "" });
+    if (CHOICE_TYPES[kind.type]) {
+      f.choices = [{ code: "1", label: "Option 1" }, { code: "2", label: "Option 2" }, { code: "3", label: "Option 3" }];
+    }
+    f.name = uniqueName(project, key === "descriptive" ? "info" : "question");
+    return f;
+  }
+
+  function kindOf(field) {
+    if (field.kind === "section") return KIND_BY_KEY.section;
+    for (var k = 0; k < KINDS.length; k++) {
+      if (KINDS[k].type === field.type && (KINDS[k].validation || "") === (field.validation || "")) return KINDS[k];
+    }
+    if (field.type === "text") {
+      var v = field.validation || "";
+      var base = /^date/.test(v) ? KIND_BY_KEY.date : /^(number|integer)/.test(v) ? KIND_BY_KEY.number : KIND_BY_KEY.text;
+      var lab = null;
+      VALIDATIONS.forEach(function (p) { if (p[0] === v) lab = p[1]; });
+      return { key: base.key, label: lab || "Short answer (" + v + ")", glyph: base.glyph, type: "text", validation: v };
+    }
+    return { key: field.type, label: TYPE_LABELS[field.type] || field.type, glyph: field.type === "truefalse" ? "T/F" : "?", type: field.type };
+  }
+
+  function parseChoices(text) {
+    var out = [];
+    String(text || "").split(/\s*\|\s*|\\n|\r?\n/).forEach(function (part) {
+      part = part.trim();
+      if (!part) return;
+      var k = part.indexOf(",");
+      if (k >= 0) out.push({ code: part.slice(0, k).trim(), label: part.slice(k + 1).trim() });
+      else out.push({ code: part, label: part });
+    });
+    return out;
+  }
+
+  function choicesText(choices) {
+    return choices.map(function (c) { return c.code + ", " + c.label; }).join(" | ");
+  }
+
+  function nextCode(choices) {
+    var max = 0;
+    choices.forEach(function (c) { if (/^\d+$/.test(c.code)) max = Math.max(max, parseInt(c.code, 10)); });
+    return String(max + 1);
+  }
+
+  // -------------------------------------------------------------------------
+  // Branching logic: tokens, a small parser, plain rules, evaluation
+  // -------------------------------------------------------------------------
+
+  function tokenize(src) {
+    var toks = [], i = 0, n = src.length, m;
+    var numRe = /\d+(\.\d+)?|\.\d+/y, idRe = /[A-Za-z_][A-Za-z0-9_]*/y;
+    while (i < n) {
+      var ch = src.charAt(i);
+      if (/\s/.test(ch)) { i++; continue; }
+      if (ch === "[") {
+        var close = src.indexOf("]", i);
+        if (close < 0) throw new Error("A '[' is never closed");
+        toks.push({ t: "ref", v: src.slice(i + 1, close).trim() });
+        i = close + 1; continue;
+      }
+      if (ch === "'" || ch === '"') {
+        var endq = src.indexOf(ch, i + 1);
+        if (endq < 0) throw new Error("A quote is never closed");
+        toks.push({ t: "str", v: src.slice(i + 1, endq) });
+        i = endq + 1; continue;
+      }
+      numRe.lastIndex = i;
+      if ((m = numRe.exec(src))) { toks.push({ t: "num", v: m[0] }); i = numRe.lastIndex; continue; }
+      idRe.lastIndex = i;
+      if ((m = idRe.exec(src))) {
+        var w = m[0].toLowerCase();
+        toks.push(w === "and" || w === "or" || w === "not" ? { t: "op", v: w } : { t: "id", v: m[0] });
+        i = idRe.lastIndex; continue;
+      }
+      var two = src.substr(i, 2);
+      if (two === "<>" || two === "!=" || two === ">=" || two === "<=" || two === "&&" || two === "||") {
+        toks.push({ t: "op", v: two === "!=" ? "<>" : two === "&&" ? "and" : two === "||" ? "or" : two });
+        i += 2; continue;
+      }
+      if ("=<>+-*/(),!".indexOf(ch) >= 0) { toks.push({ t: "op", v: ch === "!" ? "not" : ch }); i++; continue; }
+      throw new Error("Unexpected character '" + ch + "'");
+    }
+    return toks;
+  }
+
+  var CMP = { "=": 1, "<>": 1, ">": 1, ">=": 1, "<": 1, "<=": 1 };
+
+  function parseLogic(src) {
+    var toks = tokenize(src), p = 0;
+    function peek(v) { return p < toks.length && toks[p].t === "op" && toks[p].v === v; }
+    function parseOr() {
+      var left = parseAnd();
+      while (peek("or")) { p++; left = { k: "or", a: left, b: parseAnd() }; }
+      return left;
+    }
+    function parseAnd() {
+      var left = parseNot();
+      while (peek("and")) { p++; left = { k: "and", a: left, b: parseNot() }; }
+      return left;
+    }
+    function parseNot() {
+      if (peek("not")) { p++; return { k: "not", a: parseNot() }; }
+      return parseCmp();
+    }
+    function parseCmp() {
+      var left = parseAdd();
+      if (p < toks.length && toks[p].t === "op" && CMP[toks[p].v]) {
+        var op = toks[p++].v;
+        return { k: "cmp", op: op, a: left, b: parseAdd() };
+      }
+      return left;
+    }
+    function parseAdd() {
+      var left = parseMul();
+      while (peek("+") || peek("-")) { var op = toks[p++].v; left = { k: "math", op: op, a: left, b: parseMul() }; }
+      return left;
+    }
+    function parseMul() {
+      var left = parseUnary();
+      while (peek("*") || peek("/")) { var op = toks[p++].v; left = { k: "math", op: op, a: left, b: parseUnary() }; }
+      return left;
+    }
+    function parseUnary() {
+      if (peek("-")) { p++; return { k: "math", op: "-", a: { k: "num", v: "0" }, b: parseUnary() }; }
+      if (peek("+")) { p++; return parseUnary(); }
+      return parsePrimary();
+    }
+    function parsePrimary() {
+      var t = toks[p];
+      if (!t) throw new Error("The logic ends too early");
+      if (t.t === "num") { p++; return { k: "num", v: t.v }; }
+      if (t.t === "str") { p++; return { k: "str", v: t.v }; }
+      if (t.t === "ref") {
+        p++;
+        var ref = { k: "ref", name: t.v, code: null, event: null };
+        if (toks[p] && toks[p].t === "ref") { ref.event = t.v; ref.name = toks[p].v; p++; }
+        var cm = /^([^()]+)\(([^()]*)\)$/.exec(ref.name);
+        if (cm) { ref.name = cm[1].trim(); ref.code = cm[2].trim(); }
+        return ref;
+      }
+      if (t.t === "id") {
+        p++;
+        if (!peek("(")) throw new Error("Unexpected word '" + t.v + "'");
+        p++;
+        var args = [];
+        if (!peek(")")) {
+          args.push(parseOr());
+          while (peek(",")) { p++; args.push(parseOr()); }
+        }
+        if (!peek(")")) throw new Error("A '(' is never closed");
+        p++;
+        return { k: "fn", name: t.v, args: args };
+      }
+      if (peek("(")) {
+        p++;
+        var inner = parseOr();
+        if (!peek(")")) throw new Error("A '(' is never closed");
+        p++;
+        return inner;
+      }
+      throw new Error("Unexpected '" + t.v + "'");
+    }
+    var ast = parseOr();
+    if (p < toks.length) throw new Error("Unexpected '" + toks[p].v + "'");
+    return ast;
+  }
+
+  function tryParse(src) {
+    if (!src || !src.trim()) return null;
+    try { return parseLogic(src); } catch (e) { return null; }
+  }
+
+  function walk(ast, fn) {
+    if (!ast) return;
+    fn(ast);
+    if (ast.a) walk(ast.a, fn);
+    if (ast.b) walk(ast.b, fn);
+    if (ast.args) ast.args.forEach(function (x) { walk(x, fn); });
+  }
+
+  // Fields mentioned in a logic or calculation string: [{name, code, event}]
+  function logicRefs(src) {
+    var refs = [];
+    var ast = tryParse(src);
+    if (ast) {
+      walk(ast, function (node) { if (node.k === "ref") refs.push({ name: node.name, code: node.code, event: node.event }); });
+      return refs;
+    }
+    var re = /\[([a-z][a-z0-9_]*)(?:\(([^()\]]*)\))?\]/g, m;
+    while ((m = re.exec(src || ""))) refs.push({ name: m[1], code: m[2] == null ? null : m[2], event: null });
+    return refs;
+  }
+
+  // "[a] = '1' and [b(2)] = '1'" -> {join, rules} when the logic is a flat list
+  // of comparisons a person can edit with dropdowns; null when it is not.
+  function simpleRules(src) {
+    var ast = tryParse(src);
+    if (!ast) return null;
+    var join = ast.k === "or" ? "or" : "and";
+    var terms = [];
+    (function flatten(node) {
+      if (node.k === join && (node.k === "and" || node.k === "or")) { flatten(node.a); flatten(node.b); }
+      else terms.push(node);
+    })(ast);
+    var rules = [];
+    for (var k = 0; k < terms.length; k++) {
+      var t = terms[k];
+      if (t.k !== "cmp" || t.a.k !== "ref" || t.a.event || (t.b.k !== "str" && t.b.k !== "num")) return null;
+      if (t.a.code != null) {
+        if (t.b.v !== "1" && t.b.v !== "0") return null;
+        if (t.op !== "=" && t.op !== "<>") return null;
+        var checked = (t.b.v === "1") === (t.op === "=");
+        rules.push({ field: t.a.name, code: t.a.code, op: checked ? "checked" : "unchecked", value: "" });
+      } else if (t.b.v === "" && (t.op === "=" || t.op === "<>")) {
+        rules.push({ field: t.a.name, code: null, op: t.op === "=" ? "empty" : "answered", value: "" });
+      } else {
+        rules.push({ field: t.a.name, code: null, op: t.op, value: t.b.v });
+      }
+    }
+    return { join: join, rules: rules };
+  }
+
+  function ruleToLogic(r) {
+    if (r.op === "checked" || r.op === "unchecked") return "[" + r.field + "(" + r.code + ")] = '" + (r.op === "checked" ? "1" : "0") + "'";
+    if (r.op === "empty") return "[" + r.field + "] = ''";
+    if (r.op === "answered") return "[" + r.field + "] <> ''";
+    var numeric = /^-?\d+(\.\d+)?$/.test(r.value);
+    var bare = numeric && r.op !== "=" && r.op !== "<>";
+    return "[" + r.field + "] " + r.op + " " + (bare ? r.value : "'" + String(r.value).replace(/'/g, "") + "'");
+  }
+
+  function rulesToLogic(spec) {
+    return spec.rules.filter(function (r) { return r.field; }).map(ruleToLogic).join(spec.join === "or" ? " or " : " and ");
+  }
+
+  // Add one more condition to whatever logic a field already has.
+  function addCondition(logic, rule) {
+    var extra = ruleToLogic(rule);
+    if (!logic || !logic.trim()) return extra;
+    var spec = simpleRules(logic);
+    if (spec && (spec.join === "and" || spec.rules.length === 1)) {
+      var dup = spec.rules.some(function (r) { return ruleToLogic(r) === extra; });
+      return dup ? logic : logic.trim() + " and " + extra;
+    }
+    return "(" + logic.trim() + ") and " + extra;
+  }
+
+  var OP_WORDS = { "=": "is", "<>": "is not", ">": "is more than", ">=": "is at least", "<": "is less than", "<=": "is at most" };
+
+  function shortLabel(field) {
+    var s = stripHtml(field.label) || field.name;
+    return s.length > 38 ? s.slice(0, 36).trim() + "…" : s;
+  }
+
+  function choiceLabel(field, code) {
+    for (var k = 0; k < field.choices.length; k++) if (field.choices[k].code === String(code)) return stripHtml(field.choices[k].label);
+    return null;
+  }
+
+  // Plain English for a card: "Ever homeless? is Yes". Falls back to the raw text.
+  function describeLogic(src, index) {
+    var spec = simpleRules(src);
+    if (!spec) return src.trim();
+    return spec.rules.map(function (r) {
+      var hit = index[r.field];
+      var who = hit ? shortLabel(hit.field) : "[" + r.field + "]";
+      if (r.op === "checked" || r.op === "unchecked") {
+        var lab = hit ? choiceLabel(hit.field, r.code) : null;
+        return who + (r.op === "checked" ? " includes " : " does not include ") + "“" + (lab || r.code) + "”";
+      }
+      if (r.op === "empty") return who + " is blank";
+      if (r.op === "answered") return who + " is answered";
+      var val = hit && CODED_TYPES[hit.field.type] ? choiceLabel(hit.field, r.value) : null;
+      return who + " " + OP_WORDS[r.op] + " " + (val ? "“" + val + "”" : r.value);
+    }).join(spec.join === "or" ? "  or  " : "  and  ");
+  }
+
+  function Unsupported(what) { this.what = what; }
+
+  function isNumeric(s) { return typeof s === "string" && s.trim() !== "" && isFinite(Number(s)); }
+
+  // answers: {name: "value"} and for checkboxes {name: {code: true}}
+  function evaluate(ast, answers) {
+    function val(node) {
+      switch (node.k) {
+        case "num": case "str": return node.v;
+        case "ref":
+          if (node.event) throw new Unsupported("logic across events");
+          var a = answers[node.name];
+          if (node.code != null) return a && typeof a === "object" && a[node.code] ? "1" : "0";
+          return a == null || typeof a === "object" ? "" : String(a);
+        case "math":
+          var x = val(node.a), y = val(node.b);
+          if (!isNumeric(x) || !isNumeric(y)) return "";
+          x = Number(x); y = Number(y);
+          return String(node.op === "+" ? x + y : node.op === "-" ? x - y : node.op === "*" ? x * y : x / y);
+        case "fn": throw new Unsupported("the function " + node.name + "()");
+        default: return truth(node) ? "1" : "0";
+      }
+    }
+    function truth(node) {
+      switch (node.k) {
+        case "and": return truth(node.a) && truth(node.b);
+        case "or": return truth(node.a) || truth(node.b);
+        case "not": return !truth(node.a);
+        case "cmp":
+          var x = val(node.a), y = val(node.b);
+          var num = isNumeric(x) && isNumeric(y);
+          if (num) { x = Number(x); y = Number(y); }
+          switch (node.op) {
+            case "=": return x === y;
+            case "<>": return x !== y;
+            case ">": return num ? x > y : x !== "" && y !== "" && x > y;
+            case ">=": return num ? x >= y : x !== "" && y !== "" && x >= y;
+            case "<": return num ? x < y : x !== "" && y !== "" && x < y;
+            default: return num ? x <= y : x !== "" && y !== "" && x <= y;
+          }
+        default:
+          var v = val(node);
+          return v !== "" && v !== "0";
+      }
+    }
+    return truth(ast);
+  }
+
+  // true = show, false = hide, null = cannot be worked out here (shown, flagged)
+  function isShown(field, answers) {
+    if (!field.logic || !field.logic.trim()) return true;
+    var ast = tryParse(field.logic);
+    if (!ast) return null;
+    try { return evaluate(ast, answers); } catch (e) { return null; }
+  }
+
+  // Rename a variable everywhere it is referenced in logic and calculations.
+  function renameVariable(project, oldName, newName) {
+    if (!oldName || oldName === newName) return;
+    var re = new RegExp("\\[" + oldName.replace(/[^a-z0-9_]/gi, "") + "(?=[\\](])", "g");
+    allFields(project).forEach(function (f) {
+      if (f.logic) f.logic = f.logic.replace(re, "[" + newName);
+      if (f.calc) f.calc = f.calc.replace(re, "[" + newName);
+    });
+  }
+
+  // The field a card hangs under on the canvas: the latest earlier field in
+  // the same instrument that its logic mentions.
+  function parentsInForm(form) {
+    var pos = {}, parents = {}, depth = {};
+    form.items.forEach(function (it, k) { if (isField(it)) pos[it.name] = k; });
+    form.items.forEach(function (it, k) {
+      if (!isField(it) || !it.logic) return;
+      var best = -1;
+      logicRefs(it.logic).forEach(function (r) {
+        var at = pos[r.name];
+        if (at != null && at < k && at > best && !r.event) best = at;
+      });
+      if (best >= 0) {
+        var parent = form.items[best];
+        parents[it.id] = parent.id;
+        depth[it.id] = Math.min((depth[parent.id] || 0) + 1, 5);
+      }
+    });
+    return { parents: parents, depth: depth };
+  }
+
+  // -------------------------------------------------------------------------
+  // Checks
+  // -------------------------------------------------------------------------
+
+  function validate(project) {
+    var issues = [];
+    function add(severity, item, message, form) {
+      issues.push({ severity: severity, itemId: item ? item.id : null, formId: form ? form.id : null, message: message });
+    }
+    var index = fieldIndex(project);
+    var seen = {}, formNames = {};
+    var fields = allFields(project);
+    if (!fields.length) add("error", null, "The project has no questions yet.");
+    project.forms.forEach(function (form) {
+      if (formNames[form.name]) add("error", null, "Two instruments are both named '" + form.name + "'.", form);
+      formNames[form.name] = 1;
+      if (!form.items.some(isField)) add("warning", null, "'" + form.label + "' has no questions, so it will be left out of the export.", form);
+      var last = form.items[form.items.length - 1];
+      if (last && last.kind === "section") add("warning", last, "This section heading has no question after it, so REDCap cannot keep it.", form);
+    });
+    fields.forEach(function (f) {
+      var where = index[f.name];
+      if (!f.name) add("error", f, "This question needs a variable name.");
+      else if (!/^[a-z][a-z0-9_]*$/.test(f.name)) add("error", f, "Variable name '" + f.name + "' may only use lowercase letters, numbers and underscores, and must start with a letter.");
+      else if (/_$|__/.test(f.name)) add("error", f, "Variable name '" + f.name + "' cannot end with an underscore or contain two in a row.");
+      else if (f.name.length > 100) add("error", f, "Variable name '" + f.name + "' is too long for REDCap.");
+      if (f.name) {
+        if (seen[f.name]) add("error", f, "Variable name '" + f.name + "' is used by more than one question.");
+        seen[f.name] = 1;
+        if (formNames[f.name.replace(/_complete$/, "")] && /_complete$/.test(f.name)) {
+          add("error", f, "'" + f.name + "' is reserved by REDCap for the instrument's status.");
+        }
+      }
+      if (!stripHtml(f.label) && f.type !== "descriptive") add("warning", f, "This question has no text yet.");
+      if (CHOICE_TYPES[f.type]) {
+        if (!f.choices.length) add("error", f, "Add at least one answer choice.");
+        var codes = {};
+        f.choices.forEach(function (c) {
+          if (c.code === "") add("error", f, "An answer choice is missing its code.");
+          else if (codes[c.code]) add("error", f, "Answer code '" + c.code + "' is used twice.");
+          else if (!/^-?[A-Za-z0-9._]+$/.test(c.code)) add("warning", f, "Answer code '" + c.code + "' has characters REDCap may reject. Letters and numbers are safest.");
+          codes[c.code] = 1;
+          if (!stripHtml(c.label)) add("warning", f, "Answer choice '" + c.code + "' has no label.");
+        });
+      }
+      if (f.type === "calc" && !f.calc.trim()) add("warning", f, "This calculated field has no equation yet.");
+      if (f.logic && f.logic.trim()) checkLogic(f, where);
+    });
+
+    function checkLogic(f, where) {
+      var ast = tryParse(f.logic);
+      if (!ast) {
+        var why = "";
+        try { parseLogic(f.logic); } catch (e) { why = e.message; }
+        add("warning", f, "The branching logic could not be read (" + why + "). Check it before uploading.");
+        return;
+      }
+      var flagged = {};
+      function once(key, sev, msg) { if (!flagged[key]) { flagged[key] = 1; add(sev, f, msg); } }
+      walk(ast, function (node) {
+        if (node.k === "ref") {
+          if (node.event && !index[node.name]) once("m" + node.name, "error", "The logic mentions [" + node.name + "], which does not exist.");
+          if (node.event) return;
+          if (/^[a-z]+(-[a-z]+)+$/.test(node.name)) return; // smart variables such as [event-name]
+          var hit = index[node.name];
+          if (!hit) return once("m" + node.name, "error", "The logic mentions [" + node.name + "], which does not exist, so this question would never show.");
+          var t = hit.field;
+          if (t === f) once("self", "error", "The logic refers to the question itself.");
+          else if (hit.order > where.order) once("fwd" + t.name, "warning", "This depends on '" + shortLabel(t) + "', which is asked later. Move it below that question.");
+          if (t.type === "descriptive") once("d" + t.name, "error", "The logic refers to '" + t.name + "', a text block that holds no answer.");
+          if (t.type === "checkbox" && node.code == null) once("cb" + t.name, "error", "'" + t.name + "' is a checkbox question, so the logic must name one option, like [" + t.name + "(1)] = '1'.");
+          if (t.type === "checkbox" && node.code != null && choiceLabel(t, node.code) == null) once("cc" + t.name + node.code, "error", "'" + t.name + "' has no answer coded " + node.code + ".");
+          if (t.type !== "checkbox" && node.code != null) once("nc" + t.name, "error", "'" + t.name + "' is not a checkbox question, so [" + t.name + "(" + node.code + ")] will not work.");
+        }
+        if (node.k === "cmp") {
+          [[node.a, node.b], [node.b, node.a]].forEach(function (pair) {
+            var ref = pair[0], lit = pair[1];
+            if (ref.k !== "ref" || ref.event || ref.code != null || (lit.k !== "str" && lit.k !== "num")) return;
+            var hit = index[ref.name];
+            if (!hit || !CODED_TYPES[hit.field.type] || hit.field.type === "checkbox" || lit.v === "") return;
+            if (choiceLabel(hit.field, lit.v) == null) {
+              once("code" + ref.name + lit.v, "error", "'" + shortLabel(hit.field) + "' has no answer coded " + lit.v + ", so this condition can never be true.");
+            }
+          });
+        }
+      });
+    }
+    return issues;
+  }
+
+  // -------------------------------------------------------------------------
+  // Import: REDCap project XML (CDISC ODM)
+  // -------------------------------------------------------------------------
+
+  var KNOWN_ITEM_ATTRS = {
+    Variable: 1, FieldType: 1, TextValidationType: 1, SectionHeader: 1, FieldNote: 1, Calculation: 1,
+    Identifier: 1, RequiredField: 1, BranchingLogic: 1, FieldAnnotation: 1,
+    TextValidationMin: 1, TextValidationMax: 1
+  };
+  var TITLE_GLOBALS = { StudyName: 1, StudyDescription: 1, ProtocolName: 1 };
+
+  function yes(v) { return /^(y|yes|1|true)$/i.test(String(v || "").trim()); }
+
+  function translated(node) {
+    if (!node) return "";
+    var tt = findDeep(node, "TranslatedText");
+    return (tt ? textOf(tt) : textOf(node)).trim();
+  }
+
+  function importOdm(text, fileName) {
+    var doc = parseXml(text);
+    var odm = elements(doc)[0];
+    if (!odm || local(odm.name) !== "ODM") {
+      throw new InputError("This XML file is not a REDCap project export. In REDCap, use Project Setup, Other Functionality, then Download metadata only (XML).");
+    }
+    var study = findDeep(odm, "Study");
+    var mdv = study && kid(study, "MetaDataVersion");
+    if (!mdv) throw new InputError("This file has no project design in it (no <MetaDataVersion> element).");
+    var gv = kid(study, "GlobalVariables");
+    var title = (gv && translated(kid(gv, "StudyName"))) || attr(mdv, "Name") || String(fileName || "Imported project").replace(/\.[^.]+$/, "");
+    var notes = [];
+    var project = { title: title, forms: [], keep: null, source: { format: "REDCap project XML", file: fileName || "" } };
+
+    var groups = {}, items = {}, lists = {};
+    kids(mdv, "ItemGroupDef").forEach(function (g) { groups[attr(g, "OID")] = g; });
+    kids(mdv, "ItemDef").forEach(function (it) { items[attr(it, "OID")] = it; });
+    kids(mdv, "CodeList").forEach(function (c) { lists[attr(c, "OID")] = c; });
+
+    var seen = {};
+    kids(mdv, "FormDef").forEach(function (fd) {
+      var formName = attr(fd, "FormName") || attr(fd, "OID").replace(/^Form\./, "");
+      var form = { id: uid(), name: formName, autoName: false, label: attr(fd, "Name") || formName, items: [] };
+      project.forms.push(form);
+      kids(fd, "ItemGroupRef").forEach(function (gref) {
+        var group = groups[attr(gref, "ItemGroupOID")];
+        if (!group) return;
+        kids(group, "ItemRef").forEach(function (iref) {
+          var item = items[attr(iref, "ItemOID")];
+          if (!item) return;
+          var name = attr(item, "Variable") || attr(item, "Name");
+          if (seen[name]) return; // later options of a checkbox already read
+          seen[name] = 1;
+          if (name === formName + "_complete") return; // REDCap adds the status field itself
+          var type = attr(item, "FieldType") || (kid(item, "CodeListRef") ? "radio" : "text");
+          if (type === "select") type = "dropdown";
+          if (type === "textarea") type = "notes";
+          var q = kid(item, "Question");
+          var formatted = q && kid(q, "FormattedTranslatedText");
+          var label = formatted ? textOf(formatted).trim() : translated(q);
+          var header = attr(item, "SectionHeader");
+          if (header.trim()) form.items.push(newSection(header.trim()));
+          var f = newField({
+            name: name, autoName: false, type: type, label: label,
+            choices: odmChoices(item, type, name, lists, items),
+            note: attr(item, "FieldNote"), validation: attr(item, "TextValidationType"),
+            min: rangeValue(item, "GE") || attr(item, "TextValidationMin"),
+            max: rangeValue(item, "LE") || attr(item, "TextValidationMax"),
+            required: yes(attr(item, "RequiredField")), identifier: yes(attr(item, "Identifier")),
+            logic: attr(item, "BranchingLogic").trim(), calc: attr(item, "Calculation"),
+            annotation: attr(item, "FieldAnnotation")
+          });
+          item.attrs.forEach(function (kv) {
+            var k = kv[0].indexOf(":");
+            if (k > 0 && kv[0].slice(0, 5) !== "xmlns" && !KNOWN_ITEM_ATTRS[kv[0].slice(k + 1)]) f.extra.push([kv[0].slice(k + 1), kv[1]]);
+          });
+          form.items.push(f);
+        });
+      });
+    });
+    if (!allFields(project).length) throw new InputError("No questions were found in this file.");
+
+    var recordId = attr(mdv, "RecordIdField");
+    var first = allFields(project)[0];
+    if (recordId && first.name !== recordId) notes.push("The record ID field '" + recordId + "' is not the first field. REDCap treats the first field as the record ID.");
+
+    var events = kids(mdv, "StudyEventDef");
+    project.keep = {
+      version: attr(odm, "SourceSystemVersion"),
+      globals: gv ? elements(gv).filter(function (el) { return !TITLE_GLOBALS[local(el.name)]; }) : [],
+      protocol: kid(mdv, "Protocol"),
+      events: events
+    };
+    if (events.length > 1) notes.push("This is a longitudinal project with " + events.length + " events. Events and arms are kept as they are; new instruments need to be assigned to events in REDCap.");
+    if (findDeep(odm, "ClinicalData")) notes.push("This file also contains participant records. Only the survey design was read; records are never kept or exported here.");
+    return { project: project, notes: notes };
+  }
+
+  function rangeValue(item, comparator) {
+    var checks = kids(item, "RangeCheck");
+    for (var k = 0; k < checks.length; k++) {
+      if (attr(checks[k], "Comparator") === comparator) return textOf(kid(checks[k], "CheckValue")).trim();
+    }
+    return "";
+  }
+
+  function odmChoices(item, type, name, lists, items) {
+    var ref = kid(item, "CodeListRef");
+    var cl = ref ? lists[attr(ref, "CodeListOID")] : null;
+    if (type === "checkbox") {
+      if (cl && attr(cl, "CheckboxChoices")) return parseChoices(attr(cl, "CheckboxChoices"));
+      for (var oid in lists) {
+        if (attr(lists[oid], "Variable") === name && attr(lists[oid], "CheckboxChoices")) return parseChoices(attr(lists[oid], "CheckboxChoices"));
+      }
+      var out = [];
+      Object.keys(items).forEach(function (o) {
+        if (o.indexOf(name + "___") === 0) out.push({ code: o.slice(name.length + 3), label: o.slice(name.length + 3) });
+      });
+      return out;
+    }
+    if (!cl) return [];
+    return kids(cl, "CodeListItem").map(function (cli) {
+      return { code: attr(cli, "CodedValue"), label: translated(kid(cli, "Decode")) };
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // Import: Data Dictionary CSV
+  // -------------------------------------------------------------------------
+
+  var DD_COLUMNS = [
+    ["variable", "name"], ["form name", "form"], ["section header", "section"], ["field type", "type"],
+    ["field label", "label"], ["choices", "choices"], ["field note", "note"],
+    ["text validation type", "validation"], ["text validation min", "min"], ["text validation max", "max"],
+    ["identifier", "identifier"], ["branching logic", "logic"], ["required field", "required"],
+    ["custom alignment", "CustomAlignment"], ["question number", "QuestionNumber"],
+    ["matrix group name", "MatrixGroupName"], ["matrix ranking", "MatrixRanking"], ["field annotation", "annotation"]
+  ];
+  var DD_EXTRA = ["CustomAlignment", "QuestionNumber", "MatrixGroupName", "MatrixRanking"];
+
+  function titleCase(s) {
+    return s.replace(/_+/g, " ").replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); });
+  }
+
+  function importDataDictionary(text, fileName) {
+    var rows = parseCsv(text);
+    if (!rows.length) throw new InputError("The data dictionary file is empty.");
+    var map = {}, used = {};
+    rows[0].forEach(function (col, idx) {
+      var low = col.trim().toLowerCase();
+      for (var k = 0; k < DD_COLUMNS.length; k++) {
+        if (low.indexOf(DD_COLUMNS[k][0]) === 0 && !used[DD_COLUMNS[k][1]]) { map[idx] = DD_COLUMNS[k][1]; used[DD_COLUMNS[k][1]] = 1; break; }
+      }
+    });
+    if (!used.name || !used.type) {
+      throw new InputError("This CSV does not look like a REDCap data dictionary (it needs 'Variable / Field Name' and 'Field Type' columns).");
+    }
+    var project = {
+      title: titleCase(String(fileName || "Imported survey").replace(/\.[^.]+$/, "").replace(/[-_]?(data)?[-_]?dictionary.*$/i, "")) || "Imported survey",
+      forms: [], keep: null, source: { format: "REDCap data dictionary", file: fileName || "" }
+    };
+    var byName = {};
+    rows.slice(1).forEach(function (raw) {
+      var v = {};
+      raw.forEach(function (cell, idx) { if (map[idx]) v[map[idx]] = cell; });
+      var name = (v.name || "").trim();
+      if (!name) return;
+      var formName = (v.form || "").trim() || "survey";
+      var form = byName[formName];
+      if (!form) {
+        form = byName[formName] = { id: uid(), name: formName, autoName: false, label: titleCase(formName), items: [] };
+        project.forms.push(form);
+      }
+      var type = (v.type || "text").trim().toLowerCase();
+      if (type === "select") type = "dropdown";
+      if (type === "textarea") type = "notes";
+      if ((v.section || "").trim()) form.items.push(newSection(v.section.trim()));
+      var f = newField({
+        name: name, autoName: false, type: type, label: v.label || "",
+        choices: CHOICE_TYPES[type] ? parseChoices(v.choices) : [],
+        note: v.note || "", validation: (v.validation || "").trim(), min: (v.min || "").trim(), max: (v.max || "").trim(),
+        required: yes(v.required), identifier: yes(v.identifier), logic: (v.logic || "").trim(),
+        calc: type === "calc" ? (v.choices || "") : "", annotation: v.annotation || ""
+      });
+      if ((type === "slider" || type === "sql") && (v.choices || "").trim()) f.choicesRaw = v.choices;
+      DD_EXTRA.forEach(function (k) { if ((v[k] || "").trim()) f.extra.push([k, v[k].trim()]); });
+      form.items.push(f);
+    });
+    if (!allFields(project).length) throw new InputError("No questions were found in this data dictionary.");
+    return { project: project, notes: [] };
+  }
+
+  function importAny(text, fileName) {
+    var head = text.slice(0, 2000).replace(/^﻿/, "").trim();
+    if (head.charAt(0) === "<") return importOdm(text, fileName);
+    return importDataDictionary(text, fileName);
+  }
+
+  // -------------------------------------------------------------------------
+  // Export
+  // -------------------------------------------------------------------------
+
+  // Fields per instrument, each with the section heading that precedes it.
+  function exportRows(project) {
+    var out = [];
+    project.forms.forEach(function (form) {
+      var rows = [], pending = "";
+      form.items.forEach(function (it) {
+        if (it.kind === "section") { pending = pending ? pending + " " + it.label : it.label; return; }
+        rows.push({ field: it, section: pending });
+        pending = "";
+      });
+      if (rows.length) out.push({ form: form, rows: rows });
+    });
+    return out;
+  }
+
+  function extraValue(field, key) {
+    for (var k = 0; k < field.extra.length; k++) if (field.extra[k][0] === key) return field.extra[k][1];
+    return "";
+  }
+
+  var DD_HEADER = [
+    "Variable / Field Name", "Form Name", "Section Header", "Field Type", "Field Label",
+    "Choices, Calculations, OR Slider Labels", "Field Note", "Text Validation Type OR Show Slider Number",
+    "Text Validation Min", "Text Validation Max", "Identifier?", "Branching Logic (Show field only if...)",
+    "Required Field?", "Custom Alignment", "Question Number (surveys only)", "Matrix Group Name",
+    "Matrix Ranking?", "Field Annotation"
+  ];
+
+  function exportDataDictionary(project) {
+    var lines = [DD_HEADER.map(csvCell).join(",")];
+    exportRows(project).forEach(function (entry) {
+      entry.rows.forEach(function (row) {
+        var f = row.field;
+        var third = CHOICE_TYPES[f.type] ? choicesText(f.choices) : f.type === "calc" ? f.calc : (f.choicesRaw || "");
+        lines.push([
+          f.name, entry.form.name, row.section, f.type, f.label, third, f.note, f.validation, f.min, f.max,
+          f.identifier ? "y" : "", f.logic, f.required ? "y" : "", extraValue(f, "CustomAlignment"),
+          extraValue(f, "QuestionNumber"), extraValue(f, "MatrixGroupName"), extraValue(f, "MatrixRanking"), f.annotation
+        ].map(csvCell).join(","));
+      });
+    });
+    return lines.join("\r\n") + "\r\n";
+  }
+
+  function odmDataType(f) {
+    var v = f.validation || "";
+    if (f.type === "checkbox" || f.type === "yesno" || f.type === "truefalse") return "boolean";
+    if (f.type === "calc") return "float";
+    if (f.type === "slider") return "integer";
+    if (f.type !== "text") return "text";
+    if (v === "integer") return "integer";
+    if (/^number/.test(v)) return "float";
+    if (/^date_/.test(v)) return "date";
+    if (/^datetime_seconds/.test(v)) return "datetime";
+    if (/^datetime_/.test(v)) return "partialDatetime";
+    if (v === "time") return "partialTime";
+    return "text";
+  }
+
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+
+  function exportOdm(project, opts) {
+    opts = opts || {};
+    var now = opts.now || new Date();
+    var stamp = now.getFullYear() + "-" + pad2(now.getMonth() + 1) + "-" + pad2(now.getDate()) + "T" +
+      pad2(now.getHours()) + ":" + pad2(now.getMinutes()) + ":" + pad2(now.getSeconds());
+    var title = project.title.trim() || "My survey";
+    var camel = title.replace(/[^A-Za-z0-9 ]+/g, "").split(/\s+/).map(function (w) {
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }).join("").slice(0, 60) || "Project";
+    var entries = exportRows(project);
+    if (!entries.length) throw new InputError("Add at least one question before exporting.");
+    var keep = project.keep || {};
+    var formNames = {};
+    entries.forEach(function (e) { formNames[e.form.name] = 1; });
+    var recordId = entries[0].rows[0].field.name;
+    var notes = [];
+    var L = [];
+
+    L.push('<?xml version="1.0" encoding="UTF-8" ?>');
+    L.push('<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ' +
+      'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" ' +
+      'xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" ' +
+      'FileOID="000-00-0000" FileType="Snapshot" Description="' + escAttr(title) + '" AsOfDateTime="' + stamp +
+      '" CreationDateTime="' + stamp + '" SourceSystem="REDCap" SourceSystemVersion="' + escAttr(keep.version || "14.5.0") + '">');
+    L.push('<Study OID="Project.' + camel + '">');
+    L.push("<GlobalVariables>");
+    L.push("\t<StudyName>" + escText(title) + "</StudyName>");
+    L.push("\t<StudyDescription>This file contains the metadata, events, and data for REDCap project \"" + escText(title) + "\".</StudyDescription>");
+    L.push("\t<ProtocolName>" + escText(title) + "</ProtocolName>");
+    if (keep.globals && keep.globals.length) {
+      keep.globals.forEach(function (node) { L.push("\t" + serializeXml(pruneForms(node, formNames))); });
+    } else {
+      [["RecordAutonumberingEnabled", "1"], ["CustomRecordLabel", ""], ["SecondaryUniqueField", ""],
+        ["SchedulingEnabled", "0"], ["SurveysEnabled", "1"], ["Purpose", "0"], ["PurposeOther", ""], ["ProjectNotes", ""]
+      ].forEach(function (g) { L.push("\t<redcap:" + g[0] + ">" + escText(g[1]) + "</redcap:" + g[0] + ">"); });
+    }
+    L.push("</GlobalVariables>");
+    L.push('<MetaDataVersion OID="Metadata.' + camel + "_" + stamp.slice(0, 16).replace("T", "_").replace(":", "") +
+      '" Name="' + escAttr(title) + '" redcap:RecordIdField="' + escAttr(recordId) + '">');
+
+    var events = (keep.events || []).map(function (ev) { return pruneForms(ev, formNames); });
+    if (events.length) {
+      var assigned = {};
+      events.forEach(function (ev) { kids(ev, "FormRef").forEach(function (fr) { assigned[attr(fr, "FormName")] = 1; }); });
+      var unassigned = entries.filter(function (e) { return !assigned[e.form.name]; });
+      if (unassigned.length && events.length === 1) {
+        unassigned.forEach(function (e) {
+          events[0].children.push({ name: "FormRef", children: [], attrs: [["FormOID", "Form." + e.form.name],
+            ["OrderNumber", String(kids(events[0], "FormRef").length + 1)], ["Mandatory", "No"], ["redcap:FormName", e.form.name]] });
+        });
+      } else if (unassigned.length) {
+        notes.push("Assign these new instruments to events in REDCap after import: " +
+          unassigned.map(function (e) { return e.form.label; }).join(", ") + ".");
+      }
+      if (keep.protocol) L.push("\t" + serializeXml(keep.protocol));
+      events.forEach(function (ev) { L.push("\t" + serializeXml(ev)); });
+    }
+
+    // Item groups: REDCap starts a new group at every section heading.
+    var groupLines = [], itemLines = [], listLines = [];
+    entries.forEach(function (entry) {
+      var form = entry.form, groupsOut = [], current = null;
+      entry.rows.forEach(function (row, k) {
+        if (k === 0 || row.section) {
+          current = { oid: form.name + "." + row.field.name, name: row.section || form.label, refs: [] };
+          groupsOut.push(current);
+        }
+        itemOids(row.field).forEach(function (oid) {
+          current.refs.push('\t\t<ItemRef ItemOID="' + escAttr(oid) + '" Mandatory="' + (row.field.required ? "Yes" : "No") +
+            '" redcap:Variable="' + escAttr(row.field.name) + '"/>');
+        });
+        writeItem(row.field, row.section);
+      });
+      var status = form.name + "_complete";
+      groupsOut.push({ oid: form.name + "." + status, name: "Form Status",
+        refs: ['\t\t<ItemRef ItemOID="' + status + '" Mandatory="No" redcap:Variable="' + status + '"/>'] });
+      itemLines.push('\t<ItemDef OID="' + status + '" Name="' + status + '" DataType="text" Length="1" redcap:Variable="' + status +
+        '" redcap:FieldType="select" redcap:SectionHeader="Form Status">');
+      itemLines.push("\t\t<Question><TranslatedText>Complete?</TranslatedText></Question>");
+      itemLines.push('\t\t<CodeListRef CodeListOID="' + status + '.choices"/>');
+      itemLines.push("\t</ItemDef>");
+      writeList(status + ".choices", status, "text", status, "",
+        [{ code: "0", label: "Incomplete" }, { code: "1", label: "Unverified" }, { code: "2", label: "Complete" }]);
+
+      L.push('\t<FormDef OID="Form.' + escAttr(form.name) + '" Name="' + escAttr(form.label) + '" Repeating="No" redcap:FormName="' + escAttr(form.name) + '">');
+      groupsOut.forEach(function (g) { L.push('\t\t<ItemGroupRef ItemGroupOID="' + escAttr(g.oid) + '" Mandatory="No"/>'); });
+      L.push("\t</FormDef>");
+      groupsOut.forEach(function (g) {
+        groupLines.push('\t<ItemGroupDef OID="' + escAttr(g.oid) + '" Name="' + escAttr(g.name) + '" Repeating="No">');
+        groupLines.push.apply(groupLines, g.refs);
+        groupLines.push("\t</ItemGroupDef>");
+      });
+    });
+
+    function itemOids(f) {
+      if (f.type !== "checkbox") return [f.name];
+      return f.choices.map(function (c) { return f.name + "___" + checkboxSuffix(c.code); });
+    }
+
+    function writeItem(f, section) {
+      var odmType = f.type === "dropdown" ? "select" : f.type === "notes" ? "textarea" : f.type;
+      var length = "999";
+      if (f.type === "checkbox" || f.type === "yesno" || f.type === "truefalse") length = "1";
+      else if (CHOICE_TYPES[f.type] && f.choices.length) length = String(Math.max.apply(null, f.choices.map(function (c) { return c.code.length; })));
+      var stripped = stripHtml(f.label);
+      var hasHtml = /<[a-z!\/][^>]*>/i.test(f.label);
+      itemOids(f).forEach(function (oid) {
+        var a = ' OID="' + escAttr(oid) + '" Name="' + escAttr(oid) + '" DataType="' + odmDataType(f) + '" Length="' + length + '"' +
+          ' redcap:Variable="' + escAttr(f.name) + '" redcap:FieldType="' + escAttr(odmType) + '"';
+        function add(key, value) { if (value !== "" && value != null) a += " redcap:" + key + '="' + escAttr(value) + '"'; }
+        add("TextValidationType", f.validation);
+        add("SectionHeader", section);
+        add("FieldNote", f.note);
+        if (f.type === "calc") add("Calculation", f.calc);
+        add("Identifier", f.identifier ? "y" : "");
+        add("RequiredField", f.required ? "y" : "");
+        add("BranchingLogic", f.logic.trim());
+        f.extra.forEach(function (kv) { add(kv[0], kv[1]); });
+        add("FieldAnnotation", f.annotation);
+        itemLines.push("\t<ItemDef" + a + ">");
+        itemLines.push("\t\t<Question><TranslatedText>" + escText(hasHtml ? stripped : f.label) + "</TranslatedText>" +
+          (hasHtml ? "<redcap:FormattedTranslatedText>" + escText(f.label) + "</redcap:FormattedTranslatedText>" : "") + "</Question>");
+        if (CODED_TYPES[f.type]) itemLines.push('\t\t<CodeListRef CodeListOID="' + escAttr(oid) + '.choices"/>');
+        [["GE", f.min], ["LE", f.max]].forEach(function (rc) {
+          if (rc[1] === "" || rc[1] == null) return;
+          itemLines.push('\t\t<RangeCheck Comparator="' + rc[0] + '" SoftHard="Soft"><CheckValue>' + escText(rc[1]) +
+            "</CheckValue><ErrorMessage><TranslatedText>The value you provided is outside the suggested range.</TranslatedText></ErrorMessage></RangeCheck>");
+        });
+        itemLines.push("\t</ItemDef>");
+        if (f.type === "checkbox") {
+          writeList(oid + ".choices", oid, "boolean", f.name, choicesText(f.choices),
+            [{ code: "1", label: "Checked" }, { code: "0", label: "Unchecked" }]);
+        } else if (CODED_TYPES[f.type]) {
+          writeList(oid + ".choices", oid, odmDataType(f) === "boolean" ? "boolean" : "text", f.name, "", f.choices);
+        }
+      });
+    }
+
+    function writeList(oid, name, dataType, variable, checkboxChoices, choices) {
+      listLines.push('\t<CodeList OID="' + escAttr(oid) + '" Name="' + escAttr(name) + '" DataType="' + dataType + '" redcap:Variable="' +
+        escAttr(variable) + '"' + (checkboxChoices ? ' redcap:CheckboxChoices="' + escAttr(checkboxChoices) + '"' : "") + ">");
+      choices.forEach(function (c) {
+        listLines.push('\t\t<CodeListItem CodedValue="' + escAttr(c.code) + '"><Decode><TranslatedText>' + escText(c.label) +
+          "</TranslatedText></Decode></CodeListItem>");
+      });
+      listLines.push("\t</CodeList>");
+    }
+
+    L.push.apply(L, groupLines);
+    L.push.apply(L, itemLines);
+    L.push.apply(L, listLines);
+    L.push("</MetaDataVersion>");
+    L.push("</Study>");
+    L.push("</ODM>");
+    return { xml: L.join("\n") + "\n", notes: notes };
+  }
+
+  // REDCap writes checkbox columns as name___code, lowercased, with a minus as "_".
+  function checkboxSuffix(code) { return String(code).toLowerCase().replace(/-/g, "_").replace(/[^a-z0-9_]/g, ""); }
+
+  // Drop references to instruments that no longer exist from kept nodes.
+  function pruneForms(node, formNames) {
+    var copy = { name: node.name, attrs: node.attrs.slice(), children: [] };
+    node.children.forEach(function (c) {
+      if (typeof c === "string") { copy.children.push(c); return; }
+      var ln = local(c.name);
+      if (ln === "FormRef" && !formNames[attr(c, "FormName") || attr(c, "FormOID").replace(/^Form\./, "")]) return;
+      if (ln === "RepeatingInstrument" && !formNames[attr(c, "RepeatInstrument")]) return;
+      copy.children.push(pruneForms(c, formNames));
+    });
+    return copy;
+  }
+
+  // -------------------------------------------------------------------------
+  // A small example to explore
+  // -------------------------------------------------------------------------
+
+  function sampleProject() {
+    var p = { title: "Housing and Health Survey (example)", forms: [], keep: null, source: null };
+    function form(label) { var f = newForm(p, label); p.forms.push(f); return f; }
+    function field(f, props) { props.autoName = false; f.items.push(newField(props)); }
+    function yn() { return [{ code: "1", label: "Yes" }, { code: "0", label: "No" }]; }
+    var demo = form("Demographics");
+    field(demo, { name: "record_id", label: "Record ID" });
+    field(demo, { name: "age", label: "What is your age in years?", validation: "integer", min: "18", max: "99", required: true });
+    field(demo, { name: "gender", type: "radio", label: "What is your gender?", required: true, choices: [
+      { code: "1", label: "Woman" }, { code: "2", label: "Man" }, { code: "3", label: "Non-binary" },
+      { code: "4", label: "Prefer to self-describe" }, { code: "99", label: "Prefer not to answer" }] });
+    field(demo, { name: "gender_self", label: "Please describe your gender:", logic: "[gender] = '4'" });
+    var housing = form("Housing");
+    housing.items.push(newSection("Housing history"));
+    field(housing, { name: "homeless_life", type: "yesno", label: "Have you ever been homeless in your lifetime?", required: true, choices: yn() });
+    field(housing, { name: "homeless_6mo", type: "yesno", label: "In the past 6 months, have you been homeless?", logic: "[homeless_life] = '1'", choices: yn() });
+    field(housing, { name: "homeless_nights", label: "In the past 6 months, how many nights did you sleep outside or in a shelter?",
+      validation: "integer", min: "0", max: "183", logic: "[homeless_6mo] = '1'" });
+    field(housing, { name: "shelter_type", type: "checkbox", label: "In the past 6 months, where did you stay? (Select all that apply)",
+      logic: "[homeless_6mo] = '1'", choices: [{ code: "1", label: "Emergency shelter" }, { code: "2", label: "Outdoors" },
+        { code: "3", label: "Vehicle" }, { code: "4", label: "With friends or family" }, { code: "98", label: "Somewhere else" }] });
+    field(housing, { name: "shelter_other", label: "Where else did you stay?", logic: "[shelter_type(98)] = '1'" });
+    housing.items.push(newSection("Current housing"));
+    field(housing, { name: "housing_now", type: "dropdown", label: "Where do you live now?", choices: [
+      { code: "1", label: "Own home or apartment" }, { code: "2", label: "Renting" }, { code: "3", label: "Staying with others" },
+      { code: "4", label: "Shelter" }, { code: "5", label: "No stable housing" }] });
+    field(housing, { name: "rent_burden", type: "yesno", label: "Do you spend more than half your income on rent?", logic: "[housing_now] = '2'", choices: yn() });
+    return p;
+  }
+
+  return {
+    InputError: InputError, parseXml: parseXml, serializeXml: serializeXml, parseCsv: parseCsv,
+    KINDS: KINDS, KIND_BY_KEY: KIND_BY_KEY, VALIDATIONS: VALIDATIONS, CHOICE_TYPES: CHOICE_TYPES, CODED_TYPES: CODED_TYPES,
+    uid: uid, stripHtml: stripHtml, slugify: slugify, formSlug: formSlug, isField: isField, allFields: allFields,
+    fieldIndex: fieldIndex, findItem: findItem, uniqueName: uniqueName, uniqueFormName: uniqueFormName,
+    newField: newField, newSection: newSection, newForm: newForm, newProject: newProject, createFromKind: createFromKind,
+    kindOf: kindOf, parseChoices: parseChoices, choicesText: choicesText, nextCode: nextCode,
+    parseLogic: parseLogic, logicRefs: logicRefs, simpleRules: simpleRules, rulesToLogic: rulesToLogic,
+    ruleToLogic: ruleToLogic, addCondition: addCondition, describeLogic: describeLogic, shortLabel: shortLabel,
+    choiceLabel: choiceLabel, evaluate: evaluate, isShown: isShown, renameVariable: renameVariable,
+    parentsInForm: parentsInForm, validate: validate, importOdm: importOdm, importDataDictionary: importDataDictionary,
+    importAny: importAny, exportOdm: exportOdm, exportDataDictionary: exportDataDictionary, sampleProject: sampleProject
+  };
+});
+
+</script>
+<script>
+/* XML Wizard designer: the drag-and-drop canvas, inspector, preview and export screens. */
+(function () {
+  "use strict";
+  var C = window.XMLWCore;
+  var STORE_KEY = "xmlw-designer-v1";
+  var $ = function (id) { return document.getElementById(id); };
+  var stage = $("stage"), world = $("world"), insp = $("inspector"), palette = $("palette"), linkLayer = $("linkLayer");
+
+  var state = { project: null, sel: null, selForm: null, view: { x: 28, y: 24, k: 1 }, history: [], hi: -1, rawMode: {}, issues: [], pendingFocus: null };
+  var commitTimer = 0;
+
+  // ---------------------------------------------------------------- helpers
+
+  function h(spec, props) {
+    var parts = spec.split(".");
+    var el = document.createElement(parts[0] || "div");
+    if (parts.length > 1) el.className = parts.slice(1).join(" ");
+    var i = 1, value;
+    if (props && typeof props === "object" && !(props instanceof Node) && !Array.isArray(props)) {
+      i = 2;
+      Object.keys(props).forEach(function (k) {
+        var v = props[k];
+        if (k === "spellcheck") { el.setAttribute(k, String(v)); return; }
+        if (v == null || v === false) return;
+        if (k === "value") value = v;
+        else if (k === "text") el.textContent = v;
+        else if (k.slice(0, 2) === "on") el.addEventListener(k.slice(2), v);
+        else if (k in el && k.indexOf("-") < 0) el[k] = v;
+        else el.setAttribute(k, v === true ? "" : v);
+      });
+    }
+    for (; i < arguments.length; i++) append(el, arguments[i]);
+    if (value !== undefined) el.value = value;
+    return el;
+  }
+  function append(el, child) {
+    if (child == null || child === false) return;
+    if (Array.isArray(child)) child.forEach(function (c) { append(el, c); });
+    else el.appendChild(child instanceof Node ? child : document.createTextNode(String(child)));
+  }
+  function svgEl(name, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", name);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function find(id) { return id ? C.findItem(state.project, id) : null; }
+  function formById(id) { return state.project.forms.filter(function (f) { return f.id === id; })[0] || null; }
+  function isNarrow() { return window.matchMedia("(max-width: 820px)").matches; }
+  function plural(n, word) { return n + " " + word + (n === 1 ? "" : "s"); }
+
+  var toastTimer = 0;
+  function toast(msg, ms) {
+    var t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("show"); }, ms || 3600);
+  }
+
+  // ---------------------------------------------------------------- state
+
+  function markRecordId(project) {
+    var fields = C.allFields(project);
+    if (fields.length && !fields.some(function (f) { return f.rid; })) fields[0].rid = true;
+  }
+
+  // REDCap needs the record ID to be the very first field.
+  function normalize() {
+    var p = state.project;
+    if (!p.forms.length) p.forms.push(C.newForm(p, "Survey"));
+    var rid = C.allFields(p).filter(function (f) { return f.rid; })[0];
+    if (!rid) {
+      rid = C.newField({ name: C.uniqueName(p, "record_id"), autoName: false, label: "Record ID" });
+      rid.rid = true;
+      p.forms[0].items.unshift(rid);
+    } else if (p.forms[0].items[0] !== rid) {
+      var loc = C.findItem(p, rid.id);
+      loc.form.items.splice(loc.index, 1);
+      p.forms[0].items.unshift(rid);
+    }
+  }
+
+  function commit() {
+    clearTimeout(commitTimer);
+    commitTimer = 0;
+    var snap = JSON.stringify(state.project);
+    if (state.history[state.hi] !== snap) {
+      state.history = state.history.slice(0, state.hi + 1);
+      state.history.push(snap);
+      if (state.history.length > 120) state.history.shift();
+      state.hi = state.history.length - 1;
+    }
+    try { localStorage.setItem(STORE_KEY, snap); } catch (e) { /* private window or full: carry on */ }
+    updateTop();
+  }
+
+  function changed(opts) {
+    opts = opts || {};
+    normalize();
+    renderCanvas();
+    if (opts.inspector) renderInspector();
+    else {
+      var box = $("issue-box");
+      if (box) { box.textContent = ""; append(box, issueNotes(function (i) { return i.itemId === state.sel; })); }
+    }
+    updateTop();
+    if (opts.now) commit();
+    else { clearTimeout(commitTimer); commitTimer = setTimeout(commit, 500); }
+  }
+
+  function travel(step) {
+    if (commitTimer) commit();
+    var next = state.hi + step;
+    if (next < 0 || next >= state.history.length) return;
+    state.hi = next;
+    state.project = JSON.parse(state.history[next]);
+    if (state.sel && !find(state.sel)) state.sel = null;
+    if (state.selForm && !formById(state.selForm)) state.selForm = null;
+    try { localStorage.setItem(STORE_KEY, state.history[next]); } catch (e) { /* ignore */ }
+    renderAll();
+  }
+
+  function setProject(project, keepHistory) {
+    markRecordId(project);
+    state.project = project;
+    state.sel = null;
+    state.selForm = null;
+    state.rawMode = {};
+    if (!keepHistory) { state.history = []; state.hi = -1; }
+    normalize();
+    commit();
+    state.view = { x: 28, y: 24, k: 1 };
+    renderAll();
+  }
+
+  function select(id, opts) {
+    state.sel = id;
+    state.selForm = null;
+    palette.classList.remove("open");
+    renderCanvas();
+    renderInspector();
+    if (opts && opts.reveal) reveal(id);
+  }
+  function selectForm(id) {
+    state.sel = null;
+    state.selForm = id;
+    renderCanvas();
+    renderInspector();
+  }
+
+  // ---------------------------------------------------------------- top bar
+
+  function updateTop() {
+    var errors = state.issues.filter(function (i) { return i.severity === "error"; }).length;
+    var warnings = state.issues.length - errors;
+    var pill = $("problems");
+    pill.className = "pill " + (errors ? "err" : warnings ? "warn" : "ok");
+    pill.textContent = errors ? plural(errors, "problem") + (warnings ? " +" + warnings : "") : warnings ? plural(warnings, "warning") : "✓ No problems";
+    $("undo").disabled = state.hi <= 0 && !commitTimer;
+    $("redo").disabled = state.hi >= state.history.length - 1;
+    var title = $("title");
+    if (document.activeElement !== title) title.value = state.project.title;
+    document.title = state.project.title + " · XML Wizard Designer";
+  }
+
+  // ---------------------------------------------------------------- canvas
+
+  function applyView() {
+    var v = state.view;
+    world.style.transform = "translate(" + v.x + "px," + v.y + "px) scale(" + v.k + ")";
+    stage.style.backgroundPosition = v.x + "px " + v.y + "px";
+    stage.style.backgroundSize = 22 * v.k + "px " + 22 * v.k + "px";
+    $("zoom-level").textContent = Math.round(v.k * 100) + "%";
+  }
+
+  function zoomAt(cx, cy, k) {
+    var v = state.view, r = stage.getBoundingClientRect();
+    k = Math.max(0.2, Math.min(1.8, k));
+    var px = cx - r.left, py = cy - r.top;
+    v.x = px - (px - v.x) * (k / v.k);
+    v.y = py - (py - v.y) * (k / v.k);
+    v.k = k;
+    applyView();
+  }
+
+  function fitView() {
+    var r = stage.getBoundingClientRect();
+    var w = world.offsetWidth, hgt = world.offsetHeight;
+    var k = Math.max(0.2, Math.min(1, (r.width - 40) / w, (r.height - 40) / hgt));
+    state.view = { x: Math.max(20, (r.width - w * k) / 2), y: 20, k: k };
+    applyView();
+  }
+
+  function reveal(id) {
+    var el = world.querySelector('[data-id="' + id + '"]');
+    if (!el) return;
+    var r = el.getBoundingClientRect(), s = stage.getBoundingClientRect();
+    var bottom = s.bottom - (isNarrow() ? s.height * 0.55 : 0);
+    if (r.left < s.left + 8 || r.right > s.right - 8) state.view.x += s.left + (s.width - r.width) / 2 - r.left;
+    if (r.top < s.top + 8 || r.bottom > bottom - 8) state.view.y += s.top + (bottom - s.top - r.height) / 2 - r.top;
+    applyView();
+  }
+
+  function flash(id) {
+    var el = world.querySelector('[data-id="' + id + '"]');
+    if (el) el.classList.add("flash");
+  }
+
+  function relations() {
+    var rel = { ctl: {}, dep: {} };
+    var loc = find(state.sel);
+    if (!loc || !C.isField(loc.item)) return rel;
+    var index = C.fieldIndex(state.project);
+    C.logicRefs(loc.item.logic).forEach(function (r) { if (index[r.name]) rel.ctl[index[r.name].field.id] = 1; });
+    C.allFields(state.project).forEach(function (f) {
+      if (f !== loc.item && f.logic && C.logicRefs(f.logic).some(function (r) { return r.name === loc.item.name; })) rel.dep[f.id] = 1;
+    });
+    return rel;
+  }
+
+  function renderCanvas() {
+    var p = state.project;
+    state.issues = C.validate(p);
+    var worst = {};
+    state.issues.forEach(function (i) {
+      if (i.itemId && worst[i.itemId] !== "error") worst[i.itemId] = i.severity;
+    });
+    var index = C.fieldIndex(p), rel = relations();
+    world.textContent = "";
+    p.forms.forEach(function (form) {
+      var info = C.parentsInForm(form);
+      var body = h("div.form-body", svgEl("svg", { "class": "wires" }));
+      form.items.forEach(function (item) { body.appendChild(cardFor(item, info, index, worst, rel)); });
+      var n = form.items.filter(C.isField).length;
+      world.appendChild(h("section.form" + (state.selForm === form.id ? ".selected" : ""), { "data-form": form.id },
+        h("header.form-head", { title: "Drag to reorder instruments. Click to rename." },
+          h("span.grip"), h("span.name", { text: form.label || "Untitled instrument" }), h("span.count", { text: plural(n, "question") })),
+        body,
+        h("div.form-foot", h("button", { text: "+ Add a question", onclick: function (e) { addMenu(e.currentTarget, form.id); } }))));
+    });
+    world.appendChild(h("button.form-add", { text: "+ Add an instrument", title: "Instruments are the pages or forms of a REDCap project",
+      onclick: function () { addForm(); } }));
+    applyView();
+    drawWires();
+    var hint = $("canvas-hint");
+    var count = C.allFields(p).length;
+    hint.textContent = count <= 1 ? "Drag a question type from the left onto the instrument, or click it"
+      : !C.allFields(p).some(function (f) { return f.logic; }) ? "Drag an answer (like Yes) onto another question to show that question only for that answer"
+        : "";
+    hint.hidden = !hint.textContent;
+  }
+
+  function cardFor(item, info, index, worst, rel) {
+    var cls = state.sel === item.id ? ".selected" : "";
+    if (item.kind === "section") {
+      return h("article.card.section" + cls, { "data-id": item.id, "data-kind": "section" },
+        h("span.grip"), h("div.card-label" + (item.label ? "" : ".empty"), { text: C.stripHtml(item.label) || "Section heading" }));
+    }
+    var kind = C.kindOf(item);
+    if (rel.ctl[item.id]) cls += ".ctl";
+    if (rel.dep[item.id]) cls += ".dep";
+    var el = h("article.card" + cls, { "data-id": item.id, "data-kind": "field" });
+    var depth = info.depth[item.id] || 0;
+    if (depth) el.style.marginLeft = depth * 18 + "px";
+    var label = C.stripHtml(item.label);
+    el.appendChild(h("div.card-top",
+      item.rid ? null : h("span.grip"),
+      h("span.glyph", { text: kind.glyph }), h("span.kind", { text: kind.label }),
+      item.rid ? h("span.badge.rid", { text: "Record ID", title: "REDCap uses the first field to tell records apart" }) : null,
+      item.required ? h("span.badge.req", { text: "Required" }) : null,
+      worst[item.id] ? h("span.badge.issue-" + worst[item.id], { text: "!", title: "Needs attention" }) : null,
+      h("code.var", { text: item.name, title: item.name })));
+    el.appendChild(h("div.card-label" + (label ? "" : ".empty"), { text: label || (item.type === "descriptive" ? "Text block" : "Type the question…") }));
+    if (C.CODED_TYPES[item.type] && item.choices.length) {
+      var chips = h("div.chips");
+      item.choices.slice(0, 7).forEach(function (c) {
+        chips.appendChild(h("span.chip", { "data-code": c.code, text: C.stripHtml(c.label) || c.code,
+          title: "Drag onto another question to show it only when the answer is “" + (C.stripHtml(c.label) || c.code) + "”" }));
+      });
+      if (item.choices.length > 7) chips.appendChild(h("span.chip.more", { text: "+" + (item.choices.length - 7) + " more" }));
+      el.appendChild(chips);
+    } else if (!item.rid && item.type !== "descriptive" && item.type !== "file") {
+      el.appendChild(h("button.branch", { text: "⤷", title: "Drag onto another question to make it depend on this one" }));
+    }
+    if (item.logic && item.logic.trim()) {
+      el.appendChild(h("div.gate", { title: item.logic }, h("b", { text: "Shows if " }), C.describeLogic(item.logic, index)));
+    }
+    return el;
+  }
+
+  function drawWires() {
+    var bodies = world.querySelectorAll(".form-body");
+    state.project.forms.forEach(function (form, k) {
+      var body = bodies[k];
+      if (!body) return;
+      var svg = body.querySelector(".wires");
+      var info = C.parentsInForm(form);
+      Object.keys(info.parents).forEach(function (id) {
+        var child = body.querySelector('[data-id="' + id + '"]');
+        var parent = body.querySelector('[data-id="' + info.parents[id] + '"]');
+        if (!child || !parent) return;
+        var x1 = parent.offsetLeft + 9, y1 = parent.offsetTop + parent.offsetHeight;
+        var x2 = child.offsetLeft, y2 = child.offsetTop + Math.min(17, child.offsetHeight / 2);
+        var hot = state.sel === id || state.sel === info.parents[id];
+        svg.appendChild(svgEl("path", { d: "M" + x1 + " " + y1 + " V" + (y2 - 6) + " Q" + x1 + " " + y2 + " " + (x1 + 6) + " " + y2 + " H" + x2,
+          "class": hot ? "hot" : "" }));
+      });
+    });
+  }
+
+  // ---------------------------------------------------------------- editing actions
+
+  function addForm(firstItem) {
+    var p = state.project;
+    var form = C.newForm(p, "Instrument " + (p.forms.length + 1));
+    if (firstItem) form.items.push(firstItem);
+    p.forms.push(form);
+    if (firstItem) { state.sel = firstItem.id; state.selForm = null; } else { state.sel = null; state.selForm = form.id; }
+    state.pendingFocus = firstItem ? "label" : "form-label";
+    changed({ inspector: true, now: true });
+    reveal(firstItem ? firstItem.id : null);
+    if (!firstItem) {
+      var el = world.querySelector('[data-form="' + form.id + '"]');
+      if (el) { var r = el.getBoundingClientRect(), s = stage.getBoundingClientRect(); if (r.right > s.right) { state.view.x -= r.right - s.right + 30; applyView(); } }
+    }
+    return form;
+  }
+
+  function insertNew(key, formId, index) {
+    var p = state.project;
+    var item = C.createFromKind(p, key);
+    var form = formById(formId) || p.forms[0];
+    if (form === p.forms[0]) index = Math.max(index, 1);
+    form.items.splice(Math.min(index, form.items.length), 0, item);
+    state.sel = item.id;
+    state.selForm = null;
+    state.pendingFocus = "label";
+    palette.classList.remove("open");
+    changed({ inspector: true, now: true });
+    reveal(item.id);
+  }
+
+  function addAtEnd(key, formId) {
+    var p = state.project, loc = find(state.sel);
+    var form = formById(formId) || (loc ? loc.form : formById(state.selForm)) || p.forms[0];
+    var index = !formId && loc && loc.form === form ? loc.index + 1 : form.items.length;
+    insertNew(key, form.id, index);
+  }
+
+  function moveItem(id, formId, index) {
+    var loc = find(id), target = formById(formId);
+    if (!loc || !target) return;
+    loc.form.items.splice(loc.index, 1);
+    target.items.splice(Math.min(index, target.items.length), 0, loc.item);
+    state.sel = id;
+    state.selForm = null;
+    changed({ inspector: true, now: true });
+  }
+
+  function deleteItem(id) {
+    var loc = find(id);
+    if (!loc || loc.item.rid) return;
+    loc.form.items.splice(loc.index, 1);
+    state.sel = null;
+    changed({ inspector: true, now: true });
+    toast("Deleted. Press Undo to bring it back.");
+  }
+
+  function duplicateItem(id) {
+    var loc = find(id);
+    if (!loc || loc.item.rid) return;
+    var copy = JSON.parse(JSON.stringify(loc.item));
+    copy.id = C.uid();
+    if (C.isField(copy)) { copy.name = C.uniqueName(state.project, copy.name); copy.autoName = false; }
+    loc.form.items.splice(loc.index + 1, 0, copy);
+    state.sel = copy.id;
+    changed({ inspector: true, now: true });
+  }
+
+  function applyLink(sourceId, code, targetId) {
+    var src = find(sourceId), tgt = find(targetId);
+    if (!src || !tgt || src.item === tgt.item || tgt.item.rid) return;
+    var s = src.item;
+    var rule = code == null ? { field: s.name, code: null, op: "answered", value: "" }
+      : s.type === "checkbox" ? { field: s.name, code: code, op: "checked", value: "" }
+        : { field: s.name, code: null, op: "=", value: code };
+    tgt.item.logic = C.addCondition(tgt.item.logic, rule);
+    delete state.rawMode[tgt.item.id];
+    state.sel = tgt.item.id;
+    state.selForm = null;
+    changed({ inspector: true, now: true });
+    flash(tgt.item.id);
+    toast("“" + C.shortLabel(tgt.item) + "” now shows only if " + C.describeLogic(C.ruleToLogic(rule), C.fieldIndex(state.project)) + ".");
+  }
+
+  function applyKind(f, key) {
+    var kind = C.KIND_BY_KEY[key];
+    if (!kind || !kind.type) return;
+    var wasChoice = C.CHOICE_TYPES[f.type];
+    f.type = kind.type;
+    f.validation = kind.validation || "";
+    if (C.CHOICE_TYPES[f.type]) {
+      if (!wasChoice || !f.choices.length) f.choices = [{ code: "1", label: "Option 1" }, { code: "2", label: "Option 2" }, { code: "3", label: "Option 3" }];
+    } else if (f.type === "yesno") f.choices = [{ code: "1", label: "Yes" }, { code: "0", label: "No" }];
+    else f.choices = [];
+    if (f.type !== "text") { f.min = ""; f.max = ""; }
+    if (f.type !== "calc") f.calc = "";
+    if (f.type === "descriptive") f.required = false;
+  }
+
+  // ---------------------------------------------------------------- gestures (mouse, touch and pen)
+
+  var gesture = null, touches = {}, pinch = null, panRaf = 0;
+
+  function startGesture(spec, e) {
+    gesture = { spec: spec, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, active: false, pointer: e.pointerId,
+      vx: state.view.x, vy: state.view.y, ghost: null, drop: null, target: null };
+  }
+
+  function endGesture(apply) {
+    var g = gesture;
+    if (!g) return;
+    gesture = null;
+    cancelAnimationFrame(panRaf);
+    panRaf = 0;
+    stage.classList.remove("panning");
+    if (g.ghost) g.ghost.remove();
+    clearSlots();
+    linkLayer.textContent = "";
+    [].forEach.call(document.querySelectorAll(".dragging, .link-target"), function (el) { el.classList.remove("dragging", "link-target"); });
+    if (!apply) return;
+    if (g.active) finishGesture(g);
+    else tapGesture(g);
+  }
+
+  function clearSlots() {
+    [].forEach.call(world.querySelectorAll(".drop-slot, .form-slot"), function (el) { el.remove(); });
+    var add = world.querySelector(".form-add");
+    if (add) add.classList.remove("drop-hot");
+  }
+
+  function beginGesture(g) {
+    var t = g.spec.type, src;
+    if (t === "pan") { stage.classList.add("panning"); return; }
+    if (t === "move") {
+      src = world.querySelector('[data-id="' + g.spec.id + '"]');
+      var r = src.getBoundingClientRect();
+      g.ghost = src.cloneNode(true);
+      g.ghost.classList.add("drag-ghost");
+      g.ghost.classList.remove("selected");
+      g.ghost.style.width = src.offsetWidth + "px";
+      g.ghost.style.transform = "scale(" + state.view.k + ")";
+      g.dx = g.x0 - r.left; g.dy = g.y0 - r.top;
+      src.classList.add("dragging");
+    } else if (t === "new") {
+      g.ghost = g.spec.el.cloneNode(true);
+      g.ghost.classList.add("drag-ghost");
+      g.dx = 24; g.dy = 16;
+    } else if (t === "form") {
+      src = world.querySelector('[data-form="' + g.spec.formId + '"]');
+      var fr = src.getBoundingClientRect();
+      g.ghost = src.querySelector(".form-head").cloneNode(true);
+      g.ghost.classList.add("drag-ghost");
+      g.ghost.style.width = src.offsetWidth + "px";
+      g.ghost.style.borderRadius = "13px";
+      g.ghost.style.transform = "scale(" + state.view.k + ")";
+      g.dx = g.x0 - fr.left; g.dy = g.y0 - fr.top;
+      src.classList.add("dragging");
+    }
+    if (g.ghost) document.body.appendChild(g.ghost);
+    panRaf = requestAnimationFrame(autoPan);
+  }
+
+  function stepGesture(g) {
+    var t = g.spec.type;
+    if (t === "pan") {
+      state.view.x = g.vx + g.x - g.x0;
+      state.view.y = g.vy + g.y - g.y0;
+      applyView();
+      return;
+    }
+    if (g.ghost) { g.ghost.style.left = g.x - g.dx + "px"; g.ghost.style.top = g.y - g.dy + "px"; }
+    if (t === "move" || t === "new") computeDrop(g);
+    else if (t === "form") computeFormDrop(g);
+    else if (t === "link") stepLink(g);
+  }
+
+  function inStage(g) {
+    var r = stage.getBoundingClientRect();
+    return g.x >= r.left && g.x <= r.right && g.y >= r.top && g.y <= r.bottom;
+  }
+
+  function autoPan() {
+    var g = gesture;
+    if (!g || !g.active || g.spec.type === "pan") return;
+    if (inStage(g)) {
+      var r = stage.getBoundingClientRect(), m = 48, dx = 0, dy = 0;
+      if (g.x < r.left + m) dx = 1; else if (g.x > r.right - m) dx = -1;
+      if (g.y < r.top + m) dy = 1; else if (g.y > r.bottom - m) dy = -1;
+      if (dx || dy) { state.view.x += dx * 10; state.view.y += dy * 10; applyView(); stepGesture(g); }
+    }
+    panRaf = requestAnimationFrame(autoPan);
+  }
+
+  function computeDrop(g) {
+    clearSlots();
+    g.drop = null;
+    if (!inStage(g)) return;
+    var pad = 14 * state.view.k, hit = null;
+    [].forEach.call(world.querySelectorAll(".form"), function (el) {
+      var r = el.getBoundingClientRect();
+      if (g.x >= r.left - pad && g.x <= r.right + pad) hit = el;
+    });
+    if (!hit) {
+      var add = world.querySelector(".form-add");
+      if (g.x >= add.getBoundingClientRect().left - pad) { add.classList.add("drop-hot"); g.drop = { newForm: true }; }
+      return;
+    }
+    var body = hit.querySelector(".form-body");
+    var cards = [].slice.call(body.querySelectorAll(".card:not(.dragging)"));
+    var idx = 0;
+    cards.forEach(function (c) { var r = c.getBoundingClientRect(); if (g.y > r.top + r.height / 2) idx++; });
+    if (hit.dataset.form === state.project.forms[0].id) idx = Math.max(idx, 1);
+    body.insertBefore(h("div.drop-slot"), cards[idx] || null);
+    g.drop = { formId: hit.dataset.form, index: idx };
+  }
+
+  function computeFormDrop(g) {
+    clearSlots();
+    var forms = [].slice.call(world.querySelectorAll(".form:not(.dragging)"));
+    var idx = 0;
+    forms.forEach(function (el) { var r = el.getBoundingClientRect(); if (g.x > r.left + r.width / 2) idx++; });
+    world.insertBefore(h("div.form-slot"), forms[idx] || world.querySelector(".form-add"));
+    g.drop = { index: idx };
+  }
+
+  function stepLink(g) {
+    var from = world.querySelector('[data-id="' + g.spec.id + '"]');
+    if (!from) return;
+    var anchor = g.spec.code != null ? from.querySelector('.chip[data-code="' + g.spec.code.replace(/["\\]/g, "") + '"]') || from : from.querySelector(".branch") || from;
+    var a = anchor.getBoundingClientRect();
+    var x1 = a.left + a.width / 2, y1 = a.top + a.height / 2;
+    linkLayer.textContent = "";
+    var mid = (y1 + g.y) / 2;
+    linkLayer.appendChild(svgEl("path", { d: "M" + x1 + " " + y1 + " C" + x1 + " " + mid + " " + g.x + " " + mid + " " + g.x + " " + g.y }));
+    linkLayer.appendChild(svgEl("circle", { cx: g.x, cy: g.y, r: 5 }));
+    var under = document.elementFromPoint(g.x, g.y);
+    var card = under && under.closest ? under.closest('.card[data-kind="field"]') : null;
+    [].forEach.call(world.querySelectorAll(".link-target"), function (el) { el.classList.remove("link-target"); });
+    g.target = null;
+    if (card && card.dataset.id !== g.spec.id) {
+      var loc = find(card.dataset.id);
+      if (loc && !loc.item.rid) { card.classList.add("link-target"); g.target = card.dataset.id; }
+    }
+  }
+
+  function finishGesture(g) {
+    var t = g.spec.type, p = state.project;
+    if (t === "move" && g.drop) {
+      if (g.drop.newForm) {
+        var loc = find(g.spec.id);
+        loc.form.items.splice(loc.index, 1);
+        addForm(loc.item);
+      } else moveItem(g.spec.id, g.drop.formId, g.drop.index);
+    } else if (t === "new" && g.drop) {
+      if (g.drop.newForm) addForm(C.createFromKind(p, g.spec.key));
+      else insertNew(g.spec.key, g.drop.formId, g.drop.index);
+    } else if (t === "form" && g.drop) {
+      var from = p.forms.indexOf(formById(g.spec.formId));
+      var form = p.forms.splice(from, 1)[0];
+      p.forms.splice(g.drop.index, 0, form);
+      changed({ inspector: true, now: true });
+    } else if (t === "link") {
+      if (g.target) applyLink(g.spec.id, g.spec.code, g.target);
+      else toast("Drop it on the question that should depend on this answer.");
+    } else renderCanvas();
+  }
+
+  function tapGesture(g) {
+    var s = g.spec;
+    if (s.type === "new") addAtEnd(s.key);
+    else if (s.type === "link") { select(s.id); if (!s.touch) toast("Drag this onto another question to show that question only for this answer."); }
+    else if (s.type === "move" || s.tapId) select(s.id || s.tapId);
+    else if (s.type === "form" || s.tapForm) selectForm(s.formId || s.tapForm);
+    else if (state.sel || state.selForm) { state.sel = null; state.selForm = null; renderCanvas(); renderInspector(); }
+    else if (isNarrow()) { palette.classList.remove("open"); insp.classList.remove("open"); }
+  }
+
+  stage.addEventListener("pointerdown", function (e) {
+    if (e.button) return;
+    var t = e.target;
+    if (t.closest("#zoom") || t.closest("#fab")) return;
+    var touch = e.pointerType === "touch";
+    if (touch) {
+      touches[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ids = Object.keys(touches);
+      if (ids.length === 2) {
+        endGesture(false);
+        var a = touches[ids[0]], b = touches[ids[1]];
+        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, k: state.view.k };
+        return;
+      }
+    }
+    if (t.closest("button:not(.branch)")) return;
+    var card = t.closest(".card"), head = t.closest(".form-head");
+    if (card) {
+      var id = card.dataset.id, loc = find(id), chip = t.closest(".chip:not(.more)");
+      if (chip || t.closest(".branch")) startGesture({ type: "link", id: id, code: chip ? chip.dataset.code : null, touch: touch }, e);
+      else if (loc && loc.item.rid) startGesture({ type: "pan", tapId: id }, e);
+      else if (!touch || t.closest(".grip")) startGesture({ type: "move", id: id }, e);
+      else startGesture({ type: "pan", tapId: id }, e);
+    } else if (head) {
+      var formId = head.parentNode.dataset.form;
+      if (!touch || t.closest(".grip")) startGesture({ type: "form", formId: formId }, e);
+      else startGesture({ type: "pan", tapForm: formId }, e);
+    } else startGesture({ type: "pan" }, e);
+  });
+
+  window.addEventListener("pointermove", function (e) {
+    if (touches[e.pointerId]) {
+      touches[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ids = Object.keys(touches);
+      if (pinch && ids.length >= 2) {
+        var a = touches[ids[0]], b = touches[ids[1]];
+        zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, pinch.k * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d);
+        return;
+      }
+    }
+    var g = gesture;
+    if (!g || e.pointerId !== g.pointer) return;
+    g.x = e.clientX; g.y = e.clientY;
+    if (!g.active) {
+      if (Math.hypot(g.x - g.x0, g.y - g.y0) < 5) return;
+      g.active = true;
+      beginGesture(g);
+    }
+    stepGesture(g);
+  });
+
+  function pointerDone(e, apply) {
+    if (touches[e.pointerId]) { delete touches[e.pointerId]; if (Object.keys(touches).length < 2) pinch = null; }
+    if (gesture && e.pointerId === gesture.pointer) endGesture(apply);
+  }
+  window.addEventListener("pointerup", function (e) { pointerDone(e, true); });
+  window.addEventListener("pointercancel", function (e) { pointerDone(e, false); });
+
+  stage.addEventListener("wheel", function (e) {
+    e.preventDefault();
+    if (e.ctrlKey || e.metaKey) zoomAt(e.clientX, e.clientY, state.view.k * Math.exp(-e.deltaY * 0.01));
+    else { state.view.x -= e.deltaX; state.view.y -= e.deltaY; applyView(); }
+  }, { passive: false });
+
+  // ---------------------------------------------------------------- palette
+
+  function renderPalette() {
+    palette.textContent = "";
+    var questions = h("div.tiles"), layout = h("div.tiles");
+    C.KINDS.forEach(function (kind) {
+      var tile = h("div.tile", { role: "button", tabindex: "0", title: kind.hint, "data-kind": kind.key },
+        h("span.glyph", { text: kind.glyph }), h("span", kind.label, h("small", { text: kind.hint })));
+      tile.addEventListener("pointerdown", function (e) {
+        if (e.button) return;
+        e.preventDefault(); // keep keyboard focus where it was, so typing never lands on the tile
+        startGesture({ type: "new", key: kind.key, el: tile }, e);
+      });
+      tile.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); addAtEnd(kind.key); } });
+      (kind.layout ? layout : questions).appendChild(tile);
+    });
+    append(palette, [h("h2", { text: "Questions" }), questions, h("h2", { text: "Layout" }), layout,
+      h("p.palette-tip", { text: "Drag onto the canvas, or click to add below the selected question." })]);
+  }
+
+  function addMenu(anchor, formId) {
+    openMenu(anchor, C.KINDS.map(function (kind) {
+      return { glyph: kind.glyph, label: kind.label, run: function () { addAtEnd(kind.key, formId); } };
+    }));
+  }
+
+  // ---------------------------------------------------------------- inspector
+
+  function labelled(text, control, hint) {
+    return h("label.f", text, control, hint ? h("small", { text: hint, style: "display:block;margin-top:2px" }) : null);
+  }
+
+  function renderInspector() {
+    var p = state.project, loc = find(state.sel), form = formById(state.selForm);
+    var scroll = insp.scrollTop;
+    insp.textContent = "";
+    insp.classList.toggle("open", !!(loc || form));
+    if (loc && loc.item.kind === "section") sectionPanel(loc.item);
+    else if (loc) fieldPanel(loc.item, loc.form);
+    else if (form) formPanel(form);
+    else projectPanel(p);
+    insp.scrollTop = state.pendingFocus ? 0 : scroll;
+    if (state.pendingFocus) {
+      var target = insp.querySelector('[data-focus="' + state.pendingFocus + '"]');
+      state.pendingFocus = null;
+      if (target && !isNarrow()) { target.focus(); if (target.select) target.select(); }
+    }
+  }
+
+  function closeButton() {
+    return h("button.quiet.sheet-close", { text: "Done", onclick: function () { state.sel = null; state.selForm = null; renderCanvas(); renderInspector(); } });
+  }
+
+  function issueNotes(filter) {
+    return state.issues.filter(filter).map(function (i) {
+      return h("div.note." + i.severity, { text: i.message });
+    });
+  }
+
+  function fieldPanel(f, form) {
+    var p = state.project, kind = C.kindOf(f);
+    append(insp, h("h2", h("span.glyph", { text: kind.glyph }), f.rid ? "Record ID" : kind.label, closeButton()));
+    if (f.rid) append(insp, h("p.lead", { text: "REDCap needs this first field to tell records apart. It stays at the top; you can rename it." }));
+    append(insp, h("div", { id: "issue-box" }, issueNotes(function (i) { return i.itemId === f.id; })));
+
+    var nameInput = h("input.mono", { type: "text", value: f.name, spellcheck: false, autocapitalize: "off",
+      onfocus: function () { nameInput.dataset.was = f.name; },
+      oninput: function () {
+        f.name = nameInput.value.trim().toLowerCase().replace(/[\s-]+/g, "_");
+        f.autoName = false;
+        changed();
+      },
+      onchange: function () {
+        var was = nameInput.dataset.was, taken = C.allFields(p).some(function (o) { return o !== f && o.name === f.name; });
+        if (was && f.name && was !== f.name && !taken && /^[a-z][a-z0-9_]*$/.test(f.name)) C.renameVariable(p, was, f.name);
+        nameInput.dataset.was = f.name;
+        changed({ inspector: true, now: true });
+      } });
+
+    append(insp, labelled(f.type === "descriptive" ? "Text to show" : "Question", h("textarea", { rows: 3, value: f.label, "data-focus": "label",
+      placeholder: f.type === "descriptive" ? "Instructions or information for the respondent" : "Type the question as respondents will see it",
+      oninput: function (e) {
+        f.label = e.target.value;
+        if (f.autoName) {
+          var old = f.name;
+          f.name = C.uniqueName(p, C.slugify(f.label, "question"), f.id);
+          C.renameVariable(p, old, f.name);
+          nameInput.value = f.name;
+        }
+        changed();
+      } })));
+
+    if (!f.rid) {
+      var typeSel = h("select", { onchange: function () { applyKind(f, typeSel.value); changed({ inspector: true, now: true }); } });
+      var known = false;
+      C.KINDS.forEach(function (k) {
+        if (!k.type) return;
+        var same = k.type === f.type && (k.validation || "") === (f.validation || "");
+        known = known || same;
+        typeSel.appendChild(h("option", { value: k.key, text: k.label, selected: same }));
+      });
+      if (!known) typeSel.appendChild(h("option", { value: "", text: kind.label, selected: true }));
+      append(insp, labelled("Answer type", typeSel));
+    }
+
+    if (C.CHOICE_TYPES[f.type]) choiceEditor(f);
+    else if (f.type === "yesno") append(insp, h("p.lead", { text: "Stored as 1 = Yes and 0 = No." }));
+    else if (f.type === "truefalse") append(insp, h("p.lead", { text: "Stored as 1 = True and 0 = False." }));
+
+    if (f.type === "text") {
+      var valSel = h("select", { onchange: function () { f.validation = valSel.value; if (!f.validation) { f.min = ""; f.max = ""; } changed({ inspector: true, now: true }); } });
+      var has = false;
+      C.VALIDATIONS.forEach(function (v) { has = has || v[0] === f.validation; valSel.appendChild(h("option", { value: v[0], text: v[1], selected: v[0] === f.validation })); });
+      if (!has) valSel.appendChild(h("option", { value: f.validation, text: f.validation, selected: true }));
+      append(insp, labelled("Check that the answer is", valSel));
+      if (/^(integer|number|date|datetime|time)/.test(f.validation)) {
+        append(insp, h("div.row",
+          labelled("Smallest allowed", h("input", { type: "text", value: f.min, placeholder: "none", oninput: function (e) { f.min = e.target.value.trim(); changed(); } })),
+          labelled("Largest allowed", h("input", { type: "text", value: f.max, placeholder: "none", oninput: function (e) { f.max = e.target.value.trim(); changed(); } }))));
+      }
+    }
+    if (f.type === "calc") {
+      append(insp, labelled("Equation", h("textarea.mono", { rows: 3, value: f.calc, spellcheck: false, placeholder: "[weight] / ([height] * [height])",
+        oninput: function (e) { f.calc = e.target.value; changed(); } }), "Use variable names in square brackets, as in REDCap."));
+    }
+
+    append(insp, labelled("Variable name", nameInput, f.autoName ? "Suggested from the question. This is the column name in your data." : "The column name in your data."));
+    if (f.type !== "descriptive") {
+      append(insp, labelled("Help text (optional)", h("input", { type: "text", value: f.note, placeholder: "Shown in small print under the question",
+        oninput: function (e) { f.note = e.target.value; changed(); } })));
+      if (!f.rid && f.type !== "calc") {
+        append(insp, h("label.check", h("input", { type: "checkbox", checked: f.required, onchange: function (e) { f.required = e.target.checked; changed({ now: true }); } }),
+          h("span", "Required", h("small", { text: "Respondents must answer before moving on." }))));
+      }
+      append(insp, h("label.check", h("input", { type: "checkbox", checked: f.identifier, onchange: function (e) { f.identifier = e.target.checked; changed({ now: true }); } }),
+        h("span", "Identifies the participant", h("small", { text: "Names, contact details, dates of birth. REDCap can leave these out of exports." }))));
+    }
+
+    if (!f.rid) {
+      append(insp, h("h3", { text: "When to show this" }));
+      logicEditor(f);
+    }
+
+    var dependents = C.allFields(p).filter(function (o) {
+      return o !== f && o.logic && C.logicRefs(o.logic).some(function (r) { return r.name === f.name; });
+    });
+    if (dependents.length) {
+      append(insp, h("h3", { text: "Questions that depend on this" }));
+      dependents.forEach(function (o) {
+        append(insp, h("div.note.info.click", { text: C.shortLabel(o), title: o.logic, onclick: function () { select(o.id, { reveal: true }); } }));
+      });
+    }
+
+    var adv = h("details.adv", h("summary", { text: "More options" }),
+      labelled("Action tags", h("input.mono", { type: "text", value: f.annotation, placeholder: "@HIDDEN, @DEFAULT=…", spellcheck: false,
+        oninput: function (e) { f.annotation = e.target.value; changed(); } }), "REDCap field annotation. Leave blank if unsure."));
+    if (f.extra.length) {
+      var dl = h("dl.dl");
+      f.extra.forEach(function (kv) { append(dl, [h("dt", { text: kv[0] }), h("dd", { text: kv[1] })]); });
+      append(adv, [h("p.lead", { text: "Kept from the imported project:" }), dl]);
+    }
+    append(adv, h("p.lead", { text: "Instrument: " + form.label + " (" + form.name + ")" }));
+    insp.appendChild(adv);
+
+    if (!f.rid) {
+      append(insp, h("div.actions",
+        h("button", { text: "Duplicate", onclick: function () { duplicateItem(f.id); } }),
+        h("button.danger", { text: "Delete", onclick: function () { deleteItem(f.id); } })));
+    }
+  }
+
+  function choiceEditor(f) {
+    append(insp, h("h3", { text: "Answer choices" }));
+    var list = h("div");
+    f.choices.forEach(function (c, k) {
+      list.appendChild(h("div.choice-row",
+        h("input", { type: "text", value: c.code, title: "The value stored in your data", "aria-label": "Code", spellcheck: false,
+          oninput: function (e) { c.code = e.target.value.trim(); changed(); } }),
+        h("input", { type: "text", value: c.label, placeholder: "Answer " + (k + 1), "aria-label": "Answer", "data-focus": "choice-" + k,
+          oninput: function (e) { c.label = e.target.value; changed(); },
+          onkeydown: function (e) { if (e.key === "Enter") { e.preventDefault(); addChoice(); } } }),
+        h("button.icon-btn", { text: "×", title: "Remove this answer", disabled: f.choices.length < 2,
+          onclick: function () { f.choices.splice(k, 1); changed({ inspector: true, now: true }); } })));
+    });
+    function addChoice() {
+      f.choices.push({ code: C.nextCode(f.choices), label: "" });
+      state.pendingFocus = "choice-" + (f.choices.length - 1);
+      changed({ inspector: true, now: true });
+    }
+    var bulk = h("div", { hidden: true });
+    var area = h("textarea", { rows: 5, placeholder: "One answer per line", value: f.choices.map(function (c) { return c.label; }).join("\n") });
+    append(bulk, [area, h("div.actions", { style: "margin-top:6px" },
+      h("button.primary", { text: "Use this list", onclick: function () {
+        var lines = area.value.split(/\r?\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+        if (!lines.length) return;
+        var coded = lines.every(function (s) { return /^-?[A-Za-z0-9_.]+\s*,\s*\S/.test(s); });
+        f.choices = coded ? C.parseChoices(lines.join("\n")) : lines.map(function (s, k) { return { code: String(k + 1), label: s }; });
+        changed({ inspector: true, now: true });
+      } }),
+      h("button", { text: "Cancel", onclick: function () { bulk.hidden = true; } }))]);
+    append(insp, [list,
+      h("div.row", h("button.link-btn", { text: "+ Add an answer", onclick: addChoice }),
+        h("button.link-btn", { text: "Paste a list", style: "text-align:right", onclick: function () { bulk.hidden = !bulk.hidden; if (!bulk.hidden) area.focus(); } })),
+      bulk, h("p.lead", { text: "The small box is the code saved in your data. Drag an answer on the canvas onto another question to branch on it." })]);
+  }
+
+  // ---- "When to show this" editor
+
+  function ruleTargets(f) {
+    return C.allFields(state.project).filter(function (o) { return o !== f && o.type !== "descriptive"; });
+  }
+
+  function defaultRuleFor(t) {
+    if (t.type === "checkbox") return { field: t.name, code: t.choices.length ? t.choices[0].code : "1", op: "checked", value: "" };
+    if (C.CODED_TYPES[t.type] && t.choices.length) return { field: t.name, code: null, op: "=", value: t.choices[0].code };
+    return { field: t.name, code: null, op: "answered", value: "" };
+  }
+
+  function defaultRule(f) {
+    var all = C.allFields(state.project), at = all.indexOf(f);
+    var before = all.slice(0, at).filter(function (o) { return o.type !== "descriptive" && !o.rid; }).reverse();
+    var pick = before.filter(function (o) { return C.CODED_TYPES[o.type]; })[0] || before[0] ||
+      ruleTargets(f).filter(function (o) { return !o.rid; })[0];
+    return pick ? defaultRuleFor(pick) : null;
+  }
+
+  var OPS_CODED = [["=", "is"], ["<>", "is not"], ["answered", "is answered"], ["empty", "is blank"]];
+  var OPS_CHECK = [["checked", "includes"], ["unchecked", "does not include"]];
+  var OPS_OPEN = [["=", "is"], ["<>", "is not"], [">", "is more than"], [">=", "is at least"], ["<", "is less than"], ["<=", "is at most"],
+    ["answered", "is answered"], ["empty", "is blank"]];
+
+  function logicEditor(f) {
+    var has = !!(f.logic && f.logic.trim());
+    var spec = has ? C.simpleRules(f.logic) : null;
+    var raw = has && (state.rawMode[f.id] || !spec);
+    append(insp, h("div.seg",
+      h("button", { text: "Always", "aria-pressed": String(!has), onclick: function () {
+        f.logic = ""; delete state.rawMode[f.id]; changed({ inspector: true, now: true });
+      } }),
+      h("button", { text: "Only if…", "aria-pressed": String(has), onclick: function () {
+        if (has) return;
+        var rule = defaultRule(f);
+        if (!rule) { toast("Add another question first, then make this one depend on it."); return; }
+        f.logic = C.ruleToLogic(rule);
+        changed({ inspector: true, now: true });
+      } })));
+    if (!has) {
+      append(insp, h("p.lead", { text: "Tip: on the canvas, drag an answer from another question onto this one." }));
+      return;
+    }
+    var box = h("div.rules");
+    var index = C.fieldIndex(state.project);
+    if (raw) {
+      var english = h("div.english");
+      var showEnglish = function () { english.textContent = C.simpleRules(f.logic) ? "Shows if " + C.describeLogic(f.logic, index) : ""; };
+      showEnglish();
+      append(box, [english, h("textarea.mono", { rows: 4, value: f.logic, spellcheck: false,
+        oninput: function (e) { f.logic = e.target.value; showEnglish(); changed(); },
+        onchange: function () { changed({ inspector: true, now: true }); } })]);
+      if (spec) append(box, h("button.link-btn", { text: "Back to the simple editor", onclick: function () { delete state.rawMode[f.id]; renderInspector(); } }));
+      else append(box, h("p.lead", { style: "margin:6px 0 0", text: "This rule is more detailed than the simple editor can show, so it is kept exactly as REDCap logic." }));
+    } else {
+      var write = function (rerender) { f.logic = C.rulesToLogic(spec); changed({ inspector: rerender, now: rerender }); };
+      if (spec.rules.length > 1) {
+        var joinSel = h("select", { style: "margin-bottom:8px", onchange: function () { spec.join = joinSel.value; write(true); } },
+          h("option", { value: "and", text: "Show when ALL of these are true", selected: spec.join === "and" }),
+          h("option", { value: "or", text: "Show when ANY of these is true", selected: spec.join === "or" }));
+        box.appendChild(joinSel);
+      }
+      spec.rules.forEach(function (r, k) { box.appendChild(ruleRow(f, spec, r, k, index, write)); });
+      append(box, h("div.row",
+        h("button.link-btn", { text: "+ Add a condition", onclick: function () {
+          var rule = defaultRule(f);
+          if (rule) { spec.rules.push(rule); write(true); }
+        } }),
+        h("button.link-btn", { text: "Edit as REDCap logic", style: "text-align:right", onclick: function () { state.rawMode[f.id] = true; renderInspector(); } })));
+    }
+    insp.appendChild(box);
+  }
+
+  function ruleRow(f, spec, r, k, index, write) {
+    var hit = index[r.field], t = hit ? hit.field : null;
+    var fieldSel = h("select", { "aria-label": "Question", onchange: function () {
+      var next = index[fieldSel.value];
+      if (next) { spec.rules[k] = defaultRuleFor(next.field); write(true); }
+    } });
+    if (!t) fieldSel.appendChild(h("option", { value: r.field, text: "[" + r.field + "] (missing)", selected: true }));
+    state.project.forms.forEach(function (form) {
+      var group = h("optgroup", { label: form.label });
+      form.items.forEach(function (o) {
+        if (!C.isField(o) || o === f || o.type === "descriptive") return;
+        group.appendChild(h("option", { value: o.name, text: C.shortLabel(o), selected: o === t }));
+      });
+      if (group.children.length) fieldSel.appendChild(group);
+    });
+    var parts = h("div.parts", fieldSel);
+    var checkbox = t && t.type === "checkbox", coded = t && C.CODED_TYPES[t.type] && !checkbox;
+    var ops = checkbox ? OPS_CHECK : coded ? OPS_CODED : OPS_OPEN;
+    var needsValue = r.op !== "answered" && r.op !== "empty";
+    var opSel = h("select" + (needsValue ? "" : ".solo"), { "aria-label": "Comparison", onchange: function () {
+      var was = r.op;
+      r.op = opSel.value;
+      var wasValue = was !== "answered" && was !== "empty", nowValue = r.op !== "answered" && r.op !== "empty";
+      if (nowValue && !wasValue) r.value = coded && t.choices.length ? t.choices[0].code : "1";
+      write(true);
+    } });
+    ops.forEach(function (o) { opSel.appendChild(h("option", { value: o[0], text: o[1], selected: o[0] === r.op })); });
+    parts.appendChild(opSel);
+    if (needsValue) {
+      if (checkbox || coded) {
+        var current = checkbox ? r.code : r.value;
+        var valSel = h("select", { "aria-label": "Answer", onchange: function () { if (checkbox) r.code = valSel.value; else r.value = valSel.value; write(true); } });
+        var found = false;
+        t.choices.forEach(function (c) {
+          found = found || c.code === current;
+          valSel.appendChild(h("option", { value: c.code, text: C.stripHtml(c.label) || c.code, selected: c.code === current }));
+        });
+        if (!found) valSel.appendChild(h("option", { value: current, text: current + " (not an answer)", selected: true }));
+        parts.appendChild(valSel);
+      } else {
+        parts.appendChild(h("input", { type: "text", value: r.value, "aria-label": "Value", placeholder: "value",
+          oninput: function (e) { r.value = e.target.value.trim(); write(false); } }));
+      }
+    }
+    return h("div.rule", parts, h("button.icon-btn", { text: "×", title: "Remove this condition", onclick: function () {
+      spec.rules.splice(k, 1);
+      write(true);
+    } }));
+  }
+
+  function sectionPanel(s) {
+    append(insp, [h("h2", h("span.glyph", { text: "§" }), "Section heading", closeButton()),
+      issueNotes(function (i) { return i.itemId === s.id; }),
+      labelled("Heading", h("textarea", { rows: 2, value: s.label, "data-focus": "label", oninput: function (e) { s.label = e.target.value; changed(); } }),
+        "Shown as a band above the question that follows it."),
+      h("div.actions", h("button.danger", { text: "Delete", onclick: function () { deleteItem(s.id); } }))]);
+  }
+
+  function formPanel(form) {
+    var p = state.project, at = p.forms.indexOf(form);
+    function shift(by) {
+      p.forms.splice(at, 1);
+      p.forms.splice(at + by, 0, form);
+      changed({ inspector: true, now: true });
+    }
+    append(insp, [h("h2", "Instrument", closeButton()),
+      h("p.lead", { text: "An instrument is one page or form in REDCap. Each can be a survey or a data entry form." }),
+      issueNotes(function (i) { return i.formId === form.id && !i.itemId; }),
+      labelled("Name", h("input", { type: "text", value: form.label, "data-focus": "form-label", oninput: function (e) {
+        form.label = e.target.value;
+        if (form.autoName) form.name = C.uniqueFormName(p, C.formSlug(form.label), form.id);
+        changed();
+      } }), "Name inside REDCap: " + form.name),
+      h("div.actions",
+        h("button", { text: "← Move left", disabled: at === 0, onclick: function () { shift(-1); } }),
+        h("button", { text: "Move right →", disabled: at === p.forms.length - 1, onclick: function () { shift(1); } }),
+        h("button.danger", { text: "Delete instrument", disabled: p.forms.length < 2, onclick: function () {
+          p.forms.splice(at, 1);
+          state.selForm = null;
+          changed({ inspector: true, now: true });
+          toast("Instrument deleted. Press Undo to bring it back.");
+        } }))]);
+  }
+
+  function projectPanel(p) {
+    var fields = C.allFields(p);
+    var gated = fields.filter(function (f) { return f.logic && f.logic.trim(); }).length;
+    append(insp, [h("h2", { text: "Your survey" }),
+      h("dl.dl", h("dt", { text: "Questions" }), h("dd", { text: String(fields.length) }),
+        h("dt", { text: "Instruments" }), h("dd", { text: String(p.forms.length) }),
+        h("dt", { text: "With branching" }), h("dd", { text: String(gated) }),
+        p.source ? [h("dt", { text: "Opened from" }), h("dd", { text: p.source.file || p.source.format })] : null)]);
+    if (state.issues.length) {
+      append(insp, h("h3", { text: "To fix before uploading" }));
+      state.issues.forEach(function (i) {
+        var loc = find(i.itemId);
+        var who = loc ? (loc.item.kind === "section" ? "Section" : loc.item.name) + ": " : "";
+        append(insp, h("div.note.click." + i.severity, { onclick: function () {
+          if (i.itemId) select(i.itemId, { reveal: true }); else if (i.formId) selectForm(i.formId);
+        } }, who ? h("b", { text: who }) : null, i.message));
+      });
+    } else {
+      append(insp, h("div.note.info", { text: "No problems found. Preview it, then export to REDCap." }));
+    }
+    append(insp, [h("h3", { text: "How it works" }),
+      h("ol.steps",
+        h("li", { text: "Drag a question type onto an instrument, then type the question." }),
+        h("li", { text: "To add branching, drag an answer (like Yes) onto the question that should appear for it." }),
+        h("li", { text: "Press Preview to answer the survey yourself and watch questions appear and disappear." }),
+        h("li", { text: "Press Export to download a file REDCap can upload." })),
+      h("p.lead", { style: "margin-top:14px", text: "Your work is saved in this browser as you go. Nothing is uploaded anywhere." })]);
+  }
+
+  // ---------------------------------------------------------------- menus and modals
+
+  var openThing = null;
+  function closeThing() { if (openThing) { openThing.remove(); openThing = null; } }
+
+  function openMenu(anchor, items) {
+    closeThing();
+    var menu = h("div.menu");
+    items.forEach(function (it) {
+      if (!it) { menu.appendChild(h("hr")); return; }
+      menu.appendChild(h("button", { onclick: function () { closeThing(); it.run(); } },
+        it.glyph ? h("span.glyph", { text: it.glyph }) : null, it.label));
+    });
+    document.body.appendChild(menu);
+    var r = anchor.getBoundingClientRect();
+    var top = r.bottom + 6;
+    if (top + menu.offsetHeight > window.innerHeight - 8) top = Math.max(8, r.top - menu.offsetHeight - 6);
+    menu.style.top = top + "px";
+    menu.style.left = Math.max(8, Math.min(r.left, window.innerWidth - menu.offsetWidth - 8)) + "px";
+    openThing = menu;
+  }
+  document.addEventListener("pointerdown", function (e) {
+    if (openThing && openThing.classList.contains("menu") && !openThing.contains(e.target)) closeThing();
+  }, true);
+
+  function openModal(content, cls) {
+    closeThing();
+    var scrim = h("div.scrim", { onpointerdown: function (e) { if (e.target === scrim) closeThing(); } }, h("div.modal" + (cls || ""), { role: "dialog", "aria-modal": "true" }, content));
+    document.body.appendChild(scrim);
+    openThing = scrim;
+    return scrim.firstChild;
+  }
+
+  function welcome() {
+    openModal([
+      h("h2", { text: "Design a REDCap survey" }),
+      h("p.lead", { text: "Build questions and skip logic by dragging, test it like a respondent, then download a file REDCap can upload. You can also open an existing REDCap project to see and change it." }),
+      h("div.options",
+        h("button.option", { onclick: function () { closeThing(); setProject(C.newProject("My survey"), true); } },
+          h("span.big", { text: "＋" }), h("strong", { text: "Start a new survey" }), h("span", { text: "A blank canvas with a record ID ready to go." })),
+        h("button.option", { onclick: function () { closeThing(); $("file").click(); } },
+          h("span.big", { text: "⇪" }), h("strong", { text: "Open a REDCap file" }), h("span", { text: "A project XML export or a data dictionary CSV. You can also drop the file anywhere on this page." })),
+        h("button.option", { onclick: function () { closeThing(); setProject(C.sampleProject(), true); toast("This is an example. Click a question, or press Preview to try it."); } },
+          h("span.big", { text: "◉" }), h("strong", { text: "Explore an example" }), h("span", { text: "A short housing survey with branching already set up." }))),
+      h("p.lead", { style: "margin:16px 0 0", text: "Everything happens in this browser on your computer. Nothing is uploaded." })
+    ]);
+  }
+
+  function download(name, text, mime) {
+    var url = URL.createObjectURL(new Blob([text], { type: mime }));
+    var a = h("a", { href: url, download: name });
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+  }
+
+  function exportModal() {
+    if (commitTimer) commit();
+    var p = state.project;
+    var errors = state.issues.filter(function (i) { return i.severity === "error"; });
+    var stem = (p.title.trim() || "survey").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_+|_+$/g, "") || "survey";
+    var done = h("div");
+    function run(kind) {
+      try {
+        if (kind === "xml") {
+          var out = C.exportOdm(p);
+          download(stem + ".REDCap.xml", out.xml, "application/xml");
+          done.textContent = "";
+          append(done, [h("div.note.info", { text: "Downloaded " + stem + ".REDCap.xml" })].concat(out.notes.map(function (n) { return h("div.note.warning", { text: n }); })));
+        } else {
+          download(stem + "_DataDictionary.csv", C.exportDataDictionary(p), "text/csv");
+          done.textContent = "";
+          append(done, h("div.note.info", { text: "Downloaded " + stem + "_DataDictionary.csv" }));
+        }
+      } catch (e) {
+        done.textContent = "";
+        append(done, h("div.note.error", { text: e.message }));
+      }
+    }
+    openModal([
+      h("div.modal-head", h("h2", { text: "Export to REDCap" }), h("button.quiet", { text: "Close", onclick: closeThing })),
+      h("p.lead", { text: plural(C.allFields(p).length, "question") + " in " + plural(p.forms.length, "instrument") + "." }),
+      errors.length ? h("div.note.error", h("b", { text: plural(errors.length, "problem") + " to fix first. " }),
+        "REDCap may reject the file or questions may never show. ",
+        h("button.link-btn", { text: "Show me", onclick: function () { closeThing(); state.sel = null; state.selForm = null; renderCanvas(); renderInspector(); insp.classList.add("open"); } })) : null,
+      h("div.options",
+        h("div.panelbox", h("h3", { text: "A new REDCap project" }), h("p", { text: "Creates the whole project: instruments, questions and branching." }),
+          h("button.primary", { text: "Download project XML", onclick: function () { run("xml"); } }),
+          h("ol.steps", h("li", { text: "In REDCap, choose New Project." }), h("li", { text: "Pick “Upload a REDCap project XML file”." }), h("li", { text: "Choose the downloaded file and create the project." }))),
+        h("div.panelbox", h("h3", { text: "A project you already have" }), h("p", { text: "Replaces that project's questions with this design." }),
+          h("button", { text: "Download data dictionary CSV", onclick: function () { run("csv"); } }),
+          h("ol.steps", h("li", { text: "Open the project, then Project Setup." }), h("li", { text: "Open Data Dictionary." }), h("li", { text: "Upload the downloaded CSV and commit the changes." })))),
+      done,
+      h("p.lead", { style: "margin:14px 0 0", text: "To keep working later, open the project XML here again. It is also your save file." })
+    ]);
+  }
+
+  // ---------------------------------------------------------------- preview
+
+  function openPreview() {
+    if (commitTimer) commit();
+    var p = state.project, answers = {}, wraps = [];
+    var loc = find(state.sel);
+    var current = Math.max(0, p.forms.indexOf(loc ? loc.form : formById(state.selForm)));
+    var body = h("div.pv-form");
+    var formSel = h("select", { "aria-label": "Instrument", onchange: function () { current = +formSel.value; build(); } });
+    p.forms.forEach(function (form, k) { formSel.appendChild(h("option", { value: String(k), text: form.label, selected: k === current })); });
+    var status = h("span.lead", { style: "margin:0" });
+
+    function setAnswer(f, value) {
+      if (value === "" || value == null) delete answers[f.name]; else answers[f.name] = value;
+      refresh();
+    }
+
+    function control(f) {
+      var name = "pv_" + f.name;
+      if (f.type === "descriptive") return null;
+      if (C.CODED_TYPES[f.type] && f.type !== "dropdown") {
+        var box = f.type === "checkbox";
+        return h("div", f.choices.map(function (c) {
+          return h("label.opt", h("input", { type: box ? "checkbox" : "radio", name: name, value: c.code, onchange: function (e) {
+            if (!box) return setAnswer(f, c.code);
+            var set = answers[f.name] && typeof answers[f.name] === "object" ? answers[f.name] : {};
+            if (e.target.checked) set[c.code] = true; else delete set[c.code];
+            setAnswer(f, Object.keys(set).length ? set : "");
+          } }), C.stripHtml(c.label) || c.code);
+        }), box ? null : h("button.link-btn", { text: "clear", onclick: function (e) {
+          [].forEach.call(e.target.parentNode.querySelectorAll("input"), function (i) { i.checked = false; });
+          setAnswer(f, "");
+        } }));
+      }
+      if (f.type === "dropdown") {
+        return h("select", { onchange: function (e) { setAnswer(f, e.target.value); } }, h("option", { value: "", text: "" }),
+          f.choices.map(function (c) { return h("option", { value: c.code, text: C.stripHtml(c.label) || c.code }); }));
+      }
+      if (f.type === "notes") return h("textarea", { rows: 3, oninput: function (e) { setAnswer(f, e.target.value); } });
+      if (f.type === "slider") return h("input", { type: "range", min: 0, max: 100, style: "max-width:420px;width:100%", oninput: function (e) { setAnswer(f, e.target.value); } });
+      if (f.type === "calc") return h("input", { type: "text", disabled: true, placeholder: "REDCap works this out" });
+      if (f.type === "file") return h("input", { type: "text", disabled: true, placeholder: "File upload" });
+      var v = f.validation || "";
+      var type = /^(integer|number)/.test(v) ? "number" : /^date_/.test(v) ? "date" : v === "email" ? "email" : "text";
+      return h("input", { type: type, oninput: function (e) { setAnswer(f, e.target.value); } });
+    }
+
+    function build() {
+      body.textContent = "";
+      wraps = [];
+      p.forms[current].items.forEach(function (it) {
+        if (it.kind === "section") { body.appendChild(h("div.pv-section", { text: C.stripHtml(it.label) })); return; }
+        if (it.rid) return;
+        var tags = h("span");
+        var el = h("div.pv-q", it.type === "descriptive" ? h("div.pv-desc", C.stripHtml(it.label), tags)
+          : [h("div.q", C.stripHtml(it.label) || it.name, it.required ? h("span.star", { text: " *" }) : null, tags), control(it),
+            it.note ? h("div.hint", { text: C.stripHtml(it.note) }) : null]);
+        wraps.push({ f: it, el: el, tags: tags });
+        body.appendChild(el);
+      });
+      if (!wraps.length) body.appendChild(h("p.lead", { style: "margin-top:16px", text: "This instrument has no questions for respondents yet." }));
+      // restore answers already given on this instrument
+      wraps.forEach(function (w) {
+        var a = answers[w.f.name];
+        if (a == null) return;
+        [].forEach.call(w.el.querySelectorAll("input, select, textarea"), function (i) {
+          if (i.type === "radio") i.checked = i.value === a;
+          else if (i.type === "checkbox") i.checked = !!a[i.value];
+          else i.value = a;
+        });
+      });
+      refresh();
+    }
+
+    function refresh() {
+      var all = C.allFields(p), shown = {}, again = true, guard = 0;
+      while (again && guard++ < 25) {
+        again = false;
+        all.forEach(function (f) {
+          var s = C.isShown(f, answers);
+          shown[f.id] = s;
+          if (s === false && answers[f.name] != null) { delete answers[f.name]; again = true; }
+        });
+      }
+      var visible = 0;
+      wraps.forEach(function (w) {
+        var s = shown[w.f.id];
+        w.el.classList.toggle("skipped", s === false);
+        if (s === false) {
+          [].forEach.call(w.el.querySelectorAll("input, select, textarea"), function (i) {
+            if (i.type === "radio" || i.type === "checkbox") i.checked = false; else if (!i.disabled) i.value = "";
+          });
+        } else visible++;
+        w.tags.textContent = "";
+        if (s === false) w.tags.appendChild(h("span.pv-tag.skip", { text: "skipped" }));
+        else if (s === null) w.tags.appendChild(h("span.pv-tag.unk", { text: "always shown here", title: "This logic uses REDCap features the preview cannot run: " + w.f.logic }));
+        else if (w.f.logic && w.f.logic.trim()) w.tags.appendChild(h("span.pv-tag.cond", { text: "shown by branching", title: w.f.logic }));
+      });
+      status.textContent = visible + " of " + wraps.length + " showing";
+    }
+
+    var modal = openModal([
+      h("div.modal-head", h("h2", { text: "Preview" }), h("button.quiet", { text: "Close", onclick: closeThing })),
+      h("p.lead", { text: "Answer as a respondent would. Questions appear and disappear according to your branching." }),
+      h("div.pv-bar", formSel, status,
+        h("label.check", { style: "margin:0" }, h("input", { type: "checkbox", onchange: function (e) { modal.classList.toggle("show-skipped", e.target.checked); } }), "Show skipped questions"),
+        h("button", { text: "Start over", onclick: function () { answers = {}; build(); } })),
+      body
+    ], ".wide");
+    build();
+  }
+
+  // ---------------------------------------------------------------- opening files
+
+  function loadText(text, name) {
+    try {
+      var result = C.importAny(text, name);
+      setProject(result.project, true);
+      var n = C.allFields(result.project).length;
+      if (result.notes.length) {
+        openModal([h("div.modal-head", h("h2", { text: "Opened " + name }), h("button.primary", { text: "OK", onclick: closeThing })),
+          h("p.lead", { text: plural(n, "question") + " in " + plural(result.project.forms.length, "instrument") + "." }),
+          result.notes.map(function (note) { return h("div.note.info", { text: note }); })]);
+      } else toast("Opened " + name + ": " + plural(n, "question") + ". Undo brings back what you had before.");
+      requestAnimationFrame(function () {
+        // Small projects open fitted; large ones stay readable and are panned.
+        fitView();
+        if (state.view.k < 0.6) { state.view = { x: 28, y: 24, k: 0.6 }; applyView(); }
+      });
+    } catch (e) {
+      openModal([h("div.modal-head", h("h2", { text: "That file could not be opened" }), h("button.primary", { text: "OK", onclick: closeThing })),
+        h("div.note.error", { text: e && e.name === "InputError" ? e.message : "Something unexpected went wrong reading " + name + ": " + (e && e.message) }),
+        h("p.lead", { text: "Use a REDCap project XML (Project Setup, Other Functionality, Download metadata only) or a Data Dictionary CSV." })]);
+    }
+  }
+
+  function readFile(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () { loadText(String(reader.result), file.name); };
+    reader.onerror = function () { toast("That file could not be read."); };
+    reader.readAsText(file);
+  }
+
+  $("file").addEventListener("change", function (e) { readFile(e.target.files[0]); e.target.value = ""; });
+
+  var dragDepth = 0;
+  function hasFiles(e) { return e.dataTransfer && [].indexOf.call(e.dataTransfer.types || [], "Files") >= 0; }
+  window.addEventListener("dragenter", function (e) { if (hasFiles(e)) { dragDepth++; $("dropzone").classList.add("show"); e.preventDefault(); } });
+  window.addEventListener("dragover", function (e) { if (hasFiles(e)) e.preventDefault(); });
+  window.addEventListener("dragleave", function (e) { if (hasFiles(e) && --dragDepth <= 0) { dragDepth = 0; $("dropzone").classList.remove("show"); } });
+  window.addEventListener("drop", function (e) {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    dragDepth = 0;
+    $("dropzone").classList.remove("show");
+    readFile(e.dataTransfer.files[0]);
+  });
+
+  // ---------------------------------------------------------------- wiring
+
+  function renderAll() { renderCanvas(); renderInspector(); updateTop(); }
+
+  $("title").addEventListener("input", function (e) { state.project.title = e.target.value; clearTimeout(commitTimer); commitTimer = setTimeout(commit, 500); document.title = e.target.value + " · XML Wizard Designer"; });
+  $("undo").addEventListener("click", function () { travel(-1); });
+  $("redo").addEventListener("click", function () { travel(1); });
+  $("problems").addEventListener("click", function () { state.sel = null; state.selForm = null; renderCanvas(); renderInspector(); insp.classList.add("open"); });
+  $("preview").addEventListener("click", openPreview);
+  $("open").addEventListener("click", function () { $("file").click(); });
+  $("export").addEventListener("click", exportModal);
+  $("more").addEventListener("click", function (e) {
+    openMenu(e.currentTarget, [
+      { label: "New survey", run: function () { setProject(C.newProject("My survey"), true); toast("Started a new survey. Undo brings back the previous one."); } },
+      { label: "Open the example", run: function () { setProject(C.sampleProject(), true); } },
+      { label: "Open a REDCap file…", run: function () { $("file").click(); } },
+      null,
+      { label: "Undo", run: function () { travel(-1); } },
+      { label: "Redo", run: function () { travel(1); } },
+      { label: "Fit everything on screen", run: fitView },
+      null,
+      { label: "Start screen", run: welcome }
+    ]);
+  });
+  $("zoom-in").addEventListener("click", function () { var r = stage.getBoundingClientRect(); zoomAt(r.left + r.width / 2, r.top + r.height / 2, state.view.k * 1.2); });
+  $("zoom-out").addEventListener("click", function () { var r = stage.getBoundingClientRect(); zoomAt(r.left + r.width / 2, r.top + r.height / 2, state.view.k / 1.2); });
+  $("zoom-fit").addEventListener("click", fitView);
+  $("fab").addEventListener("click", function () { insp.classList.remove("open"); palette.classList.toggle("open"); });
+
+  window.addEventListener("keydown", function (e) {
+    var tag = (e.target.tagName || "").toLowerCase();
+    var typing = tag === "input" || tag === "textarea" || tag === "select";
+    var mod = e.ctrlKey || e.metaKey;
+    if (e.key === "Escape") {
+      if (openThing) closeThing();
+      else if (gesture) endGesture(false);
+      else if (typing) e.target.blur();
+      else if (state.sel || state.selForm) { state.sel = null; state.selForm = null; renderCanvas(); renderInspector(); }
+      return;
+    }
+    if (openThing) return;
+    if (mod && e.key.toLowerCase() === "z" && !typing) { e.preventDefault(); travel(e.shiftKey ? 1 : -1); }
+    else if (mod && e.key.toLowerCase() === "y" && !typing) { e.preventDefault(); travel(1); }
+    else if (mod && e.key.toLowerCase() === "d" && state.sel) { e.preventDefault(); duplicateItem(state.sel); }
+    else if ((e.key === "Delete" || e.key === "Backspace") && state.sel && (e.target === document.body || stage.contains(e.target))) { e.preventDefault(); deleteItem(state.sel); }
+  });
+  window.addEventListener("resize", function () { applyView(); });
+
+  // ---------------------------------------------------------------- start
+
+  renderPalette();
+  var preload = null, saved = null;
+  try { preload = JSON.parse($("xmlw-preload").textContent || "null"); } catch (e) { preload = null; }
+  try { saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch (e) { saved = null; }
+  if (preload && preload.text) {
+    state.project = C.newProject("My survey");
+    loadText(preload.text, preload.name || "project");
+    if (!state.history.length) setProject(state.project);
+  } else if (saved && saved.forms && saved.forms.length) {
+    setProject(saved);
+  } else {
+    setProject(C.newProject("My survey"));
+    welcome();
+  }
+  window.XMLWDesigner = { state: state, core: C };
+})();
+
+</script>
+</body>
+</html>

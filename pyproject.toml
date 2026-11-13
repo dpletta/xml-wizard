@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "redcap-xml-wizard"
 dynamic = ["version"]
-description = "Visualise REDCap branching logic as a zoomable tree and export agent-ready codebooks for data cleaning."
+description = "Visualise REDCap branching logic as a zoomable tree, design surveys by drag and drop, and export agent-ready codebooks for data cleaning."
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "David Pletta" }]
@@ -33,4 +33,4 @@ version = { attr = "xml_wizard.__version__" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-xml_wizard = ["viewer_template.html", "r_runtime.R"]
+xml_wizard = ["viewer_template.html", "r_runtime.R", "designer_app/*"]

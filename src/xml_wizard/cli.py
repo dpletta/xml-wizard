@@ -22,10 +22,61 @@ agent-ready codebook for data cleaning.
 
 INPUT is a REDCap CDISC ODM XML export (metadata only, or with data) or a
 REDCap Data Dictionary CSV. Everything runs locally; nothing is uploaded.
+
+To build or edit a survey by drag and drop and export it back to REDCap, use
+"xml-wizard design [INPUT]" (see "xml-wizard design --help").
+"""
+
+DESIGN_DESCRIPTION = """\
+Open the drag-and-drop survey designer: one HTML file that runs offline in any
+browser. Build instruments, questions and branching logic, preview the survey,
+then download REDCap project XML (to create a project) or a data dictionary
+CSV (to update one).
+
+With INPUT (a REDCap project XML or Data Dictionary CSV) the designer opens
+with that project ready to view and edit. Participant records in the XML are
+left out of the HTML file.
 """
 
 
+def design_main(argv: List[str]) -> int:
+    from .designer import write_designer
+
+    ap = argparse.ArgumentParser(prog="xml-wizard design", description=DESIGN_DESCRIPTION,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("input", nargs="?", help="optional REDCap project XML or Data Dictionary CSV to open")
+    ap.add_argument("-o", "--out", help="where to write the designer (default: <input name>_designer.html "
+                                        "next to the input, or xml_wizard_designer.html here)")
+    ap.add_argument("--open", action="store_true", help="open the designer in a web browser when done")
+    args = ap.parse_args(argv)
+    if args.input:
+        try:
+            load_project(args.input)  # fail early, with a clear message, on files that are not REDCap exports
+        except (InputError, OSError) as exc:
+            print(f"xml-wizard: {exc}", file=sys.stderr)
+            return 2
+        stem = os.path.splitext(os.path.basename(args.input))[0]
+        default = os.path.join(os.path.dirname(os.path.abspath(args.input)), stem + "_designer.html")
+    else:
+        default = os.path.abspath("xml_wizard_designer.html")
+    out = args.out or default
+    try:
+        write_designer(out, args.input)
+    except OSError as exc:
+        print(f"xml-wizard: {exc}", file=sys.stderr)
+        return 2
+    print(f"Survey designer: {out}")
+    print("Open it in any browser. It works offline and nothing is uploaded.")
+    if args.open:
+        webbrowser.open("file://" + os.path.abspath(out))
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
+    if argv is None:
+        argv = sys.argv[1:]
+    if argv and argv[0] == "design":
+        return design_main(list(argv[1:]))
     ap = argparse.ArgumentParser(prog="xml-wizard", description=DESCRIPTION,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("input", help="REDCap ODM XML file or Data Dictionary CSV")
