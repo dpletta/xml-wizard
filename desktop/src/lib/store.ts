@@ -45,7 +45,7 @@ interface State {
 
   addItem(kindKey: string, formId?: string, index?: number): void;
   addForm(): void;
-  /** `index` counts the target instrument's items without the one being moved. */
+  /** `index` excludes the moved question, or the section and all its questions. */
   moveItem(id: string, formId: string, index: number): void;
   moveForm(id: string, index: number): void;
   deleteItem(id: string): void;
@@ -193,9 +193,12 @@ export const useStore = create<State>((set, get) => ({
       const loc = C.findItem(p, id);
       const target = p.forms.find((f) => f.id === formId);
       if (!loc || !target) return;
-      loc.form.items.splice(loc.index, 1);
-      const at = index;
-      target.items.splice(Math.max(0, Math.min(at, target.items.length)), 0, loc.item);
+      let count = 1;
+      if (!C.isField(loc.item)) {
+        while (loc.index + count < loc.form.items.length && C.isField(loc.form.items[loc.index + count])) count++;
+      }
+      const moved = loc.form.items.splice(loc.index, count);
+      target.items.splice(Math.max(0, Math.min(index, target.items.length)), 0, ...moved);
     });
     set({ selected: id, selectedForm: null });
   },

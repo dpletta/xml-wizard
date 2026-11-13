@@ -30,7 +30,7 @@ npm run tauri build    # build the installer for this computer (in src-tauri/tar
 `npm run dev` runs the same interface in a browser at http://localhost:1420, which is the quickest way
 to work on it. `npm run build` type-checks and builds the web files only.
 
-Tests: `cargo test` in `src-tauri/` covers the file commands; `python -m unittest discover -s tests`
+Tests: `npm test` (Node.js 22.15+ for TypeScript and module hooks) covers canvas containment, branching anchors, and section moves. `cargo test` in `src-tauri/` covers the file commands; `python -m unittest discover -s tests`
 at the repository root covers the engine, the Python bridge (`app_bridge.py`) and the checks that the
 version numbers and the content security policy stay in step.
 
@@ -46,3 +46,21 @@ The builds are not signed with a paid certificate. To remove the first-launch wa
 Apple Developer ID certificate and notarization credentials as repository secrets
 (see the [Tauri signing guide](https://tauri.app/distribute/sign/macos/)) and delete
 `"signingIdentity": "-"` from `tauri.conf.json`.
+
+## Reading the flow map
+
+The canvas shows green instruments containing purple sections, orange question cards,
+and individual response options. Questions keep their branching-based indentation.
+Questions before the first section heading appear in a display-only “General” section;
+this does not add a heading to your exported REDCap file.
+
+All branching references are visible: blue brackets within a section, purple brackets
+between sections of the same instrument, and blue Sankey-style curves between instruments.
+Arrows point to the question whose visibility depends on the source. Curves have equal
+widths; they show dependencies, not respondent counts. Select a question, section, or
+instrument to emphasize its connections. Full conditions remain on question cards and
+in the inspector; response anchors also represent negative comparisons when present.
+
+In Design mode, drag a response option onto a question to add a condition. Dragging a
+section by its header moves its questions together. REDCap branching conditions remain
+attached to questions; the containers show the section and instrument boundaries they cross.

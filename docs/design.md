@@ -112,7 +112,13 @@ has not been tested against every REDCap version.
 ## The desktop app
 
 `desktop/` is the downloadable app: one window with a Map mode (see an existing project) and a Design
-mode (build or change one), on the same canvas.
+mode (build or change one), on the same canvas. The desktop canvas nests response options in
+questions, questions in section containers, and sections in instruments, while preserving
+branching-based question indentation. All branching dependencies are drawn: bracketed lines within
+an instrument (purple for section crossings) and constant-width Sankey-style curves between
+instruments. The full condition remains on the target question; the lines identify its inputs and
+do not imply independent OR rules or respondent counts. Questions without an explicit section use
+a display-only General container. Moving an explicit section moves its questions together.
 
 **Tauri, not Electron.** The shell (`desktop/src-tauri/`) uses the operating system's own web view, so the
 download is a fraction of the size of an app that ships its own browser, which matters for researchers on managed laptops. The

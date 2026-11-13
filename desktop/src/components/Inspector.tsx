@@ -440,9 +440,9 @@ function ProjectPanel({ project, issues, editable }: { project: Project; issues:
             "Press Preview to answer the survey yourself and watch questions appear and disappear.",
             "Press Export for a file REDCap can upload.",
           ] : [
-            "Each column is an instrument. Questions run top to bottom in survey order.",
+            "Each instrument contains sections, questions, and response options in survey order.",
             "A question that only appears for certain answers sits indented under the question that controls it.",
-            "Click a question to see its logic in plain words, its answer codes and what depends on it.",
+            "Brackets show branches within an instrument; purple brackets cross sections. Curves connect instruments. Click a question for its full logic.",
             "Switch to Design to change anything, or Export an agent bundle for data cleaning.",
           ]).map((t, k) => (
             <li key={k} className="flex gap-2.5">

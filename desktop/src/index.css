@@ -307,3 +307,71 @@
   stroke: var(--primary);
   stroke-width: 2;
 }
+
+/* Survey containment uses the same four colors as the flow key. */
+:root {
+  --flow-instrument: #18713a;
+  --flow-section: #7645ad;
+  --flow-question: #b75c12;
+  --flow-link: #315eb2;
+}
+.dark {
+  --flow-instrument: #70cf91;
+  --flow-section: #ba98ed;
+  --flow-question: #f4ae73;
+  --flow-link: #8cb5ff;
+}
+.instrument-box {
+  border-color: var(--flow-instrument);
+  background: color-mix(in srgb, var(--surface) 96%, var(--flow-instrument));
+}
+.section-box {
+  border-color: var(--flow-section);
+  background: color-mix(in srgb, var(--surface) 96%, var(--flow-section));
+}
+.section-grip { color: var(--flow-section); }
+.question-card { border-color: var(--flow-question); }
+.question-card:has(.card-target.connectingto) { outline: 2px solid var(--primary); }
+.response-option {
+  border-color: var(--border-strong);
+  background: var(--surface);
+  color: var(--foreground);
+}
+.react-flow__handle.response-source {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  border-radius: 4px;
+  cursor: crosshair;
+}
+.react-flow__edge.branch .react-flow__edge-path {
+  stroke: var(--flow-link);
+  stroke-width: 1.6;
+}
+.react-flow__edge.branch.hot .react-flow__edge-path {
+  stroke-width: 2.5;
+}
+.react-flow__edge.branch .react-flow__edge-interaction { cursor: help; }
+.sankey-ribbon {
+  stroke: var(--flow-link);
+  stroke-width: 8;
+  stroke-opacity: 0.16;
+  pointer-events: none;
+}
+.react-flow__edge.hot .sankey-ribbon { stroke-opacity: 0.3; }
+.flow-legend {
+  max-width: calc(100% - 32px);
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 11px;
+  pointer-events: none;
+}
+.legend-instrument { color: var(--flow-instrument); font-weight: 600; }
+.legend-section { color: var(--flow-section); font-weight: 600; }
+.legend-question { color: var(--flow-question); font-weight: 600; }
+
+.react-flow__edge.cross-section .react-flow__edge-path { stroke: var(--flow-section); }
