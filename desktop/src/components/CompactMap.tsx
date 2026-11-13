@@ -63,7 +63,7 @@ export function CompactMap({ issues, dark }: { issues: Issue[]; dark: boolean })
   const [arrows, setArrows] = useState(true);
   const [pendingFocus, setPendingFocus] = useState<string | null>(null);
   const layout = useMemo(() => computeLayout(project, false), [project, rev]);
-  const compact = useMemo(() => compactLayout(layout, new Set(open), columns), [layout, open, columns]);
+  const compact = useMemo(() => compactLayout(layout, new Set(open), columns, project.workspace?.flows), [layout, open, columns]);
   const worst = useMemo(() => worstByItem(issues), [issues]);
 
   useEffect(() => {
@@ -123,7 +123,7 @@ export function CompactMap({ issues, dark }: { issues: Issue[]; dark: boolean })
     return { id: edge.id, source: edge.source, target: edge.target, type: "compact",
       sourceHandle: sameColumn || right ? "out-right" : "out-left", targetHandle: sameColumn || !right ? "in-right" : "in-left",
       data: { ...edge, label, sameColumn }, ariaLabel: label, selectable: false,
-      style: { stroke: "var(--flow-link)", strokeWidth: hot ? 2.5 : 1.5, opacity: hot ? 1 : 0.75 },
+      style: { stroke: "var(--flow-link)", strokeWidth: hot ? 2.5 : 1.5, opacity: hot ? 1 : 0.75, strokeDasharray: edge.planning ? "7 5" : undefined },
       markerEnd: { type: MarkerType.ArrowClosed, color: "var(--flow-link)", width: 14, height: 14 },
     };
   }) : [];
@@ -141,7 +141,7 @@ export function CompactMap({ issues, dark }: { issues: Issue[]; dark: boolean })
           <Button size="sm" onClick={() => { useStore.getState().setCompactOpen([]); void flow.setViewport({ x: 24, y: 100, zoom: 0.9 }); }}>Collapse all</Button>
           <Button size="sm" variant={arrows ? "soft" : "secondary"} aria-pressed={arrows} onClick={() => setArrows(!arrows)}>Arrows</Button>
         </div>
-        <p className="mt-1 text-[11px] text-muted-foreground">Open an instrument, then a section. Select a question to inspect it; use Design to edit.</p>
+        <p className="mt-1 text-[11px] text-muted-foreground">Open an instrument, then a section. Select a question to inspect it; use Canvas to edit.</p>
       </Panel>
       <Background variant={BackgroundVariant.Dots} gap={22} size={1.6} color="var(--canvas-dot)" />
       <Controls showInteractive={false} />

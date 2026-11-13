@@ -70,7 +70,7 @@ test('empty and consecutive sections have usable containers; section moves inclu
   assert.ok(l.sectionById.get(empty.id)!.h >= 86);
   const section = l.columns[1].sections[0];
   const movedIds = [section.id, ...section.slots.map((s) => s.item.id)];
-  const target = dropTarget(l, 50, 10000, section.id)!;
+  const target = dropTarget(l, 50, l.columns[0].h + 20, section.id)!;
   assert.equal(target.form.id, p.forms[0].id);
   useStore.getState().open(p, null, 'design');
   useStore.getState().moveItem(section.id, target.form.id, target.index);

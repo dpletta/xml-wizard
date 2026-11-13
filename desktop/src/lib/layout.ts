@@ -43,6 +43,7 @@ export interface SectionBox {
 
 export interface Column {
   form: Form;
+  y: number;
   x: number;
   w: number;
   h: number;
@@ -167,7 +168,7 @@ export function computeLayout(project: Project, footer: boolean): Layout {
     });
     if (!section) start(`section:${form.id}`, "General", true);
     finish();
-    const col: Column = { form, x: 0, w: COL_W, h: y + (footer ? FOOT_H : PAD - GAP), slots, sections };
+    const col: Column = { form, x: 0, y: 0, w: COL_W, h: y + (footer ? FOOT_H : PAD - GAP), slots, sections };
     columnById.set(form.id, col);
     return col;
   });
@@ -208,6 +209,10 @@ export function computeLayout(project: Project, footer: boolean): Layout {
     for (const section of col.sections) section.w = col.w - 2 * PAD;
     for (const slot of col.slots) if (!C.isField(slot.item)) slot.w = col.w - 2 * PAD;
   }
+  if (footer) for (const col of columns) {
+    const point = project.workspace?.positions[col.form.id];
+    if (point) { col.x = point.x; col.y = point.y; }
+  }
   return { columns, slotById, sectionById, columnById, index, branches };
 }
 
@@ -217,10 +222,13 @@ export function dropTarget(layout: Layout, cx: number, cy: number, movingId: str
   let col = layout.columns[0];
   let best = Infinity;
   for (const c of layout.columns) {
-    const d = cx < c.x ? c.x - cx : cx > c.x + c.w ? cx - (c.x + c.w) : 0;
+    const dx = Math.max(c.x - cx, cx - c.x - c.w, 0);
+    const dy = Math.max(c.y - cy, cy - c.y - c.h, 0);
+    const d = Math.hypot(dx, dy);
     if (d < best) { best = d; col = c; }
   }
   if (best > COL_GAP) return null;
+  cy -= col.y;
   const movingSection = movingId ? layout.sectionById.get(movingId) : null;
   const others = col.slots.filter((s) => s.item.id !== movingId && (!movingSection || s.sectionId !== movingId));
   let index = 0;
@@ -230,7 +238,7 @@ export function dropTarget(layout: Layout, cx: number, cy: number, movingId: str
   }
   // The record ID always stays first.
   if (col === layout.columns[0] && index === 0 && others.length) { index = 1; lineY = others[0].y + others[0].h + GAP / 2; }
-  return { form: col.form, index, lineY, x: col.x, w: col.w };
+  return { form: col.form, index, lineY: lineY + col.y, x: col.x, w: col.w };
 }
 
 export function worstByItem(issues: Issue[]): Map<string, "error" | "warning"> {

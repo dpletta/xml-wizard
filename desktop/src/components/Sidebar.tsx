@@ -43,7 +43,7 @@ function Palette() {
           </div>
         </div>
       ))}
-      <button onClick={addForm}
+      <button onClick={() => addForm()}
         className="flex h-9 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border-strong text-xs font-medium text-muted-foreground hover:border-primary hover:bg-primary-soft hover:text-primary">
         <Plus className="size-3.5" /> New instrument
       </button>
@@ -127,7 +127,7 @@ export function Sidebar({ issues }: { issues: Issue[] }) {
   const [tab, setTab] = useState<"outline" | "add">(mode === "design" ? "add" : "outline");
   useEffect(() => setTab(mode === "design" ? "add" : "outline"), [mode]);
   return (
-    <aside aria-label="Outline and question types" className="flex w-[264px] shrink-0 flex-col border-r border-border bg-background">
+    <aside aria-label="Outline and question types" className="workspace-sidebar flex w-[264px] shrink-0 flex-col border-r border-border bg-background">
       {mode === "design" ? (
         <div className="m-3 mb-0 grid grid-cols-2 rounded-lg bg-muted p-0.5 text-[12.5px] font-medium">
           {(["add", "outline"] as const).map((t) => (

@@ -71,7 +71,7 @@ test('arrows aggregate on closed groups and recover every dependency when expand
   }
 });
 
-test('switching Compact, Map and Design retains edits, selection, source, expansion and undo', () => {
+test('switching Overview and Canvas retains edits, selection, source, expansion and undo', () => {
   const source = { name: 'example.xml', text: '<example />' };
   useStore.getState().open(fixture(), source, 'design');
   const st = useStore.getState();
@@ -81,11 +81,11 @@ test('switching Compact, Map and Design retains edits, selection, source, expans
   st.setCompactOpen([st.project!.forms[0].id]);
   const before = useStore.getState();
   const metadata = JSON.stringify(before.project);
-  for (const view of ['compact', 'map', 'design', 'compact'] as const) {
+  for (const view of ['overview', 'canvas', 'overview'] as const) {
     useStore.getState().setView(view);
     const after = useStore.getState();
     assert.equal(after.view, view);
-    assert.equal(after.mode, view === 'design' ? 'design' : 'map');
+    assert.equal(after.mode, view === 'canvas' ? 'design' : 'map');
     assert.equal(after.selected, id);
     assert.equal(after.source, source);
     assert.equal(after.rev, before.rev);
@@ -98,21 +98,21 @@ test('switching Compact, Map and Design retains edits, selection, source, expans
   assert.equal(useStore.getState().project!.title, 'Example survey');
   useStore.getState().redo();
   assert.equal(useStore.getState().project!.title, 'Changed title');
-  useStore.getState().setView('map');
+  useStore.getState().setView('overview');
   useStore.getState().open(fixture(), null, 'map');
   assert.deepEqual(useStore.getState().compactOpen, []);
-  assert.equal(useStore.getState().view, 'map');
+  assert.equal(useStore.getState().view, 'overview');
 });
 
 
 test('large projects start compact; opening a new file respects the compact preference', () => {
   const p = fixture();
   for (let i = 0; i < 1000; i++) p.forms[0].items.push(C.newField({ name: `example_${i}` }));
-  useStore.getState().setView('map');
+  useStore.getState().setView('overview');
   useStore.getState().open(p, null, 'map');
-  assert.equal(useStore.getState().view, 'compact');
+  assert.equal(useStore.getState().view, 'overview');
   useStore.getState().open(fixture(), null, 'map');
-  assert.equal(useStore.getState().view, 'compact');
+  assert.equal(useStore.getState().view, 'overview');
   useStore.getState().open(p, null, 'design');
-  assert.equal(useStore.getState().view, 'design');
+  assert.equal(useStore.getState().view, 'canvas');
 });

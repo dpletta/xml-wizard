@@ -13,6 +13,16 @@ export type SectionNodeT = Node<{ section: SectionBox; rev: number; editable: bo
 export type FormNodeT = Node<{ form: Form; rev: number; editable: boolean; number: number; active: boolean }, "form">;
 export type AppNode = ItemNodeT | SectionNodeT | FormNodeT;
 
+function FlowHandles({ enabled }: { enabled: boolean }) {
+  const connecting = useStore((s) => s.canvasTool === "connect");
+  return <>
+    <Handle id="flow-in" type="target" position={Position.Left} style={{ top: 20 }} className={connecting && enabled ? "flow-port nodrag" : "flow-hidden"}
+      title="Flow destination" isConnectable={connecting && enabled} isConnectableStart={false} />
+    <Handle id="flow-out" type="source" position={Position.Right} style={{ top: 20 }} className={connecting && enabled ? "flow-port nodrag" : "flow-hidden"}
+      title="Drag to draw a planning flow" isConnectable={connecting && enabled} />
+  </>;
+}
+
 export const ItemNode = memo(function ItemNode({ data, selected }: NodeProps<ItemNodeT>) {
   const { slot, editable, worst } = data;
   const f = slot.item as Field;
@@ -33,6 +43,7 @@ export const ItemNode = memo(function ItemNode({ data, selected }: NodeProps<Ite
         !selected && worst === "warning" && "border-warn/60",
         data.flash && "animate-flash",
       )}>
+      <FlowHandles enabled={editable} />
       <Handle id="in" type="target" position={Position.Left} className="card-target" isConnectableStart={false} isConnectable={editable && !f.rid} />
       <Handle id="in-left" type="target" position={Position.Left} style={{ top: 30 }} isConnectable={false} />
       <Handle id="in-right" type="target" position={Position.Right} style={{ top: 30 }} isConnectable={false} />
@@ -88,6 +99,7 @@ export const SectionNode = memo(function SectionNode({ data, selected }: NodePro
   const { section } = data;
   return (
     <div className={cn("section-box h-full w-full rounded-xl border", selected && "ring-2 ring-primary/20")}>
+      <FlowHandles enabled={data.editable && !section.implicit} />
       <div className="section-grip flex h-[42px] items-center gap-2 px-3">
         <span className="text-[10px] font-medium opacity-80">Section</span>
         <span className="truncate text-xs font-semibold" title={C.stripHtml(section.label)}>{C.stripHtml(section.label) || "Untitled section"}</span>
@@ -105,6 +117,7 @@ export const FormNode = memo(function FormNode({ data }: NodeProps<FormNodeT>) {
   const gated = fields.filter((f) => f.logic.trim()).length;
   return (
     <div className={cn("instrument-box h-full w-full rounded-2xl border transition-colors", active ? "border-primary/70 ring-2 ring-primary/15" : "border-border")}>
+      <FlowHandles enabled={editable} />
       <div className={cn("form-grip flex h-[68px] items-center gap-3 px-4", editable && "cursor-grab active:cursor-grabbing")}>
         <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-foreground text-[12px] font-semibold text-background">{number}</span>
         <div className="min-w-0 flex-1">

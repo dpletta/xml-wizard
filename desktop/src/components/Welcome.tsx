@@ -1,3 +1,5 @@
+import { AppAvailability } from "./AppAvailability";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, FolderOpen, History, Lock, Moon, PencilRuler, Sun, WifiOff } from "lucide-react";
 import logo from "@/assets/logo.png";
@@ -57,7 +59,8 @@ function HatShimmer() {
 }
 
 export function Welcome({ dark, onToggleDark, casting = false }: { dark: boolean; onToggleDark: () => void; casting?: boolean }) {
-  const saved = readAutosave();
+  const [saved, setSaved] = useState<Awaited<ReturnType<typeof readAutosave>>>(null);
+  useEffect(() => { let active = true; void readAutosave().then((value) => { if (active) setSaved(value); }); return () => { active = false; }; }, []);
   return (
     <div className={cn("thin-scroll relative h-full overflow-y-auto", casting && "pointer-events-none")}>
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -87,7 +90,7 @@ export function Welcome({ dark, onToggleDark, casting = false }: { dark: boolean
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.12, ease: [0.2, 0.8, 0.2, 1] }}
           className={cn("mt-9 grid w-full gap-4 transition-opacity duration-300 sm:grid-cols-2", casting && "!opacity-40")}>
           <ActionCard primary icon={<FolderOpen />} title="Map an existing project" cta="Open a file"
-            text="Open a REDCap project XML or data dictionary CSV and explore its instruments and branching logic as a zoomable map."
+            text="Open an XML Wizard project, REDCap XML or data dictionary CSV and explore its instruments and branching logic as a zoomable map."
             onClick={() => openProject("map")} />
           <ActionCard icon={<PencilRuler />} title="Design a new survey" cta="Start designing"
             text="Build instruments, questions and branching on a canvas, preview it as a respondent, then export a file REDCap can upload."
@@ -104,7 +107,7 @@ export function Welcome({ dark, onToggleDark, casting = false }: { dark: boolean
                 {C.allFields(saved.project).length} questions, last edited {new Date(saved.at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
               </p>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => { clearAutosave(); location.reload(); }}>Discard</Button>
+            <Button variant="ghost" size="sm" onClick={async () => { if (await clearAutosave()) setSaved(null); }}>Discard</Button>
             <Button size="sm" onClick={resumeAutosave}>Continue</Button>
           </motion.div>
         ) : null}
@@ -115,11 +118,12 @@ export function Welcome({ dark, onToggleDark, casting = false }: { dark: boolean
           <button onClick={() => openExample("most")} className="rounded-full border border-border bg-surface px-3 py-1 font-medium shadow-card hover:border-primary hover:text-primary">Longitudinal study template</button>
         </motion.div>
 
+        <div className="mt-4"><AppAvailability /></div>
         <p className="mt-3 text-xs"><ShinyText>You can also drop a file anywhere in this window.</ShinyText></p>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><Lock className="size-3.5" /> Your files stay on this computer</span>
-          <span className="inline-flex items-center gap-1.5"><WifiOff className="size-3.5" /> Works offline, nothing is uploaded</span>
+          <span className="inline-flex items-center gap-1.5"><WifiOff className="size-3.5" /> Nothing is uploaded</span>
           <span>Version {__APP_VERSION__} alpha{isDesktop ? "" : " (browser)"}</span>
         </div>
       </div>

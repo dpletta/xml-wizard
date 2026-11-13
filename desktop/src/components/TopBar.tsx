@@ -1,11 +1,12 @@
+import { AppAvailability } from "./AppAvailability";
 import { motion } from "motion/react";
 import {
   Bot, CircleCheck, Download, FileCode2, FilePlus2, FileSpreadsheet, FolderOpen, House, PanelsTopLeft, Map as MapIcon, Moon, PencilRuler, Play, Redo2,
-  Search, Sun, TriangleAlert, Undo2,
+  Search, Sun, TriangleAlert, Undo2, Save,
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { C, type Issue } from "@/lib/core";
-import { exportProject, newProject, openProject } from "@/lib/session";
+import { autosave, exportProject, newProject, openProject, saveProject } from "@/lib/session";
 import { useProject, useStore, type WorkspaceView } from "@/lib/store";
 import { cn, plural } from "@/lib/utils";
 import { IssueNote } from "./Inspector";
@@ -19,12 +20,11 @@ function ModeSwitch() {
   const view = useStore((s) => s.view);
   const setView = useStore((s) => s.setView);
   const modes: [WorkspaceView, string, typeof MapIcon, string][] = [
-    ["compact", "Compact", PanelsTopLeft, "Browse a compact accordion overview"],
-    ["map", "Map", MapIcon, "See the survey and its branching logic"],
-    ["design", "Design", PencilRuler, "Build or change the survey"],
+    ["overview", "Overview", PanelsTopLeft, "Browse a compact accordion overview"],
+    ["canvas", "Canvas", PencilRuler, "Create, arrange and connect survey elements"],
   ];
   return (
-    <div role="group" aria-label="Workspace view" className="relative grid grid-cols-3 rounded-xl bg-muted p-1">
+    <div role="group" aria-label="Workspace view" className="relative grid grid-cols-2 rounded-xl bg-muted p-1">
       {modes.map(([key, label, Icon, hint]) => (
         <Tip key={key} text={hint}>
           <button aria-pressed={view === key} onClick={() => setView(key)}
@@ -88,12 +88,12 @@ export function TopBar({ issues, dark, onToggleDark, onPreview, onSearch, onBund
   const mutate = useStore((s) => s.mutate);
   const canUndo = useStore((s) => s.past.length > 0);
   const canRedo = useStore((s) => s.future.length > 0);
-  const dirty = useStore((s) => s.dirty);
+  const draftStatus = useStore((s) => s.draftStatus);
   const source = useStore((s) => s.source);
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-background px-3">
+    <header className="flex min-h-14 shrink-0 flex-wrap items-center gap-2 border-b border-border bg-background px-3">
       <Tip text="Back to the start screen">
-        <button onClick={() => useStore.getState().close()} className="flex items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-muted" aria-label="Start screen">
+        <button onClick={async () => { if (await autosave() || useStore.getState().fileSavedRev === useStore.getState().rev) useStore.getState().close(); }} className="flex items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-muted" aria-label="Start screen">
           <img src={logo} alt="" className="size-7" draggable={false} />
           <House className="size-3.5 text-muted-foreground" />
         </button>
@@ -108,11 +108,12 @@ export function TopBar({ issues, dark, onToggleDark, onPreview, onSearch, onBund
           <p className="truncate px-1.5 text-sm font-semibold tracking-tight">{project.title}</p>
         )}
         <p className="truncate px-1.5 text-[11px] text-muted-foreground">
-          {source ? source.name : "New survey"}{dirty ? " · edited, kept on this computer" : ""}
+          {source ? source.name : "New survey"}{draftStatus === "saved" ? " · draft saved on this device" : draftStatus === "error" ? " · draft not saved — download a copy" : " · saving draft…"}
         </p>
       </div>
 
       <ModeSwitch />
+      <AppAvailability />
 
       <div className="flex flex-1 items-center justify-end gap-1.5">
         {mode === "design" ? (
@@ -128,6 +129,7 @@ export function TopBar({ issues, dark, onToggleDark, onPreview, onSearch, onBund
         <Tip text="Answer the survey yourself to test the branching">
           <Button onClick={onPreview}><Play /> Preview</Button>
         </Tip>
+        <Tip text={`Save an editable project file (${modKey}S)`}><Button onClick={() => saveProject()}><Save /> Save</Button></Tip>
         <Menu>
           <MenuTrigger asChild>
             <Button variant="primary"><Download /> Export</Button>

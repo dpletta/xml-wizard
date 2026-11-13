@@ -3,6 +3,8 @@ import {
   applyNodeChanges, Background, BackgroundVariant, Controls, MiniMap, ReactFlow, useReactFlow, ViewportPortal,
   MarkerType, Panel, type Connection, type Edge, type NodeChange,
 } from "@xyflow/react";
+import { CanvasToolbar } from "./CanvasToolbar";
+import { Button } from "./ui/button";
 import { C, type Issue } from "@/lib/core";
 import { COL_GAP, SECTION_H, computeLayout, dropTarget, worstByItem } from "@/lib/layout";
 import { useProject, useStore } from "@/lib/store";
@@ -21,6 +23,10 @@ interface Hint {
 export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
   const [project, rev] = useProject();
   const mode = useStore((s) => s.mode);
+  const tool = useStore((s) => s.canvasTool);
+  const [flowStart, setFlowStart] = useState<string | null>(null);
+  const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
+  useEffect(() => { setFlowStart(null); }, [tool]);
   const selected = useStore((s) => s.selected);
   const selectedForm = useStore((s) => s.selectedForm);
   const focusTick = useStore((s) => s.focusTick);
@@ -38,22 +44,22 @@ export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
     const out: AppNode[] = [];
     layout.columns.forEach((col, k) => {
       out.push({
-        id: col.form.id, type: "form", position: { x: col.x, y: 0 }, width: col.w, height: col.h,
+        id: col.form.id, type: "form", position: { x: col.x, y: col.y }, width: col.w, height: col.h,
         data: { form: col.form, rev, editable, number: k + 1, active: col.form.id === selectedForm },
-        draggable: editable, dragHandle: ".form-grip", selectable: false, zIndex: 0,
+        draggable: editable && tool === "select", dragHandle: ".form-grip", selectable: false, zIndex: 0,
       });
       for (const section of col.sections) {
         out.push({
           id: section.id, type: "section", parentId: col.form.id,
           position: { x: section.x, y: section.y }, width: section.w, height: section.h,
           data: { section, rev, editable }, selected: section.id === selected,
-          draggable: editable && !section.implicit, selectable: !section.implicit,
+          draggable: editable && tool === "select" && !section.implicit, selectable: !section.implicit,
           dragHandle: ".section-grip", zIndex: 1,
         });
         for (const s of section.slots) {
           out.push({
             id: s.item.id, parentId: section.id, position: { x: s.x - section.x, y: s.y - section.y },
-            width: s.w, height: s.h, draggable: editable && !(C.isField(s.item) && s.item.rid),
+            width: s.w, height: s.h, draggable: editable && tool === "select" && !(C.isField(s.item) && s.item.rid),
             selected: s.item.id === selected, zIndex: 2, type: "item",
             data: { slot: s, rev, editable, worst: worst.get(s.item.id), flash: flashId === s.item.id },
           });
@@ -61,12 +67,12 @@ export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
       }
     });
     return out;
-  }, [layout, rev, editable, selected, selectedForm, worst, flashId]);
+  }, [layout, rev, editable, tool, selected, selectedForm, worst, flashId]);
 
   const [nodes, setNodes] = useState<AppNode[]>(layoutNodes);
   useEffect(() => setNodes(layoutNodes), [layoutNodes]);
 
-  const edges = useMemo<Edge[]>(() => layout.branches.map((branch) => {
+  const branches = useMemo<Edge[]>(() => layout.branches.map((branch) => {
     const { source, target, code, crossInstrument } = branch;
     const right = layout.columnById.get(target.form.id)!.x >= layout.columnById.get(source.form.id)!.x;
     const hot = selected === source.item.id || selected === target.item.id
@@ -86,6 +92,16 @@ export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
       zIndex: hot ? 5 : 4,
     };
   }), [layout, selected, selectedForm]);
+
+  const edges: Edge[] = [...branches, ...(project.workspace?.flows ?? []).map((line) => ({
+    id: line.id, source: line.source, target: line.target, sourceHandle: "flow-out", targetHandle: "flow-in",
+    type: "smoothstep", label: line.label, selected: selectedFlow === line.id,
+    style: { stroke: "var(--flow-link)", strokeWidth: selectedFlow === line.id ? 3 : 2, strokeDasharray: "7 5" },
+    labelStyle: { fill: "var(--foreground)", fontSize: 12 }, labelBgStyle: { fill: "var(--surface)" },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "var(--flow-link)" },
+    zIndex: 6, ariaLabel: "Planning flow: " + line.label,
+  }))];
+  const selectedLine = project.workspace?.flows.find((f) => f.id === selectedFlow);
 
   const onNodesChange = useCallback((changes: NodeChange<AppNode>[]) => {
     const keep = changes.filter((c) => c.type === "position" || c.type === "dimensions");
@@ -116,7 +132,7 @@ export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
     const col = slot ? layout.columnById.get(slot.form.id) : st.selectedForm ? layout.columnById.get(st.selectedForm) : null;
     if (!col) return;
     const x = col.x + (slot ? slot.x + slot.w / 2 : col.w / 2);
-    const y = slot ? slot.y + slot.h / 2 : 120;
+    const y = col.y + (slot ? slot.y + slot.h / 2 : 120);
     flow.setCenter(x, y, { zoom: Math.max(flow.getZoom(), 0.85), duration: 450 });
     if (slot) {
       setFlashId(slot.item.id);
@@ -137,22 +153,13 @@ export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
     const col = layout.columnById.get(section?.form.id ?? node.parentId ?? "");
     return {
       x: (col?.x ?? 0) + (section?.x ?? 0) + node.position.x + (node.width ?? 0) / 2,
-      y: (section?.y ?? 0) + node.position.y + (node.type === "form" ? 0 : node.type === "section" ? SECTION_H / 2 : (node.height ?? 0) / 2),
+      y: (col?.y ?? 0) + (section?.y ?? 0) + node.position.y + (node.type === "form" ? 0 : node.type === "section" ? SECTION_H / 2 : (node.height ?? 0) / 2),
     };
   };
 
-  const formIndexAt = (cx: number, id: string) =>
-    layout.columns.filter((c) => c.form.id !== id && c.x + c.w / 2 < cx).length;
-
   const onNodeDrag = (_: unknown, node: AppNode) => {
+    if (node.type === "form") { setHint(null); return; }
     const c = centerOf(node);
-    if (node.type === "form") {
-      const k = formIndexAt(c.x, node.id);
-      const others = layout.columns.filter((col) => col.form.id !== node.id);
-      const x = k < others.length ? others[k].x - COL_GAP / 2 - 2 : (others.at(-1)?.x ?? 0) + (others.at(-1)?.w ?? 0) + COL_GAP / 2 - 2;
-      setHint({ x, y: 0, w: 4, vertical: true, h: 240 });
-      return;
-    }
     setHint(hintFor(c.x, c.y, node.id)?.hint ?? null);
   };
 
@@ -161,9 +168,7 @@ export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
     const st = useStore.getState();
     const c = centerOf(node);
     if (node.type === "form") {
-      const k = formIndexAt(c.x, node.id);
-      if (k !== project.forms.findIndex((f) => f.id === node.id)) st.moveForm(node.id, k);
-      else setNodes(layoutNodes);
+      st.positionForm(node.id, node.position);
       return;
     }
     const t = hintFor(c.x, c.y, node.id);
@@ -173,6 +178,7 @@ export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
   };
 
   const onConnect = (c: Connection) => {
+    if (c.sourceHandle === "flow-out" && c.targetHandle === "flow-in") { useStore.getState().addFlow(c.source, c.target); return; }
     const code = c.sourceHandle?.startsWith("choice-right:") ? c.sourceHandle.slice("choice-right:".length) : null;
     useStore.getState().link(c.source, code, c.target);
   };
@@ -195,10 +201,33 @@ export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
     const st = useStore.getState();
     if (t) st.addItem(key, t.formId, t.index);
     else {
-      st.addForm();
+      st.addForm(p);
       const form = useStore.getState().project!.forms.at(-1)!;
       st.addItem(key, form.id, 0);
     }
+  };
+
+  const place = (event: React.MouseEvent, node?: AppNode) => {
+    const st = useStore.getState();
+    if (tool === "instrument") {
+      st.addForm(flow.screenToFlowPosition({x: event.clientX, y: event.clientY})); st.setCanvasTool("select"); return;
+    }
+    if (tool === "section") {
+      const p = flow.screenToFlowPosition({x: event.clientX, y: event.clientY}), target = hintFor(p.x, p.y, null);
+      if (!target) { st.say("Choose a spot inside an instrument for this section."); return; }
+      st.addItem("section", target.formId, target.index); st.setCanvasTool("select"); return;
+    }
+    if (tool === "connect" && node) {
+      const id = node.type === "section" && node.data.section.implicit ? node.data.section.form.id : node.id;
+      if (!flowStart) { setFlowStart(id); st.say("Choose the destination for this flow line."); }
+      else { st.addFlow(flowStart, id); setFlowStart(null); }
+      return;
+    }
+    setSelectedFlow(null);
+    if (!node) st.select(null);
+    else if (node.type === "form") st.selectForm(node.id);
+    else if (node.type === "section" && node.data.section.implicit) st.selectForm(node.data.section.form.id);
+    else st.select(node.id);
   };
 
   return (
@@ -209,20 +238,19 @@ export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
-        onNodeClick={(_, n) => {
-          const st = useStore.getState();
-          if (n.type === "form") st.selectForm(n.id);
-          else if (n.type === "section" && n.data.section.implicit) st.selectForm(n.data.section.form.id);
-          else st.select(n.id);
+        onNodeClick={(e, n) => place(e, n)}
+        onPaneClick={(e) => place(e)}
+        onEdgeClick={(_, edge) => {
+          if (project.workspace?.flows.some((f) => f.id === edge.id)) { setSelectedFlow(edge.id); useStore.getState().select(null); }
+          else useStore.getState().reveal(edge.target);
         }}
-        onPaneClick={() => useStore.getState().select(null)}
         onNodeDrag={onNodeDrag}
         onNodeDragStop={onNodeDragStop}
         onConnect={onConnect}
         onConnectStart={() => setLinking(true)}
         onConnectEnd={() => setLinking(false)}
-        isValidConnection={(c) => c.source !== c.target && c.targetHandle === "in" && layout.slotById.get(c.source)?.item.kind === "field"}
-        nodesDraggable={editable}
+        isValidConnection={(c) => c.source !== c.target && (c.sourceHandle === "flow-out" ? c.targetHandle === "flow-in" : c.targetHandle === "in" && layout.slotById.get(c.source)?.item.kind === "field")}
+        nodesDraggable={editable && tool === "select"}
         nodesConnectable={editable}
         elementsSelectable
         nodeDragThreshold={4}
@@ -238,17 +266,23 @@ export function Canvas({ issues, dark }: { issues: Issue[]; dark: boolean }) {
         panOnScroll
         zoomOnPinch
         zoomOnDoubleClick={false}>
-        <Panel position="top-left" className="flow-legend">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="legend-instrument">Instrument</span><span aria-hidden>›</span>
-            <span className="legend-section">Section</span><span aria-hidden>›</span>
-            <span className="legend-question">Question</span><span aria-hidden>›</span>
-            <span>Response options</span>
-          </div>
-          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-muted-foreground">
-            <span>┐ Brackets: within instrument</span><span className="legend-section">┐ Purple: between sections</span><span>⌁ Curves: between instruments</span>
-          </div>
+        <Panel position="top-left" className="max-w-[calc(100%-32px)]">
+          <CanvasToolbar />
+          {flowStart ? <p className="mt-2 rounded-lg bg-surface px-3 py-2 text-xs">Select a destination to finish the flow line.</p> : null}
         </Panel>
+        {selectedLine ? <Panel position="bottom-center" className="canvas-toolbar max-w-sm">
+          <label className="text-xs font-medium">Planning flow label
+            <input aria-label="Planning flow label" className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
+              value={selectedLine.label} onChange={(e) => useStore.getState().mutate((p) => {
+                const line = p.workspace?.flows.find((f) => f.id === selectedLine.id); if (line) line.label = e.target.value;
+              }, "flow:" + selectedLine.id)} />
+          </label>
+          <p className="my-2 text-xs text-muted-foreground">Saved in your project file. Configure REDCap survey routing separately.</p>
+          <Button size="sm" onClick={() => { useStore.getState().mutate((p) => {
+            if (p.workspace) p.workspace.flows = p.workspace.flows.filter((f) => f.id !== selectedLine.id);
+          }); setSelectedFlow(null); }}>Delete flow line</Button>
+          <Button size="sm" variant="ghost" onClick={() => setSelectedFlow(null)}>Done</Button>
+        </Panel> : null}
         <Background variant={BackgroundVariant.Dots} gap={22} size={1.6} color="var(--canvas-dot)" />
         <Controls position="bottom-left" showInteractive={false} />
         <MiniMap position="bottom-right" pannable zoomable

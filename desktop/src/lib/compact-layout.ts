@@ -1,4 +1,4 @@
-import { C } from "./core";
+import { C, type CanvasWorkspace } from "./core";
 import type { Layout } from "./layout";
 
 export const COMPACT_W = 350;
@@ -17,12 +17,13 @@ export interface CompactRow {
 }
 
 /** Layout is presentation only: never change the survey or its export order. */
-export function compactLayout(layout: Layout, open: ReadonlySet<string>, columns: number) {
+export function compactLayout(layout: Layout, open: ReadonlySet<string>, columns: number, flows: CanvasWorkspace["flows"] = []) {
   const count = Math.max(1, Math.min(3, Math.floor(columns)));
   const bottoms = Array<number>(count).fill(0);
   const rows: CompactRow[] = [];
   const representative = new Map<string, string>();
   for (const [i, col] of layout.columns.entries()) {
+    representative.set(col.form.id, col.form.id);
     const lane = i % count;
     const x = lane * (COMPACT_W + COMPACT_GAP);
     let y = bottoms[lane];
@@ -54,7 +55,7 @@ export function compactLayout(layout: Layout, open: ReadonlySet<string>, columns
     bottoms[lane] = y + 12;
   }
   const byId = new Map(rows.map((r) => [r.id, r]));
-  const edges = new Map<string, { id: string; source: string; target: string; count: number; label: string; lane: number }>();
+  const edges = new Map<string, { id: string; source: string; target: string; count: number; label: string; lane: number; planning?: boolean }>();
   for (const branch of layout.branches) {
     const source = representative.get(branch.source.item.id)!;
     const target = representative.get(branch.target.item.id)!;
@@ -64,6 +65,11 @@ export function compactLayout(layout: Layout, open: ReadonlySet<string>, columns
     const existing = edges.get(id);
     if (existing) { existing.count++; continue; }
     edges.set(id, { id, source, target, count: 1, label: branch.label, lane: 0 });
+  }
+  for (const flow of flows) {
+    const source = representative.get(flow.source), target = representative.get(flow.target);
+    if (!source || !target || source === target) continue;
+    edges.set(flow.id, { id: flow.id, source, target, count: 1, label: "Planning flow: " + flow.label, lane: 0, planning: true });
   }
   // Give overlapping brackets their own gutter lane; keep the grid compact.
   const lanes = new Map<number, number[]>();

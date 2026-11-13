@@ -2,7 +2,8 @@ import { create } from "zustand";
 import { C, type Field, type Form, type Item, type Project, type Rule } from "./core";
 
 export type Mode = "map" | "design";
-export type WorkspaceView = "compact" | Mode;
+export type WorkspaceView = "overview" | "canvas";
+export type CanvasTool = "select" | "instrument" | "section" | "connect";
 
 export interface SourceFile {
   name: string;
@@ -21,11 +22,17 @@ interface State {
   mode: Mode;
   view: WorkspaceView;
   compactOpen: string[];
+  canvasTool: CanvasTool;
+  draftStatus: "idle" | "pending" | "saving" | "saved" | "error";
+  setCanvasTool(tool: CanvasTool): void;
+  positionForm(id: string, point: {x: number; y: number}): void;
+  addFlow(source: string, target: string): void;
   selected: string | null;
   selectedForm: string | null;
   source: SourceFile | null;
   /** True once the project differs from the opened file. */
   dirty: boolean;
+  fileSavedRev: number;
   notes: string[];
   past: Snapshot[];
   future: Snapshot[];
@@ -49,7 +56,7 @@ interface State {
   say(text: string, tone?: "error"): void;
 
   addItem(kindKey: string, formId?: string, index?: number): void;
-  addForm(): void;
+  addForm(point?: {x: number; y: number}): void;
   /** `index` excludes the moved question, or the section and all its questions. */
   moveItem(id: string, formId: string, index: number): void;
   moveForm(id: string, index: number): void;
@@ -66,6 +73,11 @@ function markRecordId(project: Project) {
 
 /** REDCap needs the record ID to be the very first field. */
 function normalize(p: Project) {
+  if (p.workspace) {
+    const ids = new Set(p.forms.flatMap((f) => [f.id, ...f.items.map((i) => i.id)]));
+    p.workspace.flows = p.workspace.flows.filter((f) => ids.has(f.source) && ids.has(f.target));
+    for (const id of Object.keys(p.workspace.positions)) if (!p.forms.some((f) => f.id === id)) delete p.workspace.positions[id];
+  }
   if (!p.forms.length) p.forms.push(C.newForm(p, "Survey"));
   let rid = C.allFields(p).find((f) => f.rid);
   if (!rid) {
@@ -86,12 +98,33 @@ export const useStore = create<State>((set, get) => ({
   project: null,
   rev: 0,
   mode: "map",
-  view: "map",
+  view: "overview",
+  canvasTool: "select",
+  draftStatus: "idle",
+  setCanvasTool(canvasTool) { set({ canvasTool }); },
+  positionForm(id, point) {
+    get().mutate((p) => {
+      if (!p.forms.some((f) => f.id === id)) return;
+      p.workspace ??= { positions: {}, flows: [] };
+      p.workspace.positions[id] = { x: point.x, y: point.y };
+    });
+  },
+  addFlow(source, target) {
+    const p = get().project;
+    const exists = (id: string) => p?.forms.some((f) => f.id === id || f.items.some((i) => i.id === id));
+    if (!p || source === target || !exists(source) || !exists(target) || p.workspace?.flows.some((f) => f.source === source && f.target === target)) return;
+    get().mutate((p) => {
+      p.workspace ??= { positions: {}, flows: [] };
+      p.workspace.flows.push({ id: C.uid(), source, target, label: "Flow" });
+    });
+    get().say("Flow added to the plan. REDCap branching is edited on the question.");
+  },
   compactOpen: [],
   selected: null,
   selectedForm: null,
   source: null,
   dirty: false,
+  fileSavedRev: -1,
   notes: [],
   past: [],
   future: [],
@@ -105,19 +138,20 @@ export const useStore = create<State>((set, get) => ({
     normalize(project);
     set({
       project, source, mode,
-      view: mode === "design" ? "design" : get().view === "compact" || C.allFields(project).length > 150 ? "compact" : "map",
+      view: mode === "design" ? "canvas" : "overview",
+      canvasTool: "select", draftStatus: "pending",
       compactOpen: [], notes, rev: get().rev + 1, selected: null, selectedForm: null,
-      dirty: false, past: [], future: [], lastKey: "",
+      dirty: false, fileSavedRev: -1, past: [], future: [], lastKey: "",
     });
   },
   close() {
     set({ project: null, source: null, selected: null, selectedForm: null, past: [], future: [], notes: [] });
   },
   setMode(mode) {
-    get().setView(mode);
+    get().setView(mode === "design" ? "canvas" : "overview");
   },
   setView(view) {
-    set({ view, mode: view === "design" ? "design" : "map",
+    set({ view, mode: view === "canvas" ? "design" : "map",
       focusTick: get().focusTick + (view !== get().view && get().selected ? 1 : 0) });
   },
   setCompactOpen(compactOpen) {
@@ -144,7 +178,7 @@ export const useStore = create<State>((set, get) => ({
     const sel = s.selected && C.findItem(s.project, s.selected) ? s.selected : null;
     set({
       rev: s.rev + 1,
-      dirty: true,
+      dirty: true, draftStatus: "pending",
       selected: get().selected === s.selected ? sel : get().selected,
       past: before ? [...s.past.slice(-99), before] : s.past,
       future: [],
@@ -158,7 +192,7 @@ export const useStore = create<State>((set, get) => ({
     if (!prev || !s.project) return;
     const project = JSON.parse(prev.json) as Project;
     set({
-      project, rev: s.rev + 1, past: s.past.slice(0, -1), future: [...s.future, snap(s.project)], lastKey: "",
+      project, dirty: true, draftStatus: "pending", rev: s.rev + 1, past: s.past.slice(0, -1), future: [...s.future, snap(s.project)], lastKey: "",
       selected: s.selected && C.findItem(project, s.selected) ? s.selected : null,
       selectedForm: s.selectedForm && project.forms.some((f) => f.id === s.selectedForm) ? s.selectedForm : null,
     });
@@ -169,7 +203,7 @@ export const useStore = create<State>((set, get) => ({
     if (!next || !s.project) return;
     const project = JSON.parse(next.json) as Project;
     set({
-      project, rev: s.rev + 1, future: s.future.slice(0, -1), past: [...s.past, snap(s.project)], lastKey: "",
+      project, dirty: true, draftStatus: "pending", rev: s.rev + 1, future: s.future.slice(0, -1), past: [...s.past, snap(s.project)], lastKey: "",
       selected: s.selected && C.findItem(project, s.selected) ? s.selected : null,
       selectedForm: s.selectedForm && project.forms.some((f) => f.id === s.selectedForm) ? s.selectedForm : null,
     });
@@ -194,13 +228,17 @@ export const useStore = create<State>((set, get) => ({
     });
     if (made) set({ selected: (made as Item).id, selectedForm: null, focusTick: get().focusTick + 1 });
   },
-  addForm() {
+  addForm(point) {
     const s = get();
     let id = "";
     s.mutate((p) => {
       const form = C.newForm(p, "Instrument " + (p.forms.length + 1));
       p.forms.push(form);
       id = form.id;
+      if (point) {
+        p.workspace ??= { positions: {}, flows: [] };
+        p.workspace.positions[id] = point;
+      }
     });
     set({ selectedForm: id, selected: null, focusTick: get().focusTick + 1 });
   },

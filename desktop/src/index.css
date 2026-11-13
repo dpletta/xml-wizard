@@ -368,10 +368,23 @@
   background: var(--surface);
   color: var(--foreground);
   font-size: 11px;
-  pointer-events: none;
+  pointer-events: auto;
 }
 .legend-instrument { color: var(--flow-instrument); font-weight: 600; }
 .legend-section { color: var(--flow-section); font-weight: 600; }
 .legend-question { color: var(--flow-question); font-weight: 600; }
 
 .react-flow__edge.cross-section .react-flow__edge-path { stroke: var(--flow-section); }
+
+.canvas-toolbar { max-width: 620px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.react-flow__handle.flow-port { width: 14px; height: 14px; opacity: 1; border: 2px solid var(--flow-link); background: var(--surface); z-index: 10; cursor: crosshair; }
+.react-flow__handle.flow-hidden { opacity: 0; pointer-events: none; }
+@media (max-width: 1100px) {
+  .workspace-sidebar { width: 190px; }
+  .workspace-inspector { width: 260px; }
+}
+@media (max-width: 760px) {
+  .workspace-sidebar, .workspace-inspector { display: none; }
+  .workspace-inspector.mobile-open { display: flex; position: absolute; right: 0; bottom: 0; top: 112px; z-index: 30; max-width: 85vw; }
+  .canvas-toolbar { max-width: calc(100vw - 32px); }
+}

@@ -48,7 +48,13 @@ export interface Form {
   items: Item[];
 }
 
+export interface CanvasWorkspace {
+  positions: Record<string, { x: number; y: number }>;
+  flows: { id: string; source: string; target: string; label: string }[];
+}
+
 export interface Project {
+  workspace?: CanvasWorkspace;
   title: string;
   forms: Form[];
   keep: unknown;

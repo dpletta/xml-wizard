@@ -20,7 +20,7 @@ const LEVEL_TONE = { high: "danger", medium: "warn", low: "neutral" } as const;
 /** What the Python engine should read: the file as opened if untouched, else the survey as it is now. */
 function currentInput(): OpenedFile {
   const s = useStore.getState();
-  if (s.source && !s.dirty) return s.source;
+  if (s.source && !s.dirty && !s.source.name.toLowerCase().endsWith(".json")) return s.source;
   const p = s.project!;
   return { name: C.formSlug(p.title) + ".xml", text: C.exportOdm(p).xml };
 }

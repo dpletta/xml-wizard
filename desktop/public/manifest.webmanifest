@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "XML Wizard",
+  "short_name": "XML Wizard",
+  "description": "Build and map REDCap survey projects on your device.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#191716",
+  "theme_color": "#191716",
+  "icons": [
+    {
+      "src": "./icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

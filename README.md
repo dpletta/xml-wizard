@@ -23,6 +23,19 @@ produces
 It also goes the other way: `xml-wizard design` opens a drag-and-drop canvas for building or editing a
 survey and exporting it back to REDCap (see [Design or edit a survey](#design-or-edit-a-survey)).
 
+## Web app and installation
+
+Open **[xml-wizard.vercel.app](https://xml-wizard.vercel.app)** and try a synthetic example, or open a local file.
+Choose **Install app** when offered, or use your browser's install / Add to Home Screen command.
+Installation support varies by browser. Wait for **Available offline** before disconnecting.
+
+Files are read with browser file APIs and processed in memory; no local HTTP streaming server is needed.
+Drafts are stored in this browser's IndexedDB. **Save** creates a portable local project file; **Export** creates
+metadata you can manually import into REDCap. There is no cloud account, sync, or automatic REDCap connection.
+The host still receives normal requests for app assets (including IP address and request timing), but this
+app does not send it project contents. Hosted code and future updates remain part of the trust boundary.
+See [privacy and deployment details](desktop/README.md#web-app-and-privacy).
+
 ## Desktop app
 
 No Python, no terminal: download XML Wizard, open it, and drop in your REDCap file.
@@ -42,25 +55,26 @@ developer certificate. It is needed once.
 
 What the app does:
 
-- **Compact** shows instruments in a compact grid with accordion sections. Expand just the section
-  you need; arrows connect visible questions or collapsed groups. Search opens the matching section.
-  Switch between Compact, Map, and Design at the top without reopening the file or losing edits.
-  Projects with more than 150 questions start in Compact; Map and Design remain one click away.
-- **Map** an existing project: open a REDCap project XML or data dictionary CSV and see every instrument
-  and question on a zoomable canvas. Questions with branching logic sit under the question that controls
-  them, tagged with when they appear ("if Yes"). Click one for its logic in plain words, its answer codes,
-  what it depends on and what depends on it. Logic mistakes are listed at the top.
-- **Design** a new survey or change one: drag question types onto an instrument, drag an answer onto
-  another question to branch on it, preview the survey as a respondent, and export REDCap project XML or
-  a data dictionary CSV. The project XML is also your save file; unsaved work is kept on your computer.
+- **Overview** packs instruments into a compact grid with accordion sections. Expand just the section
+  you need; arrows connect visible questions or collapsed groups. Search unfolds the matching section.
+- **Canvas** creates and edits the same project. Use the toolbar to place instruments and sections,
+  drag question types from the sidebar, and drag response options onto questions to add REDCap branching.
+  Move instruments freely without changing the exported survey order. Drag a section to move its questions together.
+- **Flow line** connects instruments, sections or questions as a plan. Draw between blue handles or click
+  two elements, then click a line to label or delete it. Dashed planning lines do **not** configure REDCap's
+  survey queue; question branching is exported separately.
+- **Save** downloads an editable `.xmlw.json` project, including layouts, annotations, and unfinished work.
+  **Export** downloads REDCap project XML or a data dictionary CSV. Preview tests question visibility.
+  A local browser draft supports recovery; keep saved files as backups, since browser storage can be cleared.
 - **Agent bundle**: *Export → Agent bundle* runs the privacy check with buttons instead of prompts
   (mask, drop or keep each flagged variable), optionally checks a data export against the logic, and
   saves the same folder the command line tool writes.
 
 ![Design mode: question types on the left, the canvas, and the editor for the selected question](docs/img/desktop-design.png)
 
-The app runs entirely on your computer and has no network code: its window is only allowed to load
-files that ship inside it, so nothing can be sent anywhere. It works with the internet switched off.
+Project processing runs on your device. The web app downloads its static code, fonts, examples, and Python
+runtime from the host, then works offline after **Available offline** appears. It has no project-upload
+endpoint, analytics, external fonts, or server-side project storage. The desktop installer bundles those resources.
 
 To build it yourself, see [`desktop/README.md`](desktop/README.md).
 

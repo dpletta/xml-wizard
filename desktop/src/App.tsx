@@ -3,7 +3,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 import { FileDown } from "lucide-react";
 import { C } from "@/lib/core";
 import { readBrowserFile } from "@/lib/platform";
-import { autosave, loadText, openProject } from "@/lib/session";
+import { autosave, loadText, openProject, saveProject } from "@/lib/session";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { AgentBundleDialog } from "./components/AgentBundleDialog";
@@ -80,7 +80,7 @@ export default function App() {
   const issues = useMemo(() => (project ? C.validate(project) : []), [project, rev]);
 
   useEffect(() => {
-    const t = setTimeout(autosave, 600);
+    const t = setTimeout(() => { void autosave(); }, 400);
     return () => clearTimeout(t);
   }, [rev]);
 
@@ -92,7 +92,9 @@ export default function App() {
       if (mod && key === "o") { e.preventDefault(); void openProject(st.project ? st.mode : "map"); return; }
       if (!st.project) return;
       if (mod && key === "k") { e.preventDefault(); setSearch(true); return; }
+      if (mod && key === "s") { e.preventDefault(); void saveProject(); return; }
       if (typing(e.target)) return;
+      if (e.key === "Escape") st.setCanvasTool("select");
       if (mod && key === "z") { e.preventDefault(); if (e.shiftKey) st.redo(); else st.undo(); return; }
       if (mod && key === "y") { e.preventDefault(); st.redo(); return; }
       if (st.mode !== "design" || !st.selected) { if (e.key === "Escape") st.select(null); return; }
@@ -102,6 +104,17 @@ export default function App() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  useEffect(() => {
+    const unload = (e: BeforeUnloadEvent) => {
+      const s = useStore.getState();
+      if (s.project && s.draftStatus !== "saved" && s.fileSavedRev !== s.rev) { e.preventDefault(); e.returnValue = ""; }
+    };
+    const hidden = () => { if (document.visibilityState === "hidden") void autosave(); };
+    window.addEventListener("beforeunload", unload);
+    document.addEventListener("visibilitychange", hidden);
+    return () => { window.removeEventListener("beforeunload", unload); document.removeEventListener("visibilitychange", hidden); };
   }, []);
 
   useEffect(() => {
@@ -140,8 +153,8 @@ export default function App() {
           <div className="flex min-h-0 flex-1">
             <Sidebar issues={issues} />
             <main className="relative min-w-0 flex-1">
-              <ReactFlowProvider key={view === "compact" ? "compact" : "canvas"}>
-                {view === "compact" ? <CompactMap issues={issues} dark={dark} /> : <Canvas issues={issues} dark={dark} />}
+              <ReactFlowProvider key={view === "overview" ? "compact" : "canvas"}>
+                {view === "overview" ? <CompactMap issues={issues} dark={dark} /> : <Canvas issues={issues} dark={dark} />}
               </ReactFlowProvider>
             </main>
             <Inspector issues={issues} />

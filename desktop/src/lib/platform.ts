@@ -41,7 +41,7 @@ function pickBrowserFile(accept: string): Promise<File | null> {
 }
 
 export async function openFile(kind: "project" | "data"): Promise<OpenedFile | null> {
-  const extensions = kind === "project" ? ["xml", "csv"] : ["csv"];
+  const extensions = kind === "project" ? ["xml", "csv", "json"] : ["csv"];
   if (isDesktop) {
     const { open } = await import("@tauri-apps/plugin-dialog");
     const { invoke } = await import("@tauri-apps/api/core");

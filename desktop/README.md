@@ -61,6 +61,59 @@ widths; they show dependencies, not respondent counts. Select a question, sectio
 instrument to emphasize its connections. Full conditions remain on question cards and
 in the inspector; response anchors also represent negative comparisons when present.
 
-In Design mode, drag a response option onto a question to add a condition. Dragging a
+In Canvas, drag a response option onto a question to add a condition. Dragging a
 section by its header moves its questions together. REDCap branching conditions remain
 attached to questions; the containers show the section and instrument boundaries they cross.
+
+## Web app and privacy
+
+The same React interface runs as a static, installable PWA. `npm run build` writes `dist/`, including
+an offline service worker and manifest. No API routes, server functions, analytics, error-reporting SDK,
+cloud database or third-party runtime resources are used. Vercel's root `vercel.json` installs from
+`desktop/package-lock.json`, builds the frontend, and publishes only `desktop/dist` with restrictive headers.
+
+- The app reads chosen files in browser memory. IndexedDB keeps **one most recent local draft**; a
+  `.xmlw.json` download keeps a portable project, including incomplete questions, empty sections,
+  instrument positions, and flow annotations. Drafts and downloads use an allowlisted metadata schema
+  and exclude the original source text / participant records. They are not encrypted by the app.
+- Browser storage is per origin and browser profile. It is not sync or a guaranteed backup; private
+  browsing, storage pressure and clearing site data can remove it. Save files explicitly before switching
+  computers, browsers or deployments. Storage failures display an error and do not claim the draft was saved.
+- The service worker precaches only the build's static inventory, including the analysis runtime. It
+  blocks POST requests, query-bearing URLs, non-bundled resources and cross-origin traffic from controlled
+  pages. Project values never become cache keys or network requests. The first online visit downloads the
+  app; wait for **Available offline** before using it without a connection.
+- Updates wait for an explicit **Update app** action and a successful draft save. Existing version caches
+  remain available to already-open tabs. Browser storage controls can clear these caches.
+- Vercel can see static asset requests, IP addresses and timing. The site owner controls future code;
+  local processing is not a cryptographic guarantee against a malicious future update, browser extension,
+  or compromised device. No study files belong in this repository, `public/`, fixtures or deployments.
+- The optional agent-bundle data audit also runs locally in Pyodide. The person explicitly chooses which
+  generated files to save and share; the app never sends a bundle to an AI provider.
+
+### Overview and Canvas
+
+Overview is a read-only accordion map. Canvas adds **Select**, **Instrument**, **Section**, **Flow line**,
+and **Question** tools. Instrument/section tools place with a click; question types also drag from the
+sidebar. Instruments move freely, while contained sections/questions stay in survey order and can be
+reordered by dragging. Escape cancels placement/connection. Undo/redo includes layout and planning flows.
+
+Solid question dependencies express REDCap branching conditions. Dashed planning flows can connect
+instruments, sections and questions; they are visible in both views and saved in `.xmlw.json` files.
+They do not implement REDCap survey-queue rules. Configure survey routing and event assignments in REDCap.
+XML and CSV exports intentionally omit presentation positions and planning lines.
+
+### Static hosting
+
+Import the repository into Vercel with the repository root as the root directory; `vercel.json` supplies
+install/build/output settings. Do not add Vercel Analytics or Speed Insights. Use HTTPS for installation.
+For a local production preview:
+
+```sh
+npm run build
+npm run preview -- --host 127.0.0.1
+```
+
+`npm test` also covers portable project round trips (including incomplete work), raw-record exclusion,
+free instrument placement, planning-line lifecycle, branch exports, and offline worker request blocking.
+The native Linux GTK dependency advisory does not affect the static PWA build.

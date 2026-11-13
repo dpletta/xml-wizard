@@ -1,0 +1,12 @@
+.git
+**/node_modules
+**/dist
+desktop/src-tauri
+.venv
+**/__pycache__
+*.xmlw.json
+.env*
+.codex
+.gemini
+.agents
+.claude

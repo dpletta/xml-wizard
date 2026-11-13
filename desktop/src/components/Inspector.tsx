@@ -443,7 +443,7 @@ function ProjectPanel({ project, issues, editable }: { project: Project; issues:
             "Each instrument contains sections, questions, and response options in survey order.",
             "A question that only appears for certain answers sits indented under the question that controls it.",
             "Brackets show branches within an instrument; purple brackets cross sections. Curves connect instruments. Click a question for its full logic.",
-            "Switch to Design to change anything, or Export an agent bundle for data cleaning.",
+            "Switch to Canvas to create, arrange and connect elements, or Export an agent bundle for data cleaning.",
           ]).map((t, k) => (
             <li key={k} className="flex gap-2.5">
               <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted text-[11px] font-semibold text-foreground">{k + 1}</span>
@@ -490,7 +490,7 @@ export function Inspector({ issues }: { issues: Issue[] }) {
   }
 
   return (
-    <aside aria-label="Details" className="flex w-[340px] shrink-0 flex-col border-l border-border bg-background">
+    <aside aria-label="Details" className={cn("workspace-inspector flex w-[340px] shrink-0 flex-col border-l border-border bg-background", (loc || form) && "mobile-open")}>
       {head}
       <div className="thin-scroll min-h-0 flex-1 overflow-y-auto">{body}</div>
     </aside>

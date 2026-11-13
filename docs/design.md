@@ -111,8 +111,10 @@ has not been tested against every REDCap version.
 
 ## The desktop app
 
-`desktop/` is the downloadable app: one window with a Map mode (see an existing project) and a Design
-mode (build or change one), on the same canvas. The desktop canvas nests response options in
+`desktop/` provides the downloadable app and static PWA. Overview is a compact accordion map; Canvas
+creates, arranges and connects elements in the same project. The toolbar follows the existing button
+and palette styling. Solid connections represent question branching; dashed connections are planning
+annotations, with explicit copy explaining that they do not implement REDCap survey routing. The desktop canvas nests response options in
 questions, questions in section containers, and sections in instruments, while preserving
 branching-based question indentation. All branching dependencies are drawn: bracketed lines within
 an instrument (purple for section crossings) and constant-width Sankey-style curves between
@@ -146,3 +148,7 @@ only so the data check can read data embedded in an XML export; autosave stores 
 packages. On a `v*` tag (or a manual run) it attaches them to a draft GitHub release. The builds are
 unsigned (macOS gets an ad-hoc signature), so first launch needs the "Open Anyway" step described in
 the README; an Apple Developer ID and notarization would remove it.
+
+The PWA caches only versioned static assets; editable metadata stays in local IndexedDB and portable
+`.xmlw.json` downloads. Updates are explicit. Saved/failed draft states are visible, and exports remain
+separate from lossless editable project files. Instrument positions never alter survey export order.
