@@ -1,5 +1,9 @@
 # XML Wizard for REDCap
 
+> **Alpha software.** XML Wizard is an early test version. Expect rough edges, check its output
+> before you rely on it, and keep a copy of your REDCap project before uploading anything it
+> exports. Please report problems under [Issues](https://github.com/dpletta/xml-wizard/issues).
+
 See the structure and branching (skip) logic of a REDCap survey at a glance,
 catch logic mistakes before they cost you data, and hand your coding agent
 (Claude Code, Codex, Cursor, …) everything it needs to clean and analyse the
@@ -25,7 +29,7 @@ No Python, no terminal: download XML Wizard, open it, and drop in your REDCap fi
 
 ![The map of a survey: instruments as columns, questions nested under the question that controls them](docs/img/desktop-map.png)
 
-**Download** the installer for your computer from the [latest release](https://github.com/dpletta/xml-wizard/releases/latest):
+**Download** the installer for your computer from the [Releases page](https://github.com/dpletta/xml-wizard/releases) (the newest alpha is at the top):
 
 | Computer | File | First launch |
 |---|---|---|

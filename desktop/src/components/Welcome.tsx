@@ -120,7 +120,7 @@ export function Welcome({ dark, onToggleDark, casting = false }: { dark: boolean
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><Lock className="size-3.5" /> Your files stay on this computer</span>
           <span className="inline-flex items-center gap-1.5"><WifiOff className="size-3.5" /> Works offline, nothing is uploaded</span>
-          <span>Version {__APP_VERSION__}{isDesktop ? "" : " (browser)"}</span>
+          <span>Version {__APP_VERSION__} alpha{isDesktop ? "" : " (browser)"}</span>
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 The downloadable app: map an existing REDCap project, design a new one, and export an agent bundle.
 People who only want to use it should download an installer from the
-[releases page](https://github.com/dpletta/xml-wizard/releases/latest); this page is for building it.
+[releases page](https://github.com/dpletta/xml-wizard/releases); this page is for building it.
 
 ## Layout
 
@@ -38,7 +38,7 @@ version numbers and the content security policy stay in step.
 
 1. Set the same version in `package.json`, `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml` and
    `src/xml_wizard/__init__.py` (a test fails if they differ).
-2. Push a tag such as `v0.3.0`, or run the **desktop app** workflow by hand from the Actions tab.
+2. Push a tag such as `v0.3.0-alpha`, or run the **desktop app** workflow by hand from the Actions tab.
 3. The workflow builds the macOS .dmg, Windows installers and Linux packages and attaches them to a
    draft release. Check it under Releases and press **Publish**.
 
