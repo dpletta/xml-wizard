@@ -7,6 +7,7 @@ import { autosave, loadText, openProject } from "@/lib/session";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { AgentBundleDialog } from "./components/AgentBundleDialog";
+import { CompactMap } from "./components/CompactMap";
 import { Canvas } from "./components/Canvas";
 import { CommandPalette } from "./components/CommandPalette";
 import { Inspector } from "./components/Inspector";
@@ -57,6 +58,7 @@ const typing = (el: EventTarget | null) =>
 export default function App() {
   const project = useStore((s) => s.project);
   const rev = useStore((s) => s.rev);
+  const view = useStore((s) => s.view);
   const [dark, toggleDark] = useDark();
   const [preview, setPreview] = useState(false);
   const [search, setSearch] = useState(false);
@@ -138,8 +140,8 @@ export default function App() {
           <div className="flex min-h-0 flex-1">
             <Sidebar issues={issues} />
             <main className="relative min-w-0 flex-1">
-              <ReactFlowProvider>
-                <Canvas issues={issues} dark={dark} />
+              <ReactFlowProvider key={view === "compact" ? "compact" : "canvas"}>
+                {view === "compact" ? <CompactMap issues={issues} dark={dark} /> : <Canvas issues={issues} dark={dark} />}
               </ReactFlowProvider>
             </main>
             <Inspector issues={issues} />

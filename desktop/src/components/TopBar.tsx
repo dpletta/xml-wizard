@@ -1,12 +1,12 @@
 import { motion } from "motion/react";
 import {
-  Bot, CircleCheck, Download, FileCode2, FilePlus2, FileSpreadsheet, FolderOpen, House, Map as MapIcon, Moon, PencilRuler, Play, Redo2,
+  Bot, CircleCheck, Download, FileCode2, FilePlus2, FileSpreadsheet, FolderOpen, House, PanelsTopLeft, Map as MapIcon, Moon, PencilRuler, Play, Redo2,
   Search, Sun, TriangleAlert, Undo2,
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { C, type Issue } from "@/lib/core";
 import { exportProject, newProject, openProject } from "@/lib/session";
-import { useProject, useStore, type Mode } from "@/lib/store";
+import { useProject, useStore, type WorkspaceView } from "@/lib/store";
 import { cn, plural } from "@/lib/utils";
 import { IssueNote } from "./Inspector";
 import { Button } from "./ui/button";
@@ -16,24 +16,25 @@ const mac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator
 export const modKey = mac ? "⌘" : "Ctrl+";
 
 function ModeSwitch() {
-  const mode = useStore((s) => s.mode);
-  const setMode = useStore((s) => s.setMode);
-  const modes: [Mode, string, typeof MapIcon, string][] = [
+  const view = useStore((s) => s.view);
+  const setView = useStore((s) => s.setView);
+  const modes: [WorkspaceView, string, typeof MapIcon, string][] = [
+    ["compact", "Compact", PanelsTopLeft, "Browse a compact accordion overview"],
     ["map", "Map", MapIcon, "See the survey and its branching logic"],
     ["design", "Design", PencilRuler, "Build or change the survey"],
   ];
   return (
-    <div role="tablist" aria-label="Mode" className="relative grid grid-cols-2 rounded-xl bg-muted p-1">
+    <div role="group" aria-label="Workspace view" className="relative grid grid-cols-3 rounded-xl bg-muted p-1">
       {modes.map(([key, label, Icon, hint]) => (
         <Tip key={key} text={hint}>
-          <button role="tab" aria-selected={mode === key} onClick={() => setMode(key)}
+          <button aria-pressed={view === key} onClick={() => setView(key)}
             className={cn("relative z-10 flex h-7.5 items-center justify-center gap-1.5 rounded-lg px-4 text-[13px] font-medium transition-colors",
-              mode === key ? "text-foreground" : "text-muted-foreground hover:text-foreground")}>
-            {mode === key ? (
+              view === key ? "text-foreground" : "text-muted-foreground hover:text-foreground")}>
+            {view === key ? (
               <motion.span layoutId="mode-pill" className="absolute inset-0 -z-10 rounded-lg bg-surface shadow-card"
                 transition={{ type: "spring", stiffness: 500, damping: 38 }} />
             ) : null}
-            <Icon className={cn("size-4", mode === key && "text-primary")} /> {label}
+            <Icon className={cn("size-4", view === key && "text-primary")} /> {label}
           </button>
         </Tip>
       ))}

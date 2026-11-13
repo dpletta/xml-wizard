@@ -42,6 +42,10 @@ developer certificate. It is needed once.
 
 What the app does:
 
+- **Compact** shows instruments in a compact grid with accordion sections. Expand just the section
+  you need; arrows connect visible questions or collapsed groups. Search opens the matching section.
+  Switch between Compact, Map, and Design at the top without reopening the file or losing edits.
+  Projects with more than 150 questions start in Compact; Map and Design remain one click away.
 - **Map** an existing project: open a REDCap project XML or data dictionary CSV and see every instrument
   and question on a zoomable canvas. Questions with branching logic sit under the question that controls
   them, tagged with when they appear ("if Yes"). Click one for its logic in plain words, its answer codes,

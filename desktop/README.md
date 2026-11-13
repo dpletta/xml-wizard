@@ -30,7 +30,7 @@ npm run tauri build    # build the installer for this computer (in src-tauri/tar
 `npm run dev` runs the same interface in a browser at http://localhost:1420, which is the quickest way
 to work on it. `npm run build` type-checks and builds the web files only.
 
-Tests: `npm test` (Node.js 22.15+ for TypeScript and module hooks) covers canvas containment, branching anchors, and section moves. `cargo test` in `src-tauri/` covers the file commands; `python -m unittest discover -s tests`
+Tests: `npm test` (Node.js 22.15+ for TypeScript and module hooks) covers canvas containment, branching anchors, section moves, compact accordion spacing, grouped arrows, and shared project state when switching views. `cargo test` in `src-tauri/` covers the file commands; `python -m unittest discover -s tests`
 at the repository root covers the engine, the Python bridge (`app_bridge.py`) and the checks that the
 version numbers and the content security policy stay in step.
 

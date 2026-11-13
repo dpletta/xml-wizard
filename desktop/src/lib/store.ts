@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { C, type Field, type Form, type Item, type Project, type Rule } from "./core";
 
 export type Mode = "map" | "design";
+export type WorkspaceView = "compact" | Mode;
 
 export interface SourceFile {
   name: string;
@@ -18,6 +19,8 @@ interface State {
   /** Bumped on every change; the project object itself is edited in place. */
   rev: number;
   mode: Mode;
+  view: WorkspaceView;
+  compactOpen: string[];
   selected: string | null;
   selectedForm: string | null;
   source: SourceFile | null;
@@ -34,6 +37,8 @@ interface State {
   open(project: Project, source: SourceFile | null, mode: Mode, notes?: string[]): void;
   close(): void;
   setMode(mode: Mode): void;
+  setView(view: WorkspaceView): void;
+  setCompactOpen(ids: string[]): void;
   select(id: string | null): void;
   selectForm(id: string | null): void;
   reveal(id: string): void;
@@ -81,6 +86,8 @@ export const useStore = create<State>((set, get) => ({
   project: null,
   rev: 0,
   mode: "map",
+  view: "map",
+  compactOpen: [],
   selected: null,
   selectedForm: null,
   source: null,
@@ -97,7 +104,9 @@ export const useStore = create<State>((set, get) => ({
     markRecordId(project);
     normalize(project);
     set({
-      project, source, mode, notes, rev: get().rev + 1, selected: null, selectedForm: null,
+      project, source, mode,
+      view: mode === "design" ? "design" : get().view === "compact" || C.allFields(project).length > 150 ? "compact" : "map",
+      compactOpen: [], notes, rev: get().rev + 1, selected: null, selectedForm: null,
       dirty: false, past: [], future: [], lastKey: "",
     });
   },
@@ -105,7 +114,14 @@ export const useStore = create<State>((set, get) => ({
     set({ project: null, source: null, selected: null, selectedForm: null, past: [], future: [], notes: [] });
   },
   setMode(mode) {
-    set({ mode });
+    get().setView(mode);
+  },
+  setView(view) {
+    set({ view, mode: view === "design" ? "design" : "map",
+      focusTick: get().focusTick + (view !== get().view && get().selected ? 1 : 0) });
+  },
+  setCompactOpen(compactOpen) {
+    set({ compactOpen });
   },
   select(id) {
     set({ selected: id, selectedForm: null });
