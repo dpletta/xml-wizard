@@ -23,11 +23,6 @@ export function MagicCard({ className, children, ...rest }: Omit<HTMLMotionProps
   );
 }
 
-/** A streak of light that travels around the border of its (relative, rounded) parent. */
-export function BorderBeam({ duration = 7, delay = 0 }: { duration?: number; delay?: number }) {
-  return <span aria-hidden className="border-beam" style={{ animationDuration: duration + "s", animationDelay: delay + "s" }} />;
-}
-
 /** Text with a slow highlight sweeping across it. */
 export function ShinyText({ className, children }: { className?: string; children: React.ReactNode }) {
   return <span className={cn("shiny-text", className)}>{children}</span>;

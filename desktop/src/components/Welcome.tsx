@@ -6,7 +6,8 @@ import { isDesktop } from "@/lib/platform";
 import { clearAutosave, newProject, openExample, openProject, readAutosave, resumeAutosave } from "@/lib/session";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { BorderBeam, Glow, MagicCard, ShinyText } from "./ui/magic";
+import { HAT_OUTLINE } from "@/assets/hat-outline";
+import { Glow, MagicCard, ShinyText } from "./ui/magic";
 
 const SPARKS = [
   [12, 22, 0], [86, 14, 0.6], [22, 70, 1.2], [78, 64, 0.3], [50, 6, 0.9], [6, 46, 1.6], [94, 40, 1.1], [64, 86, 0.2], [36, 90, 1.4],
@@ -27,7 +28,6 @@ function ActionCard({ icon, title, text, cta, onClick, primary }: {
   return (
     <MagicCard whileHover={{ y: -3 }} whileTap={{ scale: 0.985 }} transition={{ type: "spring", stiffness: 420, damping: 26 }} onClick={onClick}
       className="flex flex-col items-start rounded-2xl border border-border bg-surface p-5 text-left shadow-card transition-shadow hover:shadow-lift">
-      {primary ? <BorderBeam /> : null}
       <span className={cn("grid size-10 place-items-center rounded-xl [&_svg]:size-5", primary ? "bg-primary text-primary-foreground" : "bg-foreground text-background")}>{icon}</span>
       <span className="mt-4 text-base font-semibold tracking-tight">{title}</span>
       <span className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{text}</span>
@@ -38,10 +38,28 @@ function ActionCard({ icon, title, text, cta, onClick, primary }: {
   );
 }
 
-export function Welcome({ dark, onToggleDark }: { dark: boolean; onToggleDark: () => void }) {
+/** How long the hat shimmer plays before the canvas appears. */
+export const CAST_MS = 1100;
+
+/** A streak of light that runs once around the outline of the hat. */
+function HatShimmer() {
+  const lap = { duration: CAST_MS / 1000 - 0.15, ease: [0.45, 0, 0.2, 1] as const };
+  return (
+    <svg viewBox="0 0 256 256" aria-hidden className="pointer-events-none absolute inset-0 size-full overflow-visible" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <motion.path d={HAT_OUTLINE} pathLength={1} stroke="#ffc94d" strokeWidth={5} strokeOpacity={0.55}
+        initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={lap} />
+      <motion.path d={HAT_OUTLINE} pathLength={1} stroke="#ffe9a8" strokeWidth={12} strokeOpacity={0.45} strokeDasharray="0.14 0.86"
+        initial={{ strokeDashoffset: 0.14 }} animate={{ strokeDashoffset: -0.86 }} transition={lap} />
+      <motion.path d={HAT_OUTLINE} pathLength={1} stroke="#fffdf5" strokeWidth={4} strokeDasharray="0.1 0.9"
+        initial={{ strokeDashoffset: 0.1 }} animate={{ strokeDashoffset: -0.9 }} transition={lap} />
+    </svg>
+  );
+}
+
+export function Welcome({ dark, onToggleDark, casting = false }: { dark: boolean; onToggleDark: () => void; casting?: boolean }) {
   const saved = readAutosave();
   return (
-    <div className="thin-scroll relative h-full overflow-y-auto">
+    <div className={cn("thin-scroll relative h-full overflow-y-auto", casting && "pointer-events-none")}>
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <Glow strength={9} className="left-1/2 top-[-260px] -ml-[450px] size-[900px]" style={{ animation: "drift 16s ease-in-out infinite" }} />
         <div className="absolute inset-0 [background-image:radial-gradient(var(--canvas-dot)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_60%_55%_at_50%_30%,black,transparent)]" />
@@ -56,7 +74,8 @@ export function Welcome({ dark, onToggleDark }: { dark: boolean; onToggleDark: (
             <Glow strength={22} className="inset-x-2 bottom-[-6px] h-16" />
             <div className="relative" style={{ animation: "float 6s ease-in-out 1s infinite" }}>
               <motion.img src={logo} alt="" draggable={false} className="size-24"
-                initial={{ rotate: -8, scale: 0.9 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: "spring", stiffness: 160, damping: 12 }} />
+                initial={{ rotate: -8, scale: 0.9 }} animate={{ rotate: 0, scale: casting ? 1.08 : 1 }} transition={{ type: "spring", stiffness: 160, damping: 12 }} />
+              {casting ? <HatShimmer /> : null}
             </div>
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight">XML Wizard</h1>
@@ -66,7 +85,7 @@ export function Welcome({ dark, onToggleDark }: { dark: boolean; onToggleDark: (
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.12, ease: [0.2, 0.8, 0.2, 1] }}
-          className="mt-9 grid w-full gap-4 sm:grid-cols-2">
+          className={cn("mt-9 grid w-full gap-4 transition-opacity duration-300 sm:grid-cols-2", casting && "!opacity-40")}>
           <ActionCard primary icon={<FolderOpen />} title="Map an existing project" cta="Open a file"
             text="Open a REDCap project XML or data dictionary CSV and explore its instruments and branching logic as a zoomable map."
             onClick={() => openProject("map")} />

@@ -120,14 +120,6 @@
   50% { opacity: 0.9; transform: scale(1); }
 }
 
-@property --beam-angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-@keyframes beam {
-  to { --beam-angle: 360deg; }
-}
 @keyframes shine {
   from { background-position: 150% 0; }
   to { background-position: -50% 0; }
@@ -138,18 +130,6 @@
 }
 
 /* Magic UI style effects (see components/ui/magic.tsx). */
-.border-beam {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.5px;
-  pointer-events: none;
-  background: conic-gradient(from var(--beam-angle), transparent 0 70%, color-mix(in srgb, var(--primary) 55%, transparent) 86%, var(--primary) 94%, transparent 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
-  animation: beam linear infinite;
-}
 .magic-card { --mx: -400px; --my: -400px; }
 .magic-card-light,
 .magic-card-edge {
@@ -181,9 +161,7 @@
   animation: shine 5s linear infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .border-beam, .shiny-text { animation: none; }
-  .border-beam { display: none; }
-  .shiny-text { color: var(--muted-foreground); background: none; }
+  .shiny-text { animation: none; color: var(--muted-foreground); background: none; }
 }
 
 @layer base {

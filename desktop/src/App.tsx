@@ -13,7 +13,7 @@ import { Inspector } from "./components/Inspector";
 import { PreviewDialog } from "./components/PreviewDialog";
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
-import { Welcome } from "./components/Welcome";
+import { CAST_MS, Welcome } from "./components/Welcome";
 import { TooltipProvider } from "./components/ui/overlays";
 
 function useDark(): [boolean, () => void] {
@@ -62,6 +62,17 @@ export default function App() {
   const [search, setSearch] = useState(false);
   const [bundle, setBundle] = useState(false);
   const [dropping, setDropping] = useState(false);
+
+  // Opening a project from the welcome screen plays the hat shimmer first, then shows the canvas.
+  const [welcome, setWelcome] = useState(!project);
+  const hasProject = !!project;
+  useEffect(() => {
+    if (!hasProject) { setWelcome(true); return; }
+    if (!welcome) return;
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = setTimeout(() => setWelcome(false), calm ? 0 : CAST_MS);
+    return () => clearTimeout(timer);
+  }, [hasProject, welcome]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const issues = useMemo(() => (project ? C.validate(project) : []), [project, rev]);
@@ -121,8 +132,8 @@ export default function App() {
 
   return (
     <TooltipProvider delayDuration={350}>
-      {project ? (
-        <div className="flex h-full flex-col">
+      {project && !welcome ? (
+        <div className="flex h-full flex-col animate-fade">
           <TopBar issues={issues} dark={dark} onToggleDark={toggleDark} onPreview={() => setPreview(true)} onSearch={() => setSearch(true)} onBundle={() => setBundle(true)} />
           <div className="flex min-h-0 flex-1">
             <Sidebar issues={issues} />
@@ -138,7 +149,7 @@ export default function App() {
           <AgentBundleDialog open={bundle} onOpenChange={setBundle} />
         </div>
       ) : (
-        <Welcome dark={dark} onToggleDark={toggleDark} />
+        <Welcome dark={dark} onToggleDark={toggleDark} casting={hasProject} />
       )}
       {dropping ? (
         <div className="pointer-events-none fixed inset-3 z-[80] grid place-items-center rounded-3xl border-2 border-dashed border-primary bg-primary-soft/85 backdrop-blur-sm animate-fade">
