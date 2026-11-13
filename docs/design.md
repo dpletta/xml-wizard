@@ -62,10 +62,49 @@ A local NER model (for example spaCy or Presidio) would add hundreds of megabyte
 for little gain at the column level; it would matter for scrubbing names *inside* free-text answers,
 which is a possible later, optional extra. Masking long free text by default covers that case for now.
 
+## The designer (REDCap in both directions)
+
+`xml-wizard design` writes one offline HTML file: a canvas where instruments are columns and questions
+are cards. People drag question types in, drag an answer onto another question to create branching,
+preview the survey, and download REDCap project XML or a data dictionary CSV. It opens either file
+again, so a project can go REDCap, designer, REDCap.
+
+**Where the code lives.** `src/xml_wizard/designer_app/` holds `core.js` (model, import, export, logic;
+no DOM, so it runs in Node for tests), `app.js` (canvas, inspector, preview), `app.css` and `index.html`.
+`designer.py` inlines them into one page. `docs/designer.html` is a built copy for people without
+Python; a test fails if it is stale (`xml-wizard design -o docs/designer.html` rebuilds it).
+
+**Why JavaScript here.** The designer has to run where the researcher is, with no server and no
+install, including on a phone. A single HTML file does that. The core is still dependency-free, and a
+Python test feeds the designer's exports back through the Python reader to keep the two in agreement.
+
+**The logic text is the source of truth.** Each question stores its branching logic as the REDCap
+string. The dropdown editor is a view of that string, available when the logic is a flat list of
+comparisons joined by all-and or all-or. Anything else (functions, mixed and/or, cross-event
+references) is shown and edited as REDCap logic and is never rewritten, so opening and saving a
+project cannot change logic the editor does not understand.
+
+**Round trip fidelity.** On import the designer keeps what it does not model: project settings in
+`GlobalVariables`, the `Protocol` and `StudyEventDef` elements (events, arms, day offsets), repeating
+instruments, and any `redcap:` attribute on a field it has no control for (alignment, matrix group,
+and so on). They are written back unchanged, minus references to instruments that were deleted.
+Form status fields are regenerated the way REDCap does. `<ClinicalData>` is never read into the
+design or exported, and `xml-wizard design INPUT` strips it before embedding the project in the page.
+
+**Record ID.** REDCap treats the first field as the record ID, so the designer pins that card to the
+top of the first instrument.
+
+**Not yet covered.** Slider labels and matrix groups can be carried through but not created; survey
+settings (titles, instructions, queue) and assigning new instruments to events are done in REDCap
+after import. The export mirrors REDCap's own project XML and is checked against real exports, but it
+has not been tested against every REDCap version.
+
 ## Possible next steps
 
-- Publish to PyPI (`pip install redcap-xml-wizard`) and add a drag-and-drop web version of the viewer
-  that runs entirely in the browser for people who do not use Python.
+- Publish to PyPI (`pip install redcap-xml-wizard`), and host `docs/designer.html` with GitHub Pages
+  so researchers can use the designer from a link.
+- Show the designer's canvas and the tree viewer in one app, with the logic checks and data audit
+  running in the browser.
 - Read REDCap API exports directly (token kept local).
 - Cross-event logic evaluation for longitudinal projects by pivoting records across events.
 - Export the tree as SVG/PDF for protocol documents and IRB submissions.

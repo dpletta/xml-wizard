@@ -16,6 +16,9 @@ produces
 | `survey_tree.html` | People | A zoomable, pannable tree of every instrument and item. Each item that has branching logic is nested under the item that controls it, with a tag saying when it appears ("if Yes"). Click any item for its full logic in plain English, answer codes, and problems. One file that works offline in any browser. |
 | `agent_bundle/` | Coding agents | `AGENTS.md` (+ `CLAUDE.md`) primer, `codebook.json`, `skip_logic.csv`, `implied_values.csv`, and ready-to-run Python and R scripts that separate legitimate skips from real missing data. |
 
+It also goes the other way: `xml-wizard design` opens a drag-and-drop canvas for building or editing a
+survey and exporting it back to REDCap (see [Design or edit a survey](#design-or-edit-a-survey)).
+
 Everything runs on your computer. Nothing is uploaded. Before anything is written
 for the agent, a privacy check flags variables that may identify participants
 and asks whether to mask, drop or keep each one (see [Privacy](#privacy)). The
@@ -60,6 +63,35 @@ xml-wizard examples/practice_data/housing_survey/housing_survey_odm.xml --open
 
 A second example, the metadata of a real longitudinal REDCap project template (no record data), is in
 [`examples/practice_data/most_data/`](examples/practice_data/most_data/README.md).
+
+## Design or edit a survey
+
+XML Wizard also works in the other direction. The designer is a drag-and-drop canvas for building a
+REDCap survey, or changing one you already have, and it writes a file REDCap can upload.
+
+```bash
+xml-wizard design --open                  # start a new survey
+xml-wizard design my_project.xml --open   # open an existing project to see and edit it
+```
+
+No Python? Download [`docs/designer.html`](docs/designer.html) and open it in any browser. It is one
+file, works offline on a computer, tablet or phone, and uploads nothing.
+
+- **Build:** drag a question type onto an instrument and type the question. Variable names are suggested
+  from the question text.
+- **Branch:** drag an answer (such as *Yes*) onto another question, and that question now shows only for
+  that answer. Fine-tune it in plain words ("is at least 18", "includes Outdoors"), or edit the REDCap
+  logic directly.
+- **Check:** the same mistakes listed below are flagged as you work, and **Preview** lets you answer the
+  survey yourself and watch questions appear and disappear.
+- **Export:** *project XML* creates a new REDCap project (*New Project → Upload a REDCap project XML
+  file*); *data dictionary CSV* updates an existing one (*Project Setup → Data Dictionary*).
+- **Round trip:** open a REDCap project XML or data dictionary, change it, and export it again. Events,
+  arms, repeating instruments and settings the designer does not show are carried through unchanged.
+  Participant records in an export are never kept or written out.
+
+The exported XML follows the layout of REDCap's own project XML export. Try the upload on a test
+project first, as you would with any hand-edited data dictionary.
 
 ## What it checks
 

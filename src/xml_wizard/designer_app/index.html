@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>XML Wizard Designer</title>
+<style>
+/*__XMLW_CSS__*/
+</style>
+</head>
+<body>
+<header id="top">
+  <div class="brand"><span class="logo">W</span><span class="word">XML Wizard</span><span class="sub">Designer</span></div>
+  <input id="title" type="text" aria-label="Survey title" placeholder="Survey title">
+  <span class="spacer"></span>
+  <button id="undo" class="quiet" title="Undo (Ctrl+Z)" aria-label="Undo">↶</button>
+  <button id="redo" class="quiet" title="Redo (Ctrl+Shift+Z)" aria-label="Redo">↷</button>
+  <button id="problems" class="pill ok" title="Things to fix before uploading to REDCap">✓ No problems</button>
+  <button id="preview" title="Answer the survey yourself to test the branching">▶ Preview</button>
+  <button id="open" title="Open a REDCap project XML or data dictionary CSV">Open</button>
+  <button id="export" class="primary">Export</button>
+  <button id="more" class="quiet" aria-label="More">⋯</button>
+</header>
+<main>
+  <aside id="palette" aria-label="Question types"></aside>
+  <section id="stage" aria-label="Survey canvas">
+    <div id="world"></div>
+    <div id="zoom">
+      <button id="zoom-out" aria-label="Zoom out">−</button><span id="zoom-level">100%</span><button id="zoom-in" aria-label="Zoom in">+</button><button id="zoom-fit">Fit</button>
+    </div>
+    <div id="canvas-hint"></div>
+    <button id="fab" class="primary" aria-label="Add a question">+</button>
+  </section>
+  <aside id="inspector" aria-label="Details"></aside>
+</main>
+<svg id="linkLayer" aria-hidden="true"></svg>
+<div id="toast" role="status"></div>
+<div id="dropzone" class="dropzone">Drop your REDCap file to open it</div>
+<input id="file" type="file" accept=".xml,.csv,text/xml,text/csv" hidden>
+<script type="application/json" id="xmlw-preload">__XMLW_PRELOAD__</script>
+<script>
+/*__XMLW_CORE__*/
+</script>
+<script>
+/*__XMLW_APP__*/
+</script>
+</body>
+</html>
