@@ -3,8 +3,9 @@ name: desktop app
 # Builds the XML Wizard desktop app (desktop/) for macOS, Windows and Linux.
 #
 #   Pull requests that touch the app:  build only; installers are attached to the run as artifacts.
-#   A tag such as v0.3.0, or "Run workflow" with release ticked:  also creates a DRAFT GitHub
-#   release with the installers attached. Review it under Releases, then press Publish.
+#   A tag such as v0.3.0-alpha, or "Run workflow" with release ticked:  also creates a DRAFT GitHub
+#   release, marked as a pre-release, with the installers attached. Review it under Releases, then
+#   press Publish. While the app is alpha, "Run workflow" names the tag v<version>-alpha.
 on:
   pull_request:
     paths:
@@ -95,12 +96,16 @@ jobs:
         with:
           projectPath: desktop
           args: ${{ matrix.args }}
-          tagName: v__VERSION__
-          releaseName: XML Wizard __VERSION__
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__-alpha' }}
+          releaseName: XML Wizard __VERSION__ (alpha)
           releaseDraft: true
-          prerelease: false
+          prerelease: true
           uploadUpdaterJson: false
           releaseBody: |
+            **This is alpha software.** It is an early test version: expect rough edges, check its
+            output before relying on it, and keep a copy of your REDCap project before uploading
+            anything it exports. Please report problems under Issues.
+
             Download the installer for your computer from **Assets** below.
 
             | Computer | File |
