@@ -1,0 +1,118 @@
+name: desktop app
+
+# Builds the XML Wizard desktop app (desktop/) for macOS, Windows and Linux.
+#
+#   Pull requests that touch the app:  build only; installers are attached to the run as artifacts.
+#   A tag such as v0.3.0, or "Run workflow" with release ticked:  also creates a DRAFT GitHub
+#   release with the installers attached. Review it under Releases, then press Publish.
+on:
+  pull_request:
+    paths:
+      - "desktop/**"
+      - "src/xml_wizard/**"
+      - ".github/workflows/desktop.yml"
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Create a draft GitHub release with the installers"
+        type: boolean
+        default: true
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS (.dmg, Apple silicon and Intel)
+            platform: macos-latest
+            args: --target universal-apple-darwin
+          - name: Windows (.exe, .msi)
+            platform: windows-latest
+            args: ""
+          - name: Linux (.AppImage, .deb, .rpm)
+            platform: ubuntu-22.04
+            args: ""
+    runs-on: ${{ matrix.platform }}
+    env:
+      RELEASE: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.release) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: desktop/src-tauri
+
+      - name: Install Linux build libraries
+        if: startsWith(matrix.platform, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
+
+      - name: Install app dependencies
+        working-directory: desktop
+        run: npm ci
+
+      - name: Test the shell
+        working-directory: desktop/src-tauri
+        shell: bash
+        run: mkdir -p ../dist && cargo test
+
+      - name: Build installers
+        if: env.RELEASE != 'true'
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: desktop
+          args: ${{ matrix.args }}
+          uploadWorkflowArtifacts: true
+
+      - name: Build installers and attach them to a draft release
+        if: env.RELEASE == 'true'
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: desktop
+          args: ${{ matrix.args }}
+          tagName: v__VERSION__
+          releaseName: XML Wizard __VERSION__
+          releaseDraft: true
+          prerelease: false
+          uploadUpdaterJson: false
+          releaseBody: |
+            Download the installer for your computer from **Assets** below.
+
+            | Computer | File |
+            |---|---|
+            | Mac (Apple silicon or Intel) | `XML.Wizard_*_universal.dmg` |
+            | Windows | `XML.Wizard_*_x64-setup.exe` |
+            | Linux | `.AppImage`, `.deb` or `.rpm` |
+
+            The app is not yet signed with a paid Apple or Microsoft certificate, so the first launch needs one extra step.
+
+            **Mac:** open the .dmg and drag XML Wizard to Applications. Open it once; macOS will say it cannot verify the app. Then go to System Settings, Privacy & Security, scroll down and press **Open Anyway**. (Or run `xattr -cr "/Applications/XML Wizard.app"` in Terminal.)
+
+            **Windows:** if "Windows protected your PC" appears, press **More info**, then **Run anyway**.
+
+            XML Wizard runs entirely on your computer. It makes no network connections and your REDCap files are never uploaded.
