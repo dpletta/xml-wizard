@@ -108,3 +108,35 @@ has not been tested against every REDCap version.
 - Read REDCap API exports directly (token kept local).
 - Cross-event logic evaluation for longitudinal projects by pivoting records across events.
 - Export the tree as SVG/PDF for protocol documents and IRB submissions.
+
+## The desktop app
+
+`desktop/` is the downloadable app: one window with a Map mode (see an existing project) and a Design
+mode (build or change one), on the same canvas.
+
+**Tauri, not Electron.** The shell (`desktop/src-tauri/`) uses the operating system's own web view, so the
+download is a fraction of the size of an app that ships its own browser, which matters for researchers on managed laptops. The
+Rust side is three commands (read a picked file, write a file, write a folder of files) plus native open
+and save dialogs.
+
+**One engine, shared.** The app imports `src/xml_wizard/designer_app/core.js`, the same model, REDCap
+import and export, logic parser and checks as the single-file designer, so both read and write identical
+files and the Node tests cover both. The interface is React with React Flow for the canvas (pan, zoom,
+minimap, drag to connect) and small Radix-based components in the style of shadcn/ui.
+
+**The Python package runs inside the window.** The agent bundle and privacy check are not rewritten in
+JavaScript. The app ships Pyodide (Python compiled to WebAssembly) and the `xml_wizard` package, and calls
+`app_bridge.scan` and `app_bridge.build`. The bundle is therefore the command line's output, byte for
+byte apart from the timestamp. No Python needs to be installed.
+
+**Offline by construction.** A content security policy (in `tauri.conf.json`, and the same one in the web
+build) only lets the window load files that ship with it. Fonts, the Python runtime and the examples
+are all bundled. A test checks the two copies of the policy stay identical and allow no remote host.
+
+**Records.** The canvas model never holds participant records. The opened file's text is kept in memory
+only so the data check can read data embedded in an XML export; autosave stores the survey design alone.
+
+**Releases.** `.github/workflows/desktop.yml` builds a universal macOS .dmg, Windows installers and Linux
+packages. On a `v*` tag (or a manual run) it attaches them to a draft GitHub release. The builds are
+unsigned (macOS gets an ad-hoc signature), so first launch needs the "Open Anyway" step described in
+the README; an Apple Developer ID and notarization would remove it.

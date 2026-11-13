@@ -19,6 +19,45 @@ produces
 It also goes the other way: `xml-wizard design` opens a drag-and-drop canvas for building or editing a
 survey and exporting it back to REDCap (see [Design or edit a survey](#design-or-edit-a-survey)).
 
+## Desktop app
+
+No Python, no terminal: download XML Wizard, open it, and drop in your REDCap file.
+
+![The map of a survey: instruments as columns, questions nested under the question that controls them](docs/img/desktop-map.png)
+
+**Download** the installer for your computer from the [latest release](https://github.com/dpletta/xml-wizard/releases/latest):
+
+| Computer | File | First launch |
+|---|---|---|
+| Mac (Apple silicon or Intel) | `XML.Wizard_…_universal.dmg` | Drag XML Wizard to Applications and open it once. macOS will say it cannot verify the app. Go to *System Settings → Privacy & Security*, scroll down and press **Open Anyway**. (Or run `xattr -cr "/Applications/XML Wizard.app"` in Terminal.) |
+| Windows | `XML.Wizard_…_x64-setup.exe` | If "Windows protected your PC" appears, press **More info**, then **Run anyway**. |
+| Linux | `.AppImage`, `.deb` or `.rpm` | For the AppImage: `chmod +x` it, then run it. |
+
+The extra first-launch step is there because the app is not yet signed with a paid Apple or Microsoft
+developer certificate. It is needed once.
+
+What the app does:
+
+- **Map** an existing project: open a REDCap project XML or data dictionary CSV and see every instrument
+  and question on a zoomable canvas. Questions with branching logic sit under the question that controls
+  them, tagged with when they appear ("if Yes"). Click one for its logic in plain words, its answer codes,
+  what it depends on and what depends on it. Logic mistakes are listed at the top.
+- **Design** a new survey or change one: drag question types onto an instrument, drag an answer onto
+  another question to branch on it, preview the survey as a respondent, and export REDCap project XML or
+  a data dictionary CSV. The project XML is also your save file; unsaved work is kept on your computer.
+- **Agent bundle**: *Export → Agent bundle* runs the privacy check with buttons instead of prompts
+  (mask, drop or keep each flagged variable), optionally checks a data export against the logic, and
+  saves the same folder the command line tool writes.
+
+![Design mode: question types on the left, the canvas, and the editor for the selected question](docs/img/desktop-design.png)
+
+The app runs entirely on your computer and has no network code: its window is only allowed to load
+files that ship inside it, so nothing can be sent anywhere. It works with the internet switched off.
+
+To build it yourself, see [`desktop/README.md`](desktop/README.md).
+
+## Command line
+
 Everything runs on your computer. Nothing is uploaded. Before anything is written
 for the agent, a privacy check flags variables that may identify participants
 and asks whether to mask, drop or keep each one (see [Privacy](#privacy)). The
