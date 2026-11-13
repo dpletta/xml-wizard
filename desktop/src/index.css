@@ -120,6 +120,72 @@
   50% { opacity: 0.9; transform: scale(1); }
 }
 
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes beam {
+  to { --beam-angle: 360deg; }
+}
+@keyframes shine {
+  from { background-position: 150% 0; }
+  to { background-position: -50% 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Magic UI style effects (see components/ui/magic.tsx). */
+.border-beam {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  background: conic-gradient(from var(--beam-angle), transparent 0 70%, color-mix(in srgb, var(--primary) 55%, transparent) 86%, var(--primary) 94%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: beam linear infinite;
+}
+.magic-card { --mx: -400px; --my: -400px; }
+.magic-card-light,
+.magic-card-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.magic-card-light {
+  z-index: -1;
+  background: radial-gradient(260px circle at var(--mx) var(--my), color-mix(in srgb, var(--primary) 9%, transparent), transparent 70%);
+}
+.magic-card-edge {
+  padding: 1px;
+  background: radial-gradient(220px circle at var(--mx) var(--my), color-mix(in srgb, var(--primary) 70%, transparent), transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.magic-card:hover .magic-card-light,
+.magic-card:hover .magic-card-edge { opacity: 1; }
+.shiny-text {
+  background: linear-gradient(110deg, var(--muted-foreground) 40%, var(--foreground) 50%, var(--muted-foreground) 60%) 150% 0 / 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 5s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .border-beam, .shiny-text { animation: none; }
+  .border-beam { display: none; }
+  .shiny-text { color: var(--muted-foreground); background: none; }
+}
+
 @layer base {
   * {
     border-color: var(--border);
